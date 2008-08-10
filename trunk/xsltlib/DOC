@@ -1,0 +1,20 @@
+node-set ec:enclose(node-set,xpath-string,element-name-string)
+
+node-set tools:image-size(uri)
+
+node-set speed:rep_it(node-set)
+
+node-set split:separate(string,splitchars-string)
+
+getAkk
+grabAkk
+noteAkks
+checkAkks
+
+parset
+
+subst_ul-kill_nl
+akk_subst_tex
+nl_hlp
+
+<zip:doc-zip href="uri" copy-select="node-set"/>

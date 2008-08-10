@@ -1,0 +1,41 @@
+SOURCES=ext3.cpp processor.cpp ptools.cpp
+MODULE=thax_home_parset.so
+
+CPPFLAGS=-O3 -march=pentium -funroll-all-loops -finline-functions -Wall $(FLAGS) -g -DSTANDALONE
+CPPFLAGS+=`pkg-config --cflags libxml-2.0`
+
+OBJECTS=$(patsubst %.c,$(PREFIX)%$(SUFFIX).o,\
+        $(patsubst %.cpp,$(PREFIX)%$(SUFFIX).o,\
+$(SOURCES)))
+DEPENDS=$(patsubst %.c,$(PREFIX)%$(SUFFIX).d,\
+        $(patsubst %.cpp,$(PREFIX)%$(SUFFIX).d,\
+        $(filter-out %.o,""\
+$(SOURCES))))
+
+all: $(MODULE)
+ifneq "$(MAKECMDGOALS)" "clean"
+  -include $(DEPENDS)
+endif 
+
+clean:
+	rm -f $(MODULE) $(OBJECTS) $(DEPENDS)
+
+%.d: %.c
+	@$(SHELL) -ec '$(CC) -MM $(CPPFLAGS) $< \
+                      | sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@;\
+                      [ -s $@ ] || rm -f $@'
+%.d: %.cpp
+	@$(SHELL) -ec '$(CXX) -MM $(CPPFLAGS) $< \
+                      | sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@;\
+                      [ -s $@ ] || rm -f $@'
+
+$(MODULE): $(OBJECTS)
+	$(CXX) -o $@ $^ -shared -rdynamic
+
+test: force
+	xsltproc --extension ../xsltext1/ext1.so --extension thobi2 --extension ./ext3.so shet.xsl in.xml 
+
+test2: force
+	xsltproc --extension ../xsltext1/ext1.so --extension thobi2 --extension ./ext3.so shet.xsl ../songprocessor/songs.xml 
+
+force:
