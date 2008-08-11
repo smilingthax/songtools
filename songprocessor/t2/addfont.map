@@ -1,0 +1,5 @@
+arial ArialMT " T1Encoding ReEncodeFont " <arial.ttf 8r.enc
+arialb ArialBoldMT " T1Encoding ReEncodeFont " <arialb.ttf 8r.enc
+arials ArialMT " T1Encoding ReEncodeFont " <ariali.ttf 8r.enc
+arialbs Arial-BoldItalicMT " TeXBase1Encoding ReEncodeFont " <arialbi.ttf 8r.enc
+cour CourierMT " T1Encoding ReEncodeFont " <cour.ttf 8r.enc

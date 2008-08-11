@@ -1,0 +1,13 @@
+#!/bin/sh
+echo "Pure"
+xsltproc puretext.xsl sout.xml > plain
+if [ -n "$1" ]; then
+  echo "Lout"
+  xsltproc lout.xsl sout.xml > lin1
+fi
+echo "List"
+xsltproc list.xsl sout.xml > list
+echo "Tex"
+xsltproc tex.xsl sout.xml > in1.tex
+cd t2
+make

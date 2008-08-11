@@ -1,0 +1,33 @@
+Benötigte Software + von mir verwendete Version:
+ zum Compilieren
+  libxml2  (2.6.7, sollte >= 2.6.x sein)
+  libxslt  (1.1.4, sollte >= 1.1.x sein)
+  bison    (SuSE >= 7.2 [1.28])
+  yacc     (SuSE >= 7.2 [?])
+  gcc,gpp  (SuSE; 2.95.x oder >= 3.2)
+ für die Erstellung des PDFs
+  tetex
+  te_pdf
+
+im Makefile:
+ifeq "$(XML)" "1"
+  CPPFLAGS+=-DWITH_XML -I/usr/local/include/libxml2
+  LDFLAGS+=-lxslt -lexslt /usr/local/lib/libxml2.a
+endif
+
+Pfad zur libxml2 und libxslt headern mglw. anpassen
+
+
+im songpresenter-ncu Verzeichnis:
+statt der fertigen main.pdf, main.drt und plain: Symbolische links verwenden:
+ ln -s ../songprocessor/plain .
+ ln -s ../songprocessor/tex/main.drt .
+ ln -s ../songprocessor/tex/main.pdf .
+
+
+zum Erstellen eines PDFs: 
+ songs.xml  ergänzen, o.ä.; Fileformat ist unter doc/tags.html documentiert
+ pasr       aufrufen 
+ cd tex
+ make       2x aufrufen
+
