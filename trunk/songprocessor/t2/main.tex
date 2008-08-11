@@ -1,0 +1,201 @@
+\documentclass{songfoil}
+% Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING
+%\usepackage[german]{babel}
+\usepackage{german}
+\usepackage[pdftex]{color}
+\usepackage[pdftex]{hyperref}
+\usepackage[pdftex]{graphicx}
+\usepackage[T1]{fontenc}
+%\pdfcompresslevel=0
+
+\pdfmapfile{+addfont.map}
+
+\hypersetup{pdfauthor={Tobias Hoffmann},pdftitle={Songs},pdfpagemode=FullScreen}
+%\hypersetup{pdfauthor={Tobias Hoffmann},pdftitle={Songs}}
+
+%%% Font definitions: 
+\makeatletter\renewcommand\@xxxpt{28.2}\makeatother
+\renewcommand\seriesdefault{\bfdefault}
+% Refrain
+\newcommand\reff{\em}
+% footer (1/2,2/2)
+\newcommand\ftf{\fontseries{n}\selectfont}
+% copyright, none if undefined
+\newcommand\cprf{\fontseries{n}\selectfont}
+
+% Headline, none if \capf undefined!
+%\newcommand\capf{\LARGE\bfseries} 
+% akkords, none if \akf undefined!
+%\newcommand\akf{\normalsize}
+%\newcommand\akf{\color[rgb]{1,0,0.2}\tiny}
+%\newcommand\akf{\color[rgb]{1,0,0.2}\small\def\myst{\hspace*{1.4ex}}}
+%\newcommand\akf{\small\def\myst{\hspace*{1.4ex}}}
+% infos, none if defined(!)
+\newcommand\infos[3]{\relax}
+
+%%% Colors
+%\newcommand\fgcolor{black}\newcommand\bgcolor{white}  % "Windows","Paper","Overhead"
+\newcommand\fgcolor{white}\newcommand\bgcolor{black}  % "Console"
+
+%%% Begin script
+\newcounter{pdfbm}\setcounter{pdfbm}{1}  % counter for unique bookmark-id
+\newcounter{sngpg}                       % foil number in current song
+\newcounter{allpg}                       % number of foils in current song
+\newcounter{vers}                        % counter for vers numbering % TODO: should not be needed anymore, done in XSLT
+\newcounter{sngno}                       % number of song
+\frenchspacing\sloppy
+\newdimen\dimA
+\newdimen\dimB
+
+% my newline
+\def\nla{}
+\newcommand\nl[1][0pt]{\hangindent=\parindent\par\vskip #1\nla\ignorespaces}
+
+%%% Commands
+\makeatletter
+% Page building
+\newcommand\blkp{\newpage\mbox{}\pagecolor{black}\pdfbookmark{****}{l\thepdfbm}\stepcounter{pdfbm}\leftheader{}\rightfooter{}\leftfooter{}%
+  \write\mydrt{\protect\songest{\the\c@page}}\stepcounter{sngno}}
+\newcommand\sng[1]{\newpage\pagecolor{\bgcolor}\color{\fgcolor}\setcounter{allpg}{0}\setcounter{fbrno}{0}\setcounter{vers}{1}%
+  % Write out page following the last of the previous song
+  \write\mydrt{\protect\songest{\the\c@page}}\stepcounter{sngno}%
+  \leftfooter{}%
+  % if I know (from last run) the last page of this song: do the 1/3, 2/3, ...
+  \expandafter\ifx\csname @qr@\thesngno\endcsname\relax \rightfooter{\every@songpage}\else%
+    \setcounter{allpg}{\csname @qr@\thesngno\endcsname}\addtocounter{allpg}{-\the\c@page}%
+    \ifnum\theallpg>1 \setcounter{sngpg}{1}%
+      \rightfooter{\every@songpage\setcounter{sngpg}{\the\c@page}\addtocounter{sngpg}{-\csname @qr@\thesngno\endcsname}%
+      \addtocounter{sngpg}{\theallpg}\stepcounter{sngpg}\color{\fgcolor}\ftf \thesngpg/\theallpg}%
+    \else\rightfooter{\every@songpage}\fi\fi%
+  % write out the pagebreak-positions
+%  \def\every@songpage{\relax}%
+  \def\every@songpage{{\edef\hlpa{\topmark}\edef\hlpb{\botmark}\ifx\hlpa\hlpb \else%
+    \gdef\get@mark####1,####2{####2}\write\mydrt{\protect\pageest{\the\c@page}{\expandafter\get@mark\botmark}}\fi}}%
+%   \write\mydrt{\protect\pageest{\the\c@page}{\botmark - \topmark;\firstmark;\botmark}}}%
+  % Parse multiple songnames seperated by '|' and generate the bookmarks
+  {\def\parse@songnames##1|##2{%
+    % if first name: set title (header)
+%    \ifx\first@songname\undefined\def\first@songname{\relax}\leftheader{\color{\fgcolor}\capf ##1\every@songpage}\fi%
+    \ifx\first@songname\undefined\def\first@songname{\relax}\leftheader{\color{\fgcolor}\capf ##1}\fi%
+    \pdfbookmark{##1}{l\thepdfbm}\stepcounter{pdfbm}\ifx##2\relax\else\expandafter\parse@songnames\expandafter##2\fi}%
+     \parse@songnames#1|\relax}}
+% TODO: should not be needed anymore
+\newcommand\ns{\newpage\ifnum\theallpg>0 \stepcounter{sngpg}\rightfooter{\color{\fgcolor}\ftf \thesngpg/\theallpg}\fi}
+
+% Pictures
+\newcommand\picx[2]{\newpage\mbox{}\pagecolor{black}\pdfbookmark{*#1}{l\thepdfbm}\stepcounter{pdfbm}%
+ \write\mydrt{\protect\songest{\the\c@page}}\stepcounter{sngno}%
+% \rightfooter{}\gdef\@leftheader{\begin{picture}(794,592)(26,-21)\framebox(794,592){\includegraphics[#2]{#1}}\end{picture}}}
+ \rightfooter{}\gdef\@leftheader{\setbox\@tempboxa=\hbox{\begin{picture}(794,592)(26,-21)\framebox(794,592){\includegraphics[#2]{#1}}\end{picture}}\wd\@tempboxa 0pt\usebox\@tempboxa}}
+\newcommand\picHV[1]{\picx{#1}{width=\the\paperwidth,totalheight=\the\paperheight}}
+\newcommand\picH[1]{\picx{#1}{totalheight=\the\paperheight}}
+\newcommand\picV[1]{\picx{#1}{width=\the\paperwidth}}
+\newcommand\pic[1]{\picx{#1}{}}
+
+% Monatsspruch-page
+% params: {Monatsname}{Text}{Von}{Bild}{fgfarbe}{bgfarbe}
+\newcommand\spruch[6]{{\picHV{#4}\def\nla{&\bfseries}\def\tx{\begin{tabular*}{\textwidth}{l|l@{\extracolsep{\fill}}l}%
+ #1&\\&\bfseries#2\\&\multicolumn{2}{r}{#3}\\\end{tabular*}}%
+ \begin{picture}(794,592)(0,-499)\put(1.5,-1.5){\color{#6}\noindent\tx}\put(0,0){\color{#5}\tx}\end{picture}}\ignorespaces}
+
+% TODO: unneeded?
+\ifx\cprf\undefined
+  \newcommand\esng[1]{\vfill\fbr{}}
+\else
+  \newcommand\esng[1]{\vfill\fbr{}\leftfooter{\vtop to 2.0cm{\kern-0.3cm\hsize 20cm\color{\fgcolor}\cprf\copyright #1\vfil}}}
+\fi
+\newcommand\mysp[1]{ }
+\newcommand\myst{\hspace*{1em}}
+
+% Definition of Block/Inline-Tags
+\newbox\bxA
+%\newcommand\myl[2]{{\settowidth{\dimA}{#1}\addtolength{\parindent}{\dimA}{\noindent#1\hangindent=\parindent\ignorespaces#2}}}
+%\newcommand\myl[2]{{\settowidth{\dimA}{#1}{#1\addtolength{\parindent}{\dimA}\ignorespaces#2}}}
+\newcommand\myl[2]{{\setbox\bxA=\hbox{#1}\setlength\dimA{\wd\bxA}{\leavevmode\box\bxA\addtolength{\parindent}{\dimA}\ignorespaces#2}}}
+\newcommand\rep[2][2]{\myl{|:\ }{#2\ :|\ifnum#1>2 \ \ (#1x)\fi}}
+\newcommand\refr[1]{{\reff\myl{Refr:\ }{#1}}}
+\newcommand\vers[2][\thevers]{\setcounter{vers}{#1}\myl{\thevers.\ \ }{#2}\addtocounter{vers}{1}}
+\newcommand\bridge[1]{\myl{Bridge:\ }{#1}}
+\newcommand\finally[1]{\myl{Schluss:\ }{#1}}
+\newcommand\xlate[1]{(Übersetzung: #1)}
+
+\newcommand\callresponse[1]{{\renewcommand\nl[1][0pt]{\\*[##1]\indent\nla\ignorespaces} 
+                             \begin{tabular}[t]{@{}l|r@{}}#1\end{tabular}}}
+
+\ifx\infos\undefined
+  \newcommand\infos[3]{{\vskip-1em\normalsize\ifx#1\empty\else #1\nl\fi Text: #2\nl Melodie: #3\nl}\vskip+1em}
+\fi
+%%% End Commands
+
+%%% Conditionals
+% if header should be suppressed: shift rest of page up 
+\ifx\capf\undefined
+  \def\leftheader#1{\gdef\@leftheader{}}
+  \setlength{\headheight}{0 pt}
+  \setlength{\headsep}{0 pt}
+  \addtolength{\topmargin}{-0.5cm} % shift-up
+%  \addtolength{\textheight}{-1in} % more free space at bottom
+\fi
+
+% Akkord-magic
+\ifx\akf\undefined
+ \newcommand\akk[1]\ignorespaces
+ \newcommand\akks[2]{#2}
+ \newcommand\akkt[1]\relax
+ \newcommand\anot[2]\relax
+ \newcommand\nsakk\ignorespaces
+\else
+ % Trick for italic correction, from (current, not the latex-one) plain.tex
+ {\catcode`p=12 \catcode`t=12\gdef\gefcor#1pt{#1}}
+ \def\myshift{\kern\expandafter\gefcor\the\fontdimen1\myfnt1\dimB}
+
+ \newcommand\myak[1]{\setlength\dimA{1.5ex}\setlength\dimB{\dimA}\edef\myfnt1{\font}%
+%  {\akf\addtolength\dimB{\baselineskip}\myshift\raisebox{\dimA}[\dimB]{\framebox[\width]{#1}}}}
+  {\akf\addtolength\dimB{\baselineskip}\mbox{}\myshift\raisebox{\dimA}[\dimB]{#1}}}
+% \newcommand\akk[2]{\settowidth\dimA{#2}\makebox[0pt][l]{{\akf\rule{0.5\dimA}{1pt}}\makebox[0pt][c]{\myak{#1}}}\framebox[\width]{#2}}
+ \newcommand\akk[2]{\settowidth\dimA{#2}\makebox[0pt][l]{\kern+0.5\dimA\makebox[0pt][c]{\myak{#1}}}#2}
+ \newcommand\akks[1]{\mysp{}\myak{#1}}
+ \newcommand\akkt[1]{\makebox[0pt][l]{\setlength\dimA{1.5ex}\setlength\dimB{\dimA}\edef\myfnt1{\font}%
+  {\akf\addtolength\dimB{\baselineskip}\mbox{}\kern\expandafter\gefcor\the\fontdimen1\myfnt1\baselineskip\raisebox{\dimA}[\dimB]{#1}}}}
+ \newcommand\anot[1]{{\akf #1}}
+ \newcommand\nsakk\ns
+ \addtolength{\textheight}{0.4cm}
+ \addtolength{\footskip}{-0.3cm}
+\fi
+%%% End Conditionals
+
+%%% External Viewer Support
+\newcounter{fbrno}
+\newcommand\songest[1]{\expandafter\gdef\csname @qr@\thesngno\endcsname{#1} \stepcounter{sngno}\relax}
+\newcommand\pageest[2]{\relax}
+
+\setcounter{sngno}{0}
+\InputIfFileExists{\jobname.drt}{}{}
+\setcounter{sngno}{0}
+
+% possible break-points
+\newcommand\fbr{\stepcounter{fbrno}\expandafter\mark{\thesngno,\thefbrno}\par\vfil\penalty-700\vfilneg}
+\newcommand\nsfbr{\stepcounter{fbrno}\expandafter\mark{\thesngno,\thefbrno}\par\vfil\penalty-10000\vfilneg}
+\newcommand\nlbreak[1][0pt]{\hangindent=\parindent\stepcounter{fbrno}\expandafter\mark{\thesngno,\thefbrno}%
+  \par\vskip #1\vfil\penalty-200\vfilneg\nla\ignorespaces}
+\newcommand\nlbreakk[1][0pt]{\hangindent=\parindent\stepcounter{fbrno}\expandafter\mark{\thesngno,\thefbrno}%
+  \par\vskip #1\vfil\penalty-500\vfilneg\nla\ignorespaces}
+%%% End External Viewer Support
+
+%%% Output
+\newwrite\mydrt
+\immediate\openout\mydrt\jobname.drt
+\begin{document}
+%\tracingall
+\Large
+\input{in1.tex}
+%\input{dem1.tex}
+
+% reuse \thefbrno
+\setcounter{fbrno}{\the\c@page}
+\stepcounter{fbrno}
+\clearpage
+{\let\songest=0 \immediate\write\mydrt{\songest{\thefbrno}}} % [pageno+1]
+\immediate\closeout\mydrt
+\end{document}
+%%% End Output

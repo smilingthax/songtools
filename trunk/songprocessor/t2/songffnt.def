@@ -1,0 +1,156 @@
+\NeedsTeXFormat{LaTeX2e}[1996/12/01]
+\ProvidesFile{songffnt.def}
+       [2003/05/17\space v1.0\space SongFoil font definition file,
+ Copyright 2002,2003 Tobias Hoffmann]
+% Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING
+
+\begingroup
+\nfss@catcodes
+\providecommand{\flt@family}[5]{%
+  \DeclareFontShape{#1}{#2}{#3}{#4}
+  {<12><14.4><17.28><20.74><24.88><29.86>
+   <35.83><43.00><51.60> #5 }{}}
+\providecommand{\fltodd@family}[6]{%
+  \DeclareFontShape{#1}{#2}{#3}{#4}
+  {<12.1><14.5><17.38> #5
+   <12><14.4><17.28><20.74><24.88><29.86><35.83><43.00><51.60> #6}{}}
+\providecommand{\flt@subfamily}[5]{%
+  \DeclareFontShape{#1}{#2}{#3}{#4}{<->ssub * #5}{}}
+\providecommand{\fltmath@family}[6]{%
+  \DeclareFontShape{#1}{#2}{#3}{#4}
+  {<12.1><14.5><17.38> #5
+   <20.74><24.88><29.86><35.83><43.00><51.60> #6}{}}
+\DeclareFontFamily{OT1}{fcmr}{}
+ \fltodd@family{OT1}{fcmr}{m}{n}   {cmr7}{cmr10}
+ \flt@family{OT1}{fcmr}{m}{it}     {cmti10}
+ \flt@family{OT1}{fcmr}{m}{sc}     {cmcsc10}
+ \flt@family{OT1}{fcmr}{bx}{n}     {cmbx10}
+ \flt@family{OT1}{fcmr}{bx}{sl}    {cmbxsl10}
+ \flt@family{OT1}{fcmr}{m}{ui}     {cmu10}
+ \flt@subfamily{OT1}{fcmr}{m}{sl}  {fcmss/m/sl}
+ \flt@subfamily{OT1}{fcmr}{b}{n}   {fcmr/bx/n}
+ \flt@subfamily{OT1}{fcmr}{bx}{it} {fcmr/bx/sl}
+\DeclareFontFamily{OT1}{fcmss}{\fontdimen3\font=1.7\fontdimen3\font}
+ \flt@family{OT1}{fcmss}{m}{n}     {cmss10}
+ \flt@family{OT1}{fcmss}{m}{sl}    {cmssi10}
+ \flt@family{OT1}{fcmss}{sbc}{n}   {cmssdc10}
+ \flt@family{OT1}{fcmss}{bx}{n}    {cmssbx10}
+ \flt@subfamily{OT1}{fcmss}{m}{it} {fcmr/m/it}
+ \flt@subfamily{OT1}{fcmss}{m}{sc} {fcmr/m/sc}
+ \flt@subfamily{OT1}{fcmss}{m}{ui} {fcmr/m/ui}
+ \flt@subfamily{OT1}{fcmss}{b}{n}  {fcmss/bx/n}
+ \flt@subfamily{OT1}{fcmss}{bx}{sl}{fcmr/bx/sl}
+ \flt@subfamily{OT1}{fcmss}{bx}{it}{fcmr/bx/it}
+\DeclareFontFamily{OML}{fcmm}{\skewchar\font'177}
+ \fltmath@family{OML}{fcmm}{m}{it} {cmmi7}{cmmi10}
+ \fltmath@family{OML}{fcmm}{b}{it} {cmmib7}{cmmib10}
+ \flt@subfamily{OML}{fcmm}{bx}{it} {fcmm/b/it}
+\DeclareFontFamily{OMS}{fcmsy}{\skewchar\font'60}
+ \fltmath@family{OMS}{fcmsy}{m}{n} {cmsy7}{cmsy10}
+ \fltmath@family{OMS}{fcmsy}{b}{n} {cmbsy7}{cmbsy10}
+ \flt@subfamily{OMS}{fcmsy}{bx}{n} {fcmsy/b/n}
+\DeclareFontFamily{OMX}{fcmex}{}{}
+ \fltmath@family{OMX}{fcmex}{m}{n} {cmex7}{cmex10}
+\DeclareFontFamily{U}{lasy}{}
+ \fltmath@family{U}{lasy}{m}{n}    {lasy7}{lasy10}
+ \flt@family{U}{lasy}{b}{n}        {lasyb10}
+\endgroup
+
+\DeclareSymbolFont{flasy}{U}{lasy}{m}{n}
+
+\SetSymbolFont{operators}{normal}{OT1}{fcmr}{m}{n}
+\SetSymbolFont{letters}{normal}{OML}{fcmm}{m}{it}
+\SetSymbolFont{symbols}{normal}{OMS}{fcmsy}{m}{n}
+\SetSymbolFont{largesymbols}{normal}{OMX}{fcmex}{m}{n}
+\SetSymbolFont{operators}{bold}{OT1}{fcmr}{bx}{n}
+\SetSymbolFont{letters}{bold}{OML}{fcmm}{b}{it}
+\SetSymbolFont{symbols}{bold}{OMS}{fcmsy}{b}{n}
+\SetSymbolFont{largesymbols}{bold}{OMX}{fcmex}{m}{n}
+
+\DeclareMathAlphabet{\mathrm}{OT1}{fcmr}{m}{n}
+\DeclareMathAlphabet{\mathbf}{OT1}{fcmr}{bx}{n}
+\DeclareMathAlphabet{\mathsf}{OT1}{fcmss}{m}{n}
+\DeclareMathAlphabet{\mathit}{OT1}{fcmr}{m}{it}
+\DeclareMathAlphabet{\mathtt}{OT1}{fcmtt}{m}{n}
+
+\DeclareRobustCommand*\cal{\@fontswitch{\relax}{\mathcal}}
+\DeclareRobustCommand*\mit{\@fontswitch{\relax}{\mathnormal}}
+
+\newcommand\@xii@ipt{12.1}
+\newcommand\@xiv@vpt{14.5}
+\newcommand\@xvii@iiipt{17.38}
+\newcommand\@xxxpt{29.86}
+\newcommand\@xxxvipt{35.83}
+\newcommand\@xliiipt{43}
+\newcommand\@lipt{51.60}
+
+\DeclareMathSizes{\@xiipt}{\@xii@ipt}{\@xii@ipt}{\@xii@ipt}
+\DeclareMathSizes{\@xivpt}{\@xiv@vpt}{\@xii@ipt}{\@xii@ipt}
+\DeclareMathSizes{\@xviipt}{\@xvii@iiipt}{\@xii@ipt}{\@xii@ipt}
+\DeclareMathSizes{\@xxpt}{\@xxpt}{\@xiv@vpt}{\@xii@ipt}
+\DeclareMathSizes{\@xxvpt}{\@xxvpt}{\@xvii@iiipt}{\@xiv@vpt}
+\DeclareMathSizes{\@xxxpt}{\@xxxpt}{\@xxpt}{\@xvii@iiipt}
+\DeclareMathSizes{\@xxxvipt}{\@xxxvipt}{\@xxvpt}{\@xxpt}
+\DeclareMathSizes{\@xliiipt}{\@xliiipt}{\@xxxpt}{\@xxvpt}
+\DeclareMathSizes{\@lipt}{\@lipt}{\@xxxvipt}{\@xxxpt}
+
+\font\tencirc=lcircle10
+\font\tencircw=lcirclew10
+\font\tenln=line10
+\font\tenlnw=linew10
+
+% Set the fonts
+\DeclareFontFamily{T1}{arial}{}
+\DeclareFontShape{T1}{arial}{m}{n}{<-> arial}{}
+\DeclareFontShape{T1}{arial}{bx}{n}{<-> arialb}{}
+\DeclareFontShape{T1}{arial}{m}{sl}{<-> arials}{}
+\DeclareFontShape{T1}{arial}{bx}{sl}{<-> arialbs}{}
+
+%\def\rmdefault{fcmr}
+%\def\sfdefault{fcmss}
+%\def\ttdefault{fcmtt}
+%\def\itdefault{it}
+%\def\sldefault{sl}
+\def\bfdefault{bx}
+
+\renewcommand{\sfdefault}{arial}
+\renewcommand\familydefault{\sfdefault}
+\def\em{\slshape}
+
+% Fontsizes
+\def\normalsize{\@setfontsize\normalsize\@xxpt\@xxvpt
+\abovedisplayskip 30\p@ \@plus 3\p@ \@minus 9\p@
+\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip \z@ \@plus 3\p@
+\belowdisplayshortskip 7\p@ \@plus 3\p@ \@minus 4\p@
+\let\@listi\@listIa}
+\normalsize
+
+\def\small{\@setfontsize\small\@xviipt{22}%
+\abovedisplayskip 20\p@ \@plus 3\p@ \@minus 4\p@
+\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip \z@ \@plus 2\p@
+\belowdisplayshortskip 4\p@ \@plus 2\p@ \@minus 2\p@
+\let\@listi\@listIb}
+ 
+\def\footnotesize{\@setfontsize\footnotesize\@xivpt{18}%
+\abovedisplayskip 16\p@ \@plus 2\p@ \@minus 4\p@
+\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip \z@ \@plus 1\p@
+\belowdisplayshortskip 3\p@ \@plus 1\p@ \@minus 2\p@
+\let\@listi\@listIc}
+ 
+\def\scriptsize{\@setfontsize\scriptsize\@xiipt{15}%
+ \let\@listi\@listId}
+\let\tiny=\scriptsize
+\def\large{\@setfontsize\large\@xxvpt{32}}
+\def\Large{\@setfontsize\Large\@xxxpt{38}}
+\def\LARGE{\@setfontsize\LARGE\@xxxvipt{45}}
+\def\huge{\@setfontsize\huge\@xliiipt{54}}
+\def\Huge{\@setfontsize\huge\@lipt{62}}
+
+\def\big#1{{\hbox{$\left#1\vbox to17\p@{}\right.\n@space$}}}
+\def\Big#1{{\hbox{$\left#1\vbox to23\p@{}\right.\n@space$}}}
+\def\bigg#1{{\hbox{$\left#1\vbox to27\p@{}\right.\n@space$}}}
+\def\Bigg#1{{\hbox{$\left#1\vbox to35\p@{}\right.\n@space$}}}
+\endinput

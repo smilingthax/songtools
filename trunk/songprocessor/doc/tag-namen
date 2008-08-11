@@ -1,0 +1,24 @@
+http://www.renesenn.de/fol-the1.htm
+http://en.wikipedia.org/wiki/Song_structure_(popular_music)
+
+<rep> |: repeat :|
+
+<vers>   1v 2v   Vers (== A)
+<refr>   r 1r    Refrain (== B)
+<bridge> b 1b    Bridge (== C)
+<ending> e       Schluss (== D)
+*        1* 2*
+
+<instrum>(AKK)  /1 /2   Instrumentaler Teil
+
+"<pre-chorus>"
+"<coda>"(nicht nur instr)
+"<solo>"(AKK) "<git-solo>"(AKK,nur git?)
+"<instr>(AKK) <section> <fill> <part> <gap> <interlude>" <glue> <tie>
+
+== i 1v r 1p 2v r 2p(git-solo) 1v(breakdown) r(breakdown) r 1*  
+i 1v r 1p 2v r 2p(solo) 1v(bd) r(bd) r 1* 
+|i 1v r |1 2v r |2(solo) 1v(bd) r(bd) r 1*
+i 1 R a 2 R b 1(bd) R(bd) R A
+
+/i 1v r /1 2v r /2(solo) 1v(bd) r(bd) r 1*

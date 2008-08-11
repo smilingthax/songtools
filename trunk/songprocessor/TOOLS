@@ -1,0 +1,17 @@
+
+1. Ausgabe der erzeugten Copyright-information (debugging von rights-full.xsl):
+
+        xsltproc helper/copyright-check.xsl songs.xml | less
+
+2. Erzeugen einer songs.xml, die keine <rights> mehr enthält, sondern nur noch <rights-full>,
+   und damit unabhängig von der verlage.xml Datenbank ist.
+
+        xsltproc helper/addrights.xsl songs.xml > ...
+   kann auch auf sout.xml angewendet werden:
+
+        xsltproc helper/addrights.xsl sout.xml > ...
+
+3. Entfernen aller <akk>-Tags aus einer sout.xml (jedoch nicht: songs.xml!)
+
+        xsltproc helper/no-akk.xsl sout.xml > sout-noakk.xml
+

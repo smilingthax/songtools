@@ -1,0 +1,1 @@
+../../../helper/copyright-check.xsl

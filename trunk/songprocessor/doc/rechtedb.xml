@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING -->
+<docu title="Dateiformat der verlage.xml">
+
+  <code>
+<verlage>
+  <verlag name="[Kurzname]">Volle Verlagsangabe (Adresse?)</verlag>
+
+  <subverlag verlag="[Kurzname des Hauptverlags]" 
+             for="[Kommagetrennte Liste von Ländern]">(Kurz-)name des zuständigen Subverlags</subverlag>
+</verlage>
+  </code>
+
+  Wichtig: Die Datei verlage.xml muss im selben Verzeichnis wie die rights-full.xsl sein (nicht: songs.xml!).
+
+</docu>
