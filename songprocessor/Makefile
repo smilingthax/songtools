@@ -20,13 +20,15 @@ ifeq "$(XML)" "1"
 #  LDFLAGS+=-lxslt -lexslt -lxml2 -lz -lgcrypt -lgpg-error
 #  LDFLAGS+=-lxslt -lexslt
   #/usr/local/lib/libxml2.a
-  CPPFLAGS+=-DWITH_XML `pkg-config --cflags libxml-2.0 libxslt libexslt`
-  LDFLAGS+=`pkg-config --libs libxml-2.0 libxslt libexslt`
+  PACKAGES+=libxml-2.0 libxslt libexslt
 endif
 ifeq "$(STATIC)" "1"
 #  LDFLAGS+=-static -pthread -lxml2 -lz -ldl -lgcrypt -lgpg-error
   LDFLAGS+=-static -pthread -ldl
 endif
+CPPFLAGS+=$(shell pkg-config --cflags $(PACKAGES))
+LDFLAGS+=$(shell pkg-config --libs $(PACKAGES))
+
 CPPFLAGS+=-I../xsltlib
 LDFLAGS+=../xsltlib/libxsltext.a
 

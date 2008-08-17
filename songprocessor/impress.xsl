@@ -42,6 +42,8 @@
   array=array.add bla fasel...
   Idea: Nodesets: ns_clear('id/name'); ns_add('id/name'); ns_get('id/name');
 -->
+ 
+ <xsl:import href="s-liner.xsl"/>
 
  <xsl:output method="text" encoding="iso-8859-1"/>
  <xsl:variable name="nl"><xsl:text>
@@ -79,7 +81,6 @@
  <xsl:template match="song" mode="file_single" name="filecontent">
 <!--  <xsl:call-template name="output_blkp"/>-->
    <xsl:call-template name="output_pages">
-     <xsl:with-param name="title" select="title[1]/text()"/>
      <xsl:with-param name="copyright">
        <xsl:text>© </xsl:text>
 <!--       <xsl:text>Copyright: </xsl:text>-->
@@ -165,27 +166,16 @@
        <xsl:otherwise>dp1</xsl:otherwise><!-- default -->
      </xsl:choose>
    </xsl:variable>
-   <xsl:variable name="img_border">
-     <xsl:choose>
-       <xsl:when test="@border"><xsl:value-of select="@border"/></xsl:when>
-       <xsl:otherwise>0</xsl:otherwise><!-- default -->
-     </xsl:choose>
-   </xsl:variable>
+   <xsl:variable name="img_border" select="func:default(@border,0)"/>
    <xsl:variable name="img_info" select="tools:image-size(@href)"/>
    <xsl:variable name="img_ratio" select="$img_info/@width div $img_info/@height"/>
-   <xsl:variable name="impress_w">
-     <xsl:choose>
-       <xsl:when test="$img_ratio > $impress_page_ratio"><xsl:value-of select="$impress_page_w - $img_border"/></xsl:when>
-       <xsl:otherwise><xsl:value-of select="($impress_page_h - $img_border) * $img_ratio"/></xsl:otherwise>
-     </xsl:choose>
-   </xsl:variable>
-   <xsl:variable name="impress_h">
-     <xsl:choose>
-       <xsl:when test="$img_ratio > $impress_page_ratio"><xsl:value-of select="($impress_page_w - $img_border) div $img_ratio"/></xsl:when>
-       <xsl:otherwise><xsl:value-of select="$impress_page_h - $img_border"/></xsl:otherwise>
-     </xsl:choose>
-   </xsl:variable>
-   <xsl:variable name="impress_x" select="$impress_page_x + ($impress_page_w - $impress_w) div 2"/>
+   <xsl:variable name="impress_w" select="func:if($img_ratio > $impress_page_ratio,
+                                                  $impress_page_w - $img_border,
+                                                  ($impress_page_h - $img_border)*$img_ratio)"/>
+   <xsl:variable name="impress_h" select="func:if($img_ratio > $impress_page_ratio,
+                                                  ($impress_page_w - $img_border) div $img_ratio,
+                                                  $impress_page_h - $img_border)"/>
+   <xsl:variable name="impress_x" select="$impress_page_x + ($impress_page_w - $impress_w) div 2"/> <!-- center -->
    <xsl:variable name="impress_y" select="$impress_page_y + ($impress_page_h - $impress_h) div 2"/>
    <draw:page draw:name="page{generate-id(.)}" draw:style-name="{$bgstyle}" draw:master-page-name="Default">
      <office:forms form:automatic-focus="false" form:apply-design-mode="false"/>
@@ -299,10 +289,10 @@
  <!-- }}} -->
 
  <xsl:template name="output_pages">
-   <xsl:param name="title"/>
    <xsl:param name="copyright"/>
    <xsl:param name="source"/>
    <xsl:param name="lbfrom"/>
+   <!--  select="title[1]/text()" -->
    <xsl:variable name="inNodes">
      <xsl:apply-templates select="content"/>
    </xsl:variable>
@@ -314,14 +304,17 @@
        <xsl:with-param name="inNodes" select="exsl:node-set($inPNodes)/node()"/>
      </xsl:call-template> 
    </xsl:variable>
-<!--   <exsl:document href="/dev/stdout"><xsl:copy-of select="$inNodes"/></exsl:document> -->
+<!-- 
+<exsl:document href="/dev/stdout"><xsl:copy-of select="$inPNodes"/></exsl:document>
+-->
    <xsl:apply-templates select="exsl:node-set($inPages)/node()" mode="_output_page">
      <xsl:with-param name="inCopyright" select="$copyright"/>
      <xsl:with-param name="inSource" select="$source"/>
      <xsl:with-param name="inLBfrom" select="exsl:node-set($lbfrom)/*[1]"/>
    </xsl:apply-templates>
  </xsl:template>
- 
+
+ <!-- {{{ the page template -->
  <xsl:template match="/page" mode="_output_page">
    <xsl:param name="inCopyright"/><!-- Copyright: -->
    <xsl:param name="inSource"/><!-- Aus: -->
@@ -330,26 +323,12 @@
    <xsl:variable name="tr2" select=".|set:trailing(../page,.)"/>
    <xsl:variable name="tr3" select="set:trailing($tr1,$tr1[@endpage][1])"/>
    <xsl:variable name="tr4" select="set:leading($tr2,$tr2[@endpage][1])|$tr2[@endpage][1]"/>
-   <xsl:variable name="inPgOf">
-     <xsl:choose>
-       <xsl:when test="count($tr3)+count($tr4)=1"/>
-       <xsl:otherwise>
-         <xsl:value-of select="count($tr3)+1"/>/<xsl:value-of select="count($tr3)+count($tr4)"/>
-       </xsl:otherwise>
-     </xsl:choose>
-   </xsl:variable>
+   <xsl:variable name="inPgOf" select="func:if(count($tr3)+count($tr4)>1,concat(count($tr3)+1,'/',count($tr3)+count($tr4)))"/>
    <xsl:variable name="images-hlp">
      <xsl:apply-templates select="img" mode="_img_pager"/>
    </xsl:variable>
    <xsl:variable name="images" select="exsl:node-set($images-hlp)"/>
-   <xsl:variable name="style">
-     <xsl:choose>
-       <xsl:when test="$images/draw:page/@draw:style-name">
-         <xsl:value-of select="$images/draw:page/@draw:style-name"/>
-       </xsl:when>
-       <xsl:otherwise>dp1</xsl:otherwise>
-     </xsl:choose>
-   </xsl:variable>
+   <xsl:variable name="style" select="func:default($images/draw:page/@draw:style-name,'dp1')"/>
    <xsl:variable name="lb">
      <xsl:choose>
        <xsl:when test="$inLBfrom[self::IWDD]">PLBgreen</xsl:when>
@@ -405,7 +384,9 @@
      </presentation:notes>
    </draw:page>
  </xsl:template>
- 
+ <!-- }}} -->
+
+ <!-- {{{ page breaking, part 2 -->
  <xsl:template name="page_fix">
    <xsl:param name="inNodes"/>
    <xsl:param name="lastSplit" select="'0'"/>
@@ -445,7 +426,9 @@
      <xsl:apply-templates select="node()" mode="_page_fix"/>
    </xsl:copy>
  </xsl:template>
+ <!-- }}} -->
 
+ <!-- {{{ page breaking, part 1 -->
  <xsl:template match="/page-cand" mode="_break_calc">
    <xsl:variable name="tr1" select="set:leading(../*,.)/descendant-or-self::text:p"/>
    <xsl:copy>
@@ -454,13 +437,9 @@
                              count($tr1[@text:style-name='P3'])"/>
      </xsl:attribute>
      <xsl:attribute name="self"><!-- number of lines contained in <page-cand>..</page-cand> -->
-       <xsl:choose>
-         <xsl:when test="node()">
-           <xsl:value-of select="count(text:p[@text:style-name!='P3'])*2+
-                                 count(text:p[@text:style-name='P3'])"/>
-         </xsl:when>
-         <xsl:otherwise>0</xsl:otherwise>
-       </xsl:choose>
+       <xsl:value-of select="func:if(node(),count(text:p[@text:style-name!='P3'])*2+
+                                            count(text:p[@text:style-name='P3'])
+                                           ,0)"/>
      </xsl:attribute>
      <xsl:if test="not(@endpage) and following-sibling::*[1][self::page-cand]/@block">
        <xsl:attribute name="block">1</xsl:attribute>
@@ -468,25 +447,18 @@
      <xsl:if test="following-sibling::*[1][self::page-cand]/@endpage">
        <xsl:attribute name="endpage">1</xsl:attribute>
      </xsl:if>
-     <xsl:apply-templates select="node()|@*[name()!='no']" mode="_break_calc"/>
+     <xsl:copy-of select="@*[name()!='no']|node()"/>
    </xsl:copy>
    <xsl:value-of select="$nl"/>
  </xsl:template>
 
  <xsl:template match="/page-cand[@block][not(preceding-sibling::*)]" mode="_break_calc"/>
  <xsl:template match="/page-cand[@block or @endpage][preceding-sibling::*[1][self::page-cand]]" mode="_break_calc"/>
- 
- <xsl:template match="@*|node()" mode="_break_calc">
-   <xsl:copy>
-     <xsl:copy-of select="@*"/>
-     <xsl:apply-templates select="node()" mode="_break_calc"/>
-   </xsl:copy>
-   <xsl:if test="self::text:p"><xsl:value-of select="$nl"/></xsl:if>
- </xsl:template>
 
- <xsl:template match="text()" mode="_break_calc">
-   <xsl:value-of select="translate(normalize-space(.),'&#160;',' ')"/>
+ <xsl:template match="@*|node()" mode="_break_calc">
+   <xsl:copy-of select="."/>
  </xsl:template>
+ <!-- }}} -->
 
  <xsl:template match="song/title" mode="links">
    <xsl:param name="linkTo"/>
@@ -510,89 +482,11 @@
      <xsl:with-param name="lang" select="@lang"/>
    </xsl:apply-templates></text:p>
    <text:p text:style-name="Px"><xsl:text>- - - - -</xsl:text></text:p><xsl:value-of select="$nl"/>-->
-   <xsl:apply-templates match="*"/>
-   <page-cand endpage="1"/>
+   <xsl:call-template name="songcontent"/>
  </xsl:template>
 
- <xsl:template name="songcontent">
-   <xsl:param name="indent" select="'0'"/>
-   <xsl:param name="format" select="''"/>
-   <xsl:param name="first"/>
-   <xsl:variable name="lines" select="ec:enclose(*|text(),'$nodes[self::br]','line')"/>
-   <xsl:for-each select="exsl:node-set($lines)">
-     <xsl:variable name="innerLines_hlp">
-       <xsl:apply-templates select="node()" mode="_songcontent">
-         <xsl:with-param name="indent" select="$indent"/>
-       </xsl:apply-templates>
-     </xsl:variable>
-     <xsl:variable name="innerLines" select="exsl:node-set($innerLines_hlp)"/>
-     <xsl:variable name="isfirstpos" select="position()=1"/>
-     <xsl:choose>
-       <xsl:when test="not(@no) and not(normalize-space(.))"/>
-       <xsl:when test="not($innerLines/*)"> <!-- speed up special case -->
-         <text:p text:style-name="{$format}">
-         <xsl:choose>
-           <xsl:when test="$first and $isfirstpos">
-             <xsl:value-of select="$first"/><text:tab/>
-           </xsl:when>
-           <xsl:when test="$indent">
-             <xsl:call-template name="rep_it">
-               <xsl:with-param name="inNodes"><text:tab/></xsl:with-param>
-               <xsl:with-param name="anz" select="$indent"/>
-             </xsl:call-template>
-           </xsl:when>
-         </xsl:choose>
-         <xsl:copy-of select="$innerLines"/>
-         </text:p><xsl:value-of select="$nl"/>
-       </xsl:when>
-       <xsl:otherwise>
-         <xsl:for-each select="exsl:node-set(ec:enclose($innerLines/*|$innerLines/text(),'$nodes[self::br]','line'))">
-           <text:p text:style-name="{$format}">
-           <xsl:choose>
-             <xsl:when test="$first and $isfirstpos and position()=1">
-               <xsl:value-of select="$first"/><text:tab/>
-             </xsl:when>
-             <xsl:when test="$indent and position()=1">
-               <xsl:call-template name="rep_it">
-                 <xsl:with-param name="inNodes"><text:tab/></xsl:with-param>
-                 <xsl:with-param name="anz" select="$indent"/>
-               </xsl:call-template>
-             </xsl:when>
-           </xsl:choose>
-           <xsl:copy-of select="node()"/>
-           </text:p><xsl:value-of select="$nl"/>
-           <xsl:if test="@no>1"><!-- @break's are ignored here! -->
-             <xsl:call-template name="rep_it">
-               <xsl:with-param name="inNodes"><text:p text:style-name="P3"/></xsl:with-param>
-               <xsl:with-param name="anz" select="@no -1"/>
-             </xsl:call-template>
-           </xsl:if>
-         </xsl:for-each>
-       </xsl:otherwise>
-     </xsl:choose>
-     <xsl:choose>
-       <xsl:when test="@no>1 and @break">
-         <page-cand break="{@break}">
-           <xsl:call-template name="rep_it">
-             <xsl:with-param name="inNodes"><text:p text:style-name="P3"/></xsl:with-param>
-             <xsl:with-param name="anz" select="@no -1"/>
-           </xsl:call-template>
-         </page-cand>
-       </xsl:when>
-       <xsl:when test="@no>1">
-         <xsl:call-template name="rep_it">
-           <xsl:with-param name="inNodes"><text:p text:style-name="P3"/></xsl:with-param>
-           <xsl:with-param name="anz" select="@no -1"/>
-         </xsl:call-template>
-       </xsl:when>
-       <xsl:when test="@break">
-         <page-cand break="{@break}"/>
-       </xsl:when>
-     </xsl:choose>
-   </xsl:for-each>
- </xsl:template>
-
- <xsl:template match="*" name="error_trap"><!-- Error-catcher -->
+ <!-- {{{ Error-catcher -->
+ <xsl:template match="*" name="error_trap">
    <xsl:text>{</xsl:text>
    <xsl:value-of select="text()"/>
    <xsl:text>#</xsl:text>
@@ -606,76 +500,111 @@
  <xsl:template match="*" mode="file_multi">
    <xsl:call-template name="error_trap"/>
  </xsl:template>
+ <!-- }}} -->
 
- <xsl:template match="content//text()">
-   <xsl:call-template name="nl_hlp"/>
+ <xsl:template name="songcontent">
+   <xsl:variable name="config">
+     <base>
+       <first format="P2"/>
+       <indent format="P2"/>
+     </base>
+     <vers>
+       <pre><page-cand block="1"/></pre>
+       <first format='Pvers'><xsl:text>.</xsl:text><text:tab/></first>
+       <indent format='Pvers'><text:tab/></indent>
+     </vers>
+     <refr>
+       <pre><page-cand block="1"/></pre>
+       <first format='Prefr'><xsl:text>Refr:</xsl:text><text:tab/></first>
+       <indent format='Prefr'><text:tab/></indent>
+     </refr>
+     <bridge>
+       <pre><page-cand block="1"/></pre>
+       <first format='Pbridge'><xsl:text>Bridge:</xsl:text><text:tab/></first>
+       <indent format='Pbridge'><text:tab/></indent>
+     </bridge>
+     <ending>
+       <pre><page-cand block="1"/></pre>
+       <first format='Pending'><xsl:text>Schluss:</xsl:text><text:tab/></first>
+       <indent format='Pending'><text:tab/></indent>
+     </ending>
+     <quotes lang="en" start="&#x201c;" end="&#x201d;"/>
+     <quotes lang="de" start="&#x201e;" end="&#x201c;"/>
+     <tick><xsl:text>&#x2019;</xsl:text></tick>
+   </xsl:variable>
+   <xsl:variable name="inNodes">
+     <xsl:apply-templates select="*" mode="_songcontent">
+       <xsl:with-param name="config" select="exsl:node-set($config)"/>
+     </xsl:apply-templates>
+     <page-cand endpage="1"/>
+   </xsl:variable>
+   <xsl:apply-templates select="exsl:node-set($inNodes)" mode="_sc_post"/>
  </xsl:template>
 
- <xsl:template match="text()" mode="_songcontent">
-   <xsl:call-template name="nl_hlp"/>
- </xsl:template>
-
- <xsl:template match="akk" mode="_songcontent">
+ <!-- {{{ songcontent postprocessing: _sc_post -->
+ <xsl:template match="/line" mode="_sc_post">
+   <text:p text:style-name="{@format}">
+     <xsl:apply-templates select="node()" mode="_sc_post"/><!-- kill all attribs -->
+   </text:p><xsl:value-of select="$nl"/>
    <xsl:choose>
-     <xsl:when test="not(text())">
-       <xsl:text> </xsl:text>
+     <xsl:when test="@no>1 and @break">
+       <page-cand break="{@break}">
+         <xsl:call-template name="rep_it">
+           <xsl:with-param name="inNodes"><text:p text:style-name="P3"/></xsl:with-param>
+           <xsl:with-param name="anz" select="@no -1"/>
+         </xsl:call-template>
+       </page-cand><xsl:value-of select="$nl"/>
      </xsl:when>
-     <xsl:when test="text()='_'"/>
-     <xsl:otherwise>
-       <xsl:value-of select="text()"/>
-     </xsl:otherwise>
+     <xsl:when test="@no>1">
+       <xsl:call-template name="rep_it">
+         <xsl:with-param name="inNodes"><text:p text:style-name="P3"/></xsl:with-param>
+         <xsl:with-param name="anz" select="@no -1"/>
+       </xsl:call-template>
+       <xsl:value-of select="$nl"/>
+     </xsl:when>
+     <xsl:when test="@break">
+       <page-cand break="{@break}"/><xsl:value-of select="$nl"/>
+     </xsl:when>
    </xsl:choose>
  </xsl:template>
 
- <xsl:template match="base">
-<!--   <xsl:copy>-->
-     <xsl:call-template name="songcontent">
-       <xsl:with-param name="format" select="'P2'"/>
-     </xsl:call-template>
-<!--   </xsl:copy>-->
+ <xsl:template match="/page-cand" mode="_sc_post"><!-- @block, @endpage, forced pagebreak -->
+   <xsl:copy-of select="."/><xsl:value-of select="$nl"/>
  </xsl:template>
 
- <xsl:template match="vers">
-   <xsl:variable name="pre"><xsl:value-of select="@no"/><xsl:text>.</xsl:text></xsl:variable>
-   <page-cand block="1"/>
-     <xsl:call-template name="songcontent">
-       <xsl:with-param name="first" select="$pre"/>
-       <xsl:with-param name="indent" select="1"/>
-       <xsl:with-param name="format" select="'Pvers'"/>
-     </xsl:call-template>
+ <xsl:template match="/text()" mode="_sc_post"/>
+
+ <xsl:template match="@*|node()" mode="_sc_post">
+   <xsl:copy>
+     <xsl:apply-templates select="@*|node()" mode="_sc_post"/>
+   </xsl:copy>
  </xsl:template>
 
- <xsl:template match="refr">
-   <xsl:variable name="pre"><xsl:text>Refr:</xsl:text></xsl:variable>
-   <page-cand block="1"/>
-     <xsl:call-template name="songcontent">
-       <xsl:with-param name="first" select="$pre"/>
-       <xsl:with-param name="indent" select="1"/>
-       <xsl:with-param name="format" select="'Prefr'"/>
-     </xsl:call-template>
+ <xsl:template match="text()" mode="_sc_post">
+   <xsl:value-of select="translate(normalize-space(.),'&#160;',' ')"/>
  </xsl:template>
+ <!-- }}} -->
 
- <xsl:template match="bridge">
-   <xsl:variable name="pre"><xsl:text>Bridge:</xsl:text></xsl:variable>
-   <page-cand block="1"/>
-     <xsl:call-template name="songcontent">
-       <xsl:with-param name="first" select="$pre"/>
-       <xsl:with-param name="indent" select="1"/>
-       <xsl:with-param name="format" select="'Pbridge'"/>
-     </xsl:call-template>
+ <!--
+<exsl:document href="/dev/stdout"><o><xsl:copy-of select="$inNodes"/></o></exsl:document>
+ -->
+ <!-- {{{ block tags -->
+ <xsl:template match="vers" mode="_songcontent">
+   <xsl:param name="config" select="/.."/>
+   <xsl:variable name="this" select="$config/*[name()=name(current())]"/>
+   <xsl:variable name="first"><first format='Pvers'><xsl:value-of select="@no"/><xsl:text>.</xsl:text><text:tab/></first></xsl:variable>
+   <xsl:copy-of select="$this/pre/@*|$this/pre/node()"/>
+   <xsl:call-template name="songcontent_block">
+     <xsl:with-param name="ctxt" select="$config|.."/>
+     <xsl:with-param name="first" select="func:strip-root(exsl:node-set($first)/first)"/>
+     <xsl:with-param name="indent" select="func:strip-root($this/indent)"/>
+   </xsl:call-template>
  </xsl:template>
+ <!-- }}} -->
 
- <xsl:template match="ending">
-   <xsl:variable name="pre"><xsl:text>Schluss:</xsl:text></xsl:variable>
-   <page-cand block="1"/>
-     <xsl:call-template name="songcontent">
-       <xsl:with-param name="first" select="$pre"/>
-       <xsl:with-param name="indent" select="1"/>
-       <xsl:with-param name="format" select="'Pending'"/>
-     </xsl:call-template>
- </xsl:template>
+ <!-- {{{ inline tags -->
 
- <xsl:template match="img">
+ <xsl:template match="img" mode="_songcontent">
    <xsl:copy>
      <xsl:attribute name="odpName"><xsl:value-of select="func:get_image_name(.)"/></xsl:attribute>
      <xsl:copy-of select="@*"/>
@@ -683,11 +612,14 @@
    <page-cand break="-1"/>
  </xsl:template>
 
- <xsl:template match="rep" mode="_songcontent">
-   <xsl:param name="indent" select="'0'"/>
+ <xsl:template match="rep" mode="_songcontent_inline">
+   <xsl:param name="ctxt" select="/.."/>
+   <xsl:param name="indent" select="/.."/>
+   <xsl:variable name="tab"><text:tab/></xsl:variable>
    <xsl:text>|:</xsl:text><text:tab/>
-   <xsl:apply-templates select="*|text()" mode="_songcontent">
-     <xsl:with-param name="indent" select="$indent +1"/>
+   <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
+     <xsl:with-param name="ctxt" select="$ctxt"/>
+     <xsl:with-param name="indent" select="$indent|exsl:node-set($tab)"/>
    </xsl:apply-templates>
    <xsl:choose>
      <xsl:when test="@no >2"><xsl:text> :|&#160;(</xsl:text><xsl:value-of select="@no"/><xsl:text>x)</xsl:text></xsl:when>
@@ -695,53 +627,50 @@
    </xsl:choose>
  </xsl:template>
 
- <xsl:template match="quote" mode="_songcontent">
-   <xsl:param name="indent" select="'0'"/>
-   <xsl:text>"</xsl:text>
-   <xsl:apply-templates select="*|text()" mode="_songcontent">
+ <xsl:template match="quote" mode="_songcontent_inline">
+   <xsl:param name="ctxt" select="/.."/>
+   <xsl:param name="indent" select="/.."/>
+   <xsl:variable name="quotes" select="$ctxt/quotes[@lang=$ctxt/@lang or not(@lang)]"/>
+   <xsl:value-of select="func:if($quotes,string($quotes/@start),string('&quot;'))"/>
+   <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
+     <xsl:with-param name="ctxt" select="$ctxt"/>
      <xsl:with-param name="indent" select="$indent"/>
    </xsl:apply-templates>
-   <xsl:text>"</xsl:text>
+   <xsl:value-of select="func:if($quotes,string($quotes/@end),string('&quot;'))"/>
  </xsl:template>
 
- <xsl:template match="spacer" mode="_songcontent">
+ <xsl:template match="spacer" mode="_songcontent_inline">
    <text:s text:c="{@no *3}"/>
  </xsl:template>
  
- <xsl:template match="hfill" mode="_songcontent">
-   <xsl:call-template name="rep_it">
-     <xsl:with-param name="inNodes"><xsl:text>&#160;</xsl:text></xsl:with-param>
-     <xsl:with-param name="anz" select="30"/>
-   </xsl:call-template>
+ <xsl:template match="hfill" mode="_songcontent_inline">
+   <!-- TODO? this is just damage containment -->
+   <text:s text:c="20"/>
  </xsl:template>
  
- <xsl:template match="xlate" mode="_songcontent">
-   <xsl:param name="indent" select="'0'"/>
+ <xsl:template match="xlate" mode="_songcontent_inline">
+   <xsl:param name="ctxt" select="/.."/>
+   <xsl:param name="indent" select="/.."/>
    <xsl:text>(Übersetzung:&#160;</xsl:text>
-   <xsl:apply-templates select="*|text()" mode="_songcontent">
+   <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
+     <xsl:with-param name="ctxt" select="$ctxt"/>
      <xsl:with-param name="indent" select="$indent"/>
    </xsl:apply-templates>
    <xsl:text>)</xsl:text>
  </xsl:template>
 
- <xsl:template match="br" mode="_songcontent">
-   <xsl:param name="indent" select="'0'"/>
-   <br/><xsl:value-of select="$nl"/>
-   <xsl:call-template name="rep_it">
-     <xsl:with-param name="inNodes"><text:tab/></xsl:with-param>
-     <xsl:with-param name="anz" select="$indent"/>
-   </xsl:call-template>
- </xsl:template>
-
- <xsl:template match="xlang" mode="_songcontent">
-   <xsl:param name="indent" select="'0'"/>
+ <xsl:template match="xlang" mode="_songcontent_inline">
+   <xsl:param name="ctxt" select="/.."/>
+   <xsl:param name="indent" select="/.."/>
    <text:s text:c="2"/>
    <text:span text:style-name="Txlang">
-   <xsl:apply-templates select="*|text()" mode="_songcontent">
+   <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
+     <xsl:with-param name="ctxt" select="$ctxt"/>
      <xsl:with-param name="indent" select="$indent"/>
    </xsl:apply-templates>
    </text:span>
  </xsl:template>
+ <!-- }}} -->
 
  <!-- {{{ TEMPLATE rep_it (inNodes, anz)  - repeates >inNodes >anz times -->
  <xsl:template name="rep_it"><!-- speedup -->
@@ -767,12 +696,9 @@
    <xsl:param name="inText"/>
    <xsl:variable name="first" select="substring(normalize-space($inText),1,1)"/>
    <func:result>
-     <xsl:choose>
-       <xsl:when test="string-length($first)=0"/>
-       <xsl:otherwise>
-         <xsl:value-of select="$first"/><xsl:value-of select="substring-after($inText,$first)"/>
-       </xsl:otherwise>
-     </xsl:choose>
+     <xsl:if test="string-length($first)!=0">
+       <xsl:value-of select="$first"/><xsl:value-of select="substring-after($inText,$first)"/>
+     </xsl:if>
    </func:result>
  </func:function>
  <!-- }}} -->
@@ -795,6 +721,65 @@
      </xsl:otherwise>
    </xsl:choose>
  </xsl:template>
+ <!-- }}} -->
+
+ <!-- {{{ FUNCTION func:default (value, default)  -  return $value, if it is not empty (node-set), otherwise $default -->
+ <func:function name="func:default">
+   <xsl:param name="value"/>
+   <xsl:param name="default"/>
+   <func:result select="(exsl:node-set($value)|exsl:node-set($default))[1]"/>
+ </func:function>
+ <!-- }}} -->
+ 
+ <!-- {{{ FUNCTION func:if (do_first,first [,second])  -  return (copy-of) $first or $second -->
+ <func:function name="func:if">
+   <xsl:param name="do_first"/>
+   <xsl:param name="first"/>
+   <xsl:param name="second"/>
+   <func:result>
+     <xsl:choose>
+       <xsl:when test="$do_first">
+         <xsl:copy-of select="$first"/>
+       </xsl:when>
+       <xsl:otherwise>
+         <xsl:copy-of select="$second"/>
+       </xsl:otherwise>
+     </xsl:choose>
+   </func:result>
+ </func:function>
+ <!-- }}} -->
+
+ <!-- {{{ FUNCTION func:make_attr(name,value) -->
+ <func:function name="func:make_attr">
+   <xsl:param name="name"/>
+   <xsl:param name="value"/>
+   <xsl:variable name="tmp"><hlp><xsl:attribute name="{$name}"><xsl:value-of select="$value"/></xsl:attribute></hlp></xsl:variable>
+   <func:result select="exsl:node-set($tmp)/hlp/@*"/>
+ </func:function>
+ <!-- }}} -->
+ 
+ <!-- {{{ FUNCTION func:get_attr(nodeset,name) -->
+ <func:function name="func:get_attr">
+   <xsl:param name="nodes"/>
+   <xsl:param name="name"/>
+   <func:result select="$nodes[not(self::*) and name()=$name]"/>
+ </func:function>
+ <!-- }}} -->
+
+ <!-- {{{ FUNCTION func:strip-root(node)  -  but keep attribs -->
+ <func:function name="func:strip-root">
+   <xsl:param name="node"/>
+   <func:result select="$node[1]/@*|$node[1]/node()"/>
+ </func:function>
+ <!-- }}} -->
+ 
+ <!-- {{{ FUNCTION set:replace(nodeset,delnode,insnode)  - remove $delnode and insert instead $insnode -->
+ <func:function name="set:replace">
+   <xsl:param name="nodeset"/>
+   <xsl:param name="delnode"/>
+   <xsl:param name="insnode"/>
+   <func:result select="set:leading($nodeset,$delnode)|$insnode|set:trailing($nodeset,$delnode)"/>
+ </func:function>
  <!-- }}} -->
 
  <!-- {{{ FUNCTION func:escape_file (inText)  - convert äöü... -->
