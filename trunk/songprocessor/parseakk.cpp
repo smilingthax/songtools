@@ -1,7 +1,7 @@
 /* Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING */
 #include <stdio.h>
 #include "parseakk.h"
-#include "textItem.h"
+#include "mine_ext/textItem.h"
 
 bool AkkordItem::set_note(char tone,Tone &tin,bool b_as_h)
 {
