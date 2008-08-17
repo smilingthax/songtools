@@ -1,6 +1,5 @@
 SOURCES=imagefun.c
 MODULE=thax_home_tools.dll
-LINK1=imagefun.c imagefun.h
 
 MINGW=i586-mingw32msvc-
 CC=$(MINGW)gcc
@@ -24,31 +23,29 @@ DEPENDS=$(patsubst %.c,$(PREFIX)%$(SUFFIX).d,\
         $(filter-out %.o,""\
 $(SOURCES))))
 
-all: $(LINK1) $(MODULE)
+all: $(MODULE)
 ifneq "$(MAKECMDGOALS)" "clean"
- ifneq "$(MAKECMDGOALS)" "cleanlinks"
   -include $(DEPENDS)
- endif 
 endif 
 
 clean:
 	rm -f $(MODULE) $(OBJECTS) $(DEPENDS)
-cleanlinks:
-	rm -f $(LINK1) 
 
-%.d: %.c
+%.d: ../%.c
 	@$(SHELL) -ec '$(CC) -MM $(CPPFLAGS) $< \
                       | sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@;\
                       [ -s $@ ] || rm -f $@'
-%.d: %.cpp
+%.d: ../%.cpp
 	@$(SHELL) -ec '$(CXX) -MM $(CPPFLAGS) $< \
                       | sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@;\
                       [ -s $@ ] || rm -f $@'
 
+%.o: ../%.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+
+%.o: ../%.cpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ -c $<
+
 $(MODULE): $(OBJECTS)
 	$(CXX) -o $@ $^ -shared $(LDFLAGS)
 	$(STRIP) $@
-
-$(LINK1):
-	ln -s ../$@ .
-

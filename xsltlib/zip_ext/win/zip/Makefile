@@ -1,6 +1,5 @@
 SOURCES=zip.c unzip.c ioapi.c
 LIB1=libzip.a
-LINK1=crypt.h ioapi.c ioapi.h iowin32.c iowin32.h unzip.c unzip.h zip.c zip.h
 
 #MINGW=/export/wingcc/i386-mingw32msvc/bin/
 MINGW=i586-mingw32msvc-
@@ -18,25 +17,24 @@ CFLAGS=-O3 -march=pentium -funroll-all-loops -finline-functions -Wall -g
 CPPFLAGS=$(CFLAGS) $(FLAGS) -I$(ZLIBPATH)/include 
 
 OBJECTS1=$(SOURCES:.c=.o)
-all: $(LINK1) $(LIB1)
+all: $(LIB1)
 ifneq "$(MAKECMDGOALS)" "clean"
- ifneq "$(MAKECMDGOALS)" "cleanlinks"
   -include $(SOURCES:.c=.d)
- endif 
 endif 
 
 clean:
 	rm -f $(LIB1) $(OBJECTS1) $(SOURCES:.c=.d)
-cleanlinks:
-	rm -f $(LINK1) 
 
-%.d: %.c
-	@$(SHELL) -ec '$(CXX) -MM $(CPPFLAGS) $< \
+%.d: ../../zip/%.c
+	@$(SHELL) -ec '$(CC) -MM $(CPPFLAGS) $< \
                       | sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@;\
                       [ -s $@ ] || rm -f $@'
 
+%.o: ../../zip/%.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+
+%.o: ../../zip/%.cpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ -c $<
+
 $(LIB1): $(OBJECTS1)
 	$(AR) rscu $@ $^
-
-$(LINK1):
-	ln -s ../../zip/$@ .
