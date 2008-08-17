@@ -208,6 +208,10 @@
    <xsl:text>{``}</xsl:text>
  </xsl:template>
 
+ <xsl:template match="tick">
+   <xsl:text>'</xsl:text><!-- TODO? -->
+ </xsl:template>
+
  <xsl:template match="hfill">
    <xsl:text>\hfill{}</xsl:text>
  </xsl:template>

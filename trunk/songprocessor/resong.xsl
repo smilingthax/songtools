@@ -91,6 +91,10 @@
    <xsl:text>"</xsl:text>
  </xsl:template>
 
+ <xsl:template match="tick" mode="_songcontent">
+   <xsl:text>'</xsl:text>
+ </xsl:template>
+
  <xsl:template match="text()" mode="_songcontent">
    <xsl:call-template name="nl_hlp"/>
  </xsl:template>
