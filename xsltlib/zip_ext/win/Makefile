@@ -1,6 +1,6 @@
-SOURCES=ext4.c
+SOURCES=zipext.c
 MODULE=thax_home_zip_ext.dll
-LINK1=ext4.c zipext.h
+LINK1=zipext.c zipext.h
 
 MINGW=i586-mingw32msvc-
 CC=$(MINGW)gcc

@@ -1,4 +1,4 @@
-SOURCES=ext4.c
+SOURCES=zipext.c
 MODULE=thax_home_zip_ext.so
 
 CPPFLAGS=-O3 -march=pentium -funroll-all-loops -finline-functions -Wall $(FLAGS) -g -DSTANDALONE
