@@ -1,6 +1,7 @@
 SOURCES1=split.c zipext.c  zip.c unzip.c ioapi.c  enclose.c imagefun.c
 SOURCES2=textItem.cpp extension.cpp speed.cpp processor.cpp parset.cpp ptools.cpp
 LIB1=libxsltext.a
+DIRS=enclose imagetools mine_ext parset split
 XML=1
 
 #MINGW=/export/wingcc/i386-mingw32msvc/bin/
@@ -28,6 +29,15 @@ endif
 
 OBJECTS1=$(SOURCES1:.c=.o) $(SOURCES2:.cpp=.o)
 all: $(LIB1)
+subdirs: 
+	@$(SHELL) -ec 'for i in $(patsubst %,../%,$(DIRS)); do \
+                         $(MAKE) -C $$i/win; \
+                       done'
+subdirs-%:
+	@$(SHELL) -ec 'for i in $(patsubst %,../%,$(DIRS)); do \
+                         $(MAKE) -C $$i/win $*; \
+                       done'
+
 ifneq "$(MAKECMDGOALS)" "clean"
   -include $(SOURCES1:.c=.d) $(SOURCES2:.cpp=.d)
 endif 
@@ -58,7 +68,6 @@ clean:
 
 %.o: ../zip_ext/zip/%.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
-
 
 $(LIB1): $(OBJECTS1)
 	$(AR) rscu $@ $^
