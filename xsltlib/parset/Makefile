@@ -1,4 +1,4 @@
-SOURCES=ext3.cpp processor.cpp ptools.cpp
+SOURCES=parset.cpp processor.cpp ptools.cpp
 MODULE=thax_home_parset.so
 
 CPPFLAGS=-O3 -march=pentium -funroll-all-loops -finline-functions -Wall $(FLAGS) -g -DSTANDALONE
@@ -33,9 +33,9 @@ $(MODULE): $(OBJECTS)
 	$(CXX) -o $@ $^ -shared -rdynamic
 
 test: force
-	xsltproc --extension ../xsltext1/ext1.so --extension thobi2 --extension ./ext3.so shet.xsl in.xml 
+	xsltproc --extension ../xsltext1/ext1.so --extension thobi2 --extension ./parset.so shet.xsl in.xml 
 
 test2: force
-	xsltproc --extension ../xsltext1/ext1.so --extension thobi2 --extension ./ext3.so shet.xsl ../songprocessor/songs.xml 
+	xsltproc --extension ../xsltext1/ext1.so --extension thobi2 --extension ./parset.so shet.xsl ../songprocessor/songs.xml 
 
 force:
