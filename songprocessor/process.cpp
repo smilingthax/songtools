@@ -15,13 +15,7 @@
 #include <libxslt/xsltutils.h>
 #include <libxslt/extensions.h>
 #include <libexslt/exslt.h>
-#include "textItem.h"
-#include "extension.h"
-#include "split.h"
-#include "parset.h"
-#include "zipext.h"
-#include "enclose.h"
-#include "imagefun.h"
+#include "xsltlib.h"
 
 using namespace std;
 
