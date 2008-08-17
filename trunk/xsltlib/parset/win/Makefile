@@ -1,6 +1,6 @@
-SOURCES=ext3.cpp processor.cpp ptools.cpp
+SOURCES=parset.cpp processor.cpp ptools.cpp
 MODULE=thax_home_parset.dll
-LINK1=ext3.cpp processor.cpp processor.h parset.h ptools.cpp ptools.h
+LINK1=parset.cpp processor.cpp processor.h parset.h ptools.cpp ptools.h
 
 MINGW=i586-mingw32msvc-
 CC=$(MINGW)gcc
