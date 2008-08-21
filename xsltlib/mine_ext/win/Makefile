@@ -10,7 +10,7 @@ LIBXMLPATH=/export/wingcc/libxml2-2.6.23.win32
 LIBXSLTPATH=/export/wingcc/libxslt-1.1.15.win32
 ICONVPATH=/export/wingcc/iconv-1.9.1.win32
 
-CPPFLAGS=-O3 -march=pentium -funroll-all-loops -finline-functions -Wall -DSTANDALONE
+CPPFLAGS=-O3 -funroll-all-loops -finline-functions -Wall -DSTANDALONE
 #CPPFLAGS+=`pkg-config --cflags libxml-2.0`
 CPPFLAGS+=-I$(LIBXMLPATH)/include -I$(LIBXSLTPATH)/include -I$(ICONVPATH)/include
 LDFLAGS=-L$(LIBXMLPATH)/bin -lxml2 -L$(LIBXSLTPATH)/bin -lxslt -L$(ICONVPATH)/bin -liconv

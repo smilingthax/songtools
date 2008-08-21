@@ -1,7 +1,7 @@
 SOURCES=zipext.c
 MODULE=thax_home_zip_ext.so
 
-CPPFLAGS=-O3 -march=pentium -funroll-all-loops -finline-functions -Wall $(FLAGS) -g -DSTANDALONE
+CPPFLAGS=-O3 -funroll-all-loops -finline-functions -Wall $(FLAGS) -g -DSTANDALONE
 CPPFLAGS+=`pkg-config --cflags libxml-2.0`
 
 OBJECTS=$(patsubst %.c,$(PREFIX)%$(SUFFIX).o,\

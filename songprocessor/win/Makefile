@@ -27,7 +27,7 @@ LIBXSLTPATH=/export/wingcc/libxslt-1.1.15.win32
 ICONVPATH=/export/wingcc/iconv-1.9.1.win32
 ZLIBPATH=/export/wingcc/zlib-1.2.3.win32
 
-# CFLAGS=-O3 -march=pentium -funroll-all-loops -finline-functions -Wall -g
+# CFLAGS=-O3 -funroll-all-loops -finline-functions -Wall -g
 CFLAGS=-Wall -g
 LDFLAGS=-g -L$(ZLIBPATH)/bin -lzlib1
 CPPFLAGS=$(CFLAGS) $(FLAGS) -I$(ZLIBPATH)/include 
