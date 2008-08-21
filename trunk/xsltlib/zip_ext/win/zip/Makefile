@@ -11,7 +11,7 @@ AR=$(MINGW)ar
 
 ZLIBPATH=/export/wingcc/zlib-1.2.3.win32
 
-CFLAGS=-O3 -march=pentium -funroll-all-loops -finline-functions -Wall -g
+CFLAGS=-O3 -funroll-all-loops -finline-functions -Wall -g
 #CFLAGS=-Wall -g
 #LDFLAGS=-g
 CPPFLAGS=$(CFLAGS) $(FLAGS) -I$(ZLIBPATH)/include 

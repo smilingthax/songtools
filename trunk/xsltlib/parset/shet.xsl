@@ -65,8 +65,9 @@
  </xsl:template>
 
  <xsl:template match="content">
+   <xsl:variable name="apos" select='"&apos;"'/>
    <xsl:variable name="sn1">
-     <xsl:apply-templates select="thobi:septree(node(),'|&#010;*&quot;^')" mode="_split_token">
+     <xsl:apply-templates select="thobi:septree(node(),concat('|&#010;*&quot;^\',$apos))" mode="_split_token">
        <xsl:with-param name="wo" select="../title[1]/text()"/>
      </xsl:apply-templates>
    </xsl:variable>
@@ -91,20 +92,27 @@
    </quot>
  </xsl:template>
  
- <xsl:template match="split[@char='|']" mode="_split_token"> <!-- TODO: get following char -->
+ <xsl:template match="split[@char='|']" mode="_split_token"> <!-- LATER: get following char -->
    <akk/>
  </xsl:template>
 
  <xsl:template match="split[@char='*']" mode="_split_token">
-   <spacer/> <!-- TODO: @no -->
+   <spacer/> <!-- LATER: @no -->
  </xsl:template>
 
  <xsl:template match="split[@char='&#010;']" mode="_split_token">
    <br/><xsl:value-of select="@char"/>
  </xsl:template>
 
+ <!-- TRICK ; for now: '\' will be ignored TODO: why? --> 
+ <xsl:template match="split[@char='\']" mode="_split_token"/>
+
  <xsl:template match="split[@char='^']" mode="_split_token">
    <xlang/>
+ </xsl:template>
+
+ <xsl:template match='split[@char="&apos;"]' mode="_split_token">
+   <tick/>
  </xsl:template>
 
  <xsl:template match="split" mode="_split_token">
@@ -198,7 +206,9 @@
    <xsl:param name="level"/>
    <xsl:param name="no"/>
    <xsl:copy>
-     <xsl:attribute name="note"><xsl:value-of select="mine:getAkk($level,$no)"/></xsl:attribute>
+     <xsl:if test="not(text()='-')">
+       <xsl:attribute name="note"><xsl:value-of select="mine:getAkk($level,$no)"/></xsl:attribute>
+     </xsl:if>
      <xsl:copy-of select="@*|node()"/>
    </xsl:copy>
  </xsl:template>

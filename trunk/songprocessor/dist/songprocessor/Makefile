@@ -3,7 +3,7 @@ SOURCES2=process.cpp parseakk.cpp
 EXEC1=songprocessor
 XML=1
 
-CFLAGS=-O3 -march=pentium -funroll-all-loops -finline-functions -Wall
+CFLAGS=-O3 -funroll-all-loops -finline-functions -Wall
 ifneq "$(STATIC)" "1"
   CFLAGS+=-g
   #LDFLAGS+=-g
