@@ -138,7 +138,7 @@
 
  <xsl:template match="blkp" mode="file_multi"/>
  <xsl:template match="blkp" mode="file_single" name="output_blkp">
-   <xsl:param name="position" select="concat('page',generate-id(.))"/>
+   <xsl:param name="position" select="concat(position(),'_B')"/>
    <draw:page draw:name="{$position}" draw:style-name="dp3" draw:master-page-name="Default">
      <office:forms form:automatic-focus="false" form:apply-design-mode="false"/>
    </draw:page>
@@ -168,7 +168,7 @@
    <xsl:param name="impress_page_w" select="28"/><!-- everything in cm -->
    <xsl:param name="impress_page_h" select="21"/>
    <xsl:param name="odpName" select="func:get_image_name(.)"/>
-   <xsl:param name="position" select="concat('page',generate-id(.))"/><!-- only relevant for standalone -->
+   <xsl:param name="position" select="concat(position(),'_I')"/><!-- only relevant for standalone, TODO? -->
    <xsl:variable name="impress_page_ratio" select="$impress_page_w div $impress_page_h"/>
    <xsl:variable name="bgstyle">
      <xsl:choose>
@@ -684,6 +684,9 @@
    </xsl:apply-templates>
    </text:span>
  </xsl:template>
+
+ <!-- ignore certain known tags -->
+ <xsl:template match="bible" mode="_songcontent_inline"/> 
  <!-- }}} -->
 
  <!-- {{{ TEMPLATE rep_it (inNodes, anz)  - repeates >inNodes >anz times -->
