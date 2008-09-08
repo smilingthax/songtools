@@ -57,6 +57,9 @@ bool do_transform(char *inputFile,char *outputFile,char **interSheets,char **sec
   } else {
     doc = xmlParseFile("songs.xml");
   }
+  if (!doc) {
+    return false;
+  }
   printf("Processing shet.xsl\n");
   if (profile&1) {
     xsltTransformContextPtr ctxt;
@@ -134,17 +137,17 @@ void end_transformer()
   xmlCleanupParser();
 }
 
-void do_process(char *inputFile,int tex,int plain,int html,int list,int impress)
+int do_process(char *inputFile,int tex,int plain,int html,int list,int impress)
 {
-  do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0));
+  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0));
 }
 
-void do_process_noakk(char *inputFile,int tex,int plain,int html,int list,int impress)
+int do_process_noakk(char *inputFile,int tex,int plain,int html,int list,int impress)
 {
-  do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),false);
+  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),false);
 }
 
-void do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_akk)
+int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_akk)
 {
   char *interSheets[3],*secSheets[5],*secOutput[5];
 
@@ -185,8 +188,11 @@ void do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html
   secOutput[iS]=NULL;
   if (!do_transform(inputFile,"sout.xml",interSheets,secSheets,secOutput,0)) { // profile 1->t3.xsl 2->secSheets (ORed)
     printf("Error while transforming\n");
+    end_transformer();
+    return 1;
   }
   end_transformer();
+  return 0;
 
 //  AkkordItem ai;
 //  akkParse(&ai,"Asus");
