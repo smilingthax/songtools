@@ -20,6 +20,7 @@ void usage(char *pn)
          "   -r: output raw (is always generated, use this switch to suppress fallback to default)\n"
          " If none of the above is given, as default %s will be generated\n"
 //         "   -n: No chords\n"
+//         "   -s: Split impress\n"
          "   -h: What you're seeing :-)\n"
          " [input file]: File to input instead of default songs.xml\n",
          pn,def);
@@ -28,9 +29,9 @@ void usage(char *pn)
 int main(int argc,char **argv)
 {
   char *inputFile="songs.xml";
-  int do_html=0,do_tex=0,do_plain=0,do_list=0,do_impress=0,raw=0,o,do_noakk=0;
+  int do_html=0,do_tex=0,do_plain=0,do_list=0,do_impress=0,do_splitimpress=0,raw=0,o,do_noakk=0;
 
-  while ((o=getopt(argc,argv,"tlipxhrn"))!=-1) {
+  while ((o=getopt(argc,argv,"tlipxhrns"))!=-1) {
     switch (o) {
     case 't':
       do_tex=1;
@@ -56,6 +57,9 @@ int main(int argc,char **argv)
     case 'n':
       do_noakk=1;
       break;
+    case 's':
+      do_splitimpress=1;
+      break;
     }
   }
   if ( (!raw)&&(!do_tex)&&(!do_html)&&(!do_plain)&&(!do_list)&&(!do_impress) ) {
@@ -76,9 +80,9 @@ int main(int argc,char **argv)
     }
   }
   if (do_noakk) {
-    return do_process_noakk(inputFile,do_tex,do_plain,do_html,do_list,do_impress);
+    return do_process_noakk(inputFile,do_tex,do_plain,do_html,do_list,do_impress,do_splitimpress);
   } else {
-    return do_process(inputFile,do_tex,do_plain,do_html,do_list,do_impress);
+    return do_process(inputFile,do_tex,do_plain,do_html,do_list,do_impress,do_splitimpress);
   }
   return 0;
 }

@@ -38,15 +38,16 @@ void init_transformer()
 #endif
 }
 
-bool do_transform(char *inputFile,char *outputFile,char **interSheets,char **secSheets,char **secOutput,int profile)
+bool do_transform(char *inputFile,char *outputFile,char **interSheets,char **secSheets,char **secOutput,const char **params,int profile)
 {
-  const char *params[16 + 1];
   xsltStylesheetPtr cur = NULL, cur2;
   xmlDocPtr doc, res,res2;
   int iA;
 
   int nbparams = 0;
-  params[nbparams]=0;
+  if (params) {
+    for (;params[nbparams];nbparams++);
+  }
 
   // Do the transform.
   int theResult=0;
@@ -137,19 +138,20 @@ void end_transformer()
   xmlCleanupParser();
 }
 
-int do_process(char *inputFile,int tex,int plain,int html,int list,int impress)
+int do_process(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress)
 {
-  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0));
+  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),true,(split_impress!=0));
 }
 
-int do_process_noakk(char *inputFile,int tex,int plain,int html,int list,int impress)
+int do_process_noakk(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress)
 {
-  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),false);
+  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),false,(split_impress!=0));
 }
 
-int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_akk)
+int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_akk,bool with_splitimpress)
 {
   char *interSheets[3],*secSheets[5],*secOutput[5];
+  const char *params[16+1];
 
   init_transformer();
   if (!with_akk) {
@@ -186,7 +188,17 @@ int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,
   }
   secSheets[iS]=NULL;
   secOutput[iS]=NULL;
-  if (!do_transform(inputFile,"sout.xml",interSheets,secSheets,secOutput,0)) { // profile 1->t3.xsl 2->secSheets (ORed)
+
+  int iP=0;
+  if (with_splitimpress) {
+    params[iP]="out_split";
+    iP++;
+    params[iP]="1";
+    iP++;
+  }
+  params[iP]=0;
+
+  if (!do_transform(inputFile,"sout.xml",interSheets,secSheets,secOutput,params,0)) { // to profile: t3.xsl->1 secSheets->2 (ORed)
     printf("Error while transforming\n");
     end_transformer();
     return 1;
