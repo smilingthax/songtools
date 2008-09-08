@@ -79,6 +79,7 @@
 
  <!--<xsl:with-param name="title"><xsl:apply-templates select="title" mode="inhalt"/></xsl:with-param>-->
  <xsl:template match="song" mode="file_single" name="filecontent">
+   <xsl:param name="position" select="position()"/>
 <!--  <xsl:call-template name="output_blkp"/>-->
    <xsl:call-template name="output_pages">
      <xsl:with-param name="copyright">
@@ -93,8 +94,11 @@
      <xsl:with-param name="lbfrom">
        <xsl:apply-templates select="from" mode="from_lbfrom"/>
      </xsl:with-param>
+     <xsl:with-param name="position" select="$position"/>
    </xsl:call-template>
-   <xsl:call-template name="output_blkp"/>
+   <xsl:call-template name="output_blkp">
+     <xsl:with-param name="position" select="$position"/>
+   </xsl:call-template>
  </xsl:template>
  <xsl:template match="from" mode="from_list">
    <xsl:value-of select="text()"/>
@@ -118,7 +122,9 @@
    <xsl:call-template name="output_odp">
      <xsl:with-param name="file" select="$file"/>
      <xsl:with-param name="content_nodes">
-       <xsl:call-template name="filecontent"/>
+       <xsl:call-template name="filecontent">
+         <xsl:with-param name="position" select="0"/>
+       </xsl:call-template>
      </xsl:with-param>
      <xsl:with-param name="black_back" select="$out_black"/>
    </xsl:call-template>
@@ -335,7 +341,7 @@
        <xsl:when test="$inLBfrom[self::GML]">PLBred</xsl:when>
      </xsl:choose>
    </xsl:variable>
-   <draw:page draw:name="page{generate-id(.)}" draw:style-name="{$style}" draw:master-page-name="Default">
+   <draw:page draw:name="page_{generate-id(..)}_{count($tr3)+1}" draw:style-name="{$style}" draw:master-page-name="Default">
      <office:forms form:automatic-focus="false" form:apply-design-mode="false"/>
      <xsl:copy-of select="$images/draw:page/draw:frame"/>
 <!--     <draw:frame presentation:style-name="pr2" draw:text-style-name="P2" draw:layer="layout" svg:width="26.035cm" svg:height="18.818cm" svg:x="1.27cm" svg:y="0.635cm" presentation:class="title" presentation:user-transformed="true">-->

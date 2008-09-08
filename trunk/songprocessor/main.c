@@ -1,22 +1,28 @@
 /* Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING */
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 #include "process.h"
 
 void usage(char *pn)
 {
-  printf("Songprocessor (c) 2004-2007 by Tobias Hoffmann\n\n"
+  const char *def_impress="impress";
+  const char *def_tex="tex and plain";
+  const char *def=def_impress;
+
+  if (strcmp(pn+strlen(pn)-4,"pasr")==0) {
+    def=def_tex;
+  }
+
+  printf("Songprocessor (c) 2004-2008 by Tobias Hoffmann\n\n"
          "Usage: %s [-txphr] [input file]\n"
          "   -t,-x,-p,-l,-i: output tex, html, plain, list, impress\n"
          "   -r: output raw (is always generated, use this switch to suppress fallback to default)\n"
-#ifdef DEFAULT_IMPRESS
-         " If none of the above is given, as default impress will be generated\n"
-#else
-         " If none of the above is given, as default tex and plain will be generated\n"
-#endif
-//         "   -n: No akkords\n"
+         " If none of the above is given, as default %s will be generated\n"
+//         "   -n: No chords\n"
          "   -h: What you're seeing :-)\n"
-         " [input file]: File to input instead of default songs.xml\n",pn);
+         " [input file]: File to input instead of default songs.xml\n",
+         pn,def);
 }
 
 int main(int argc,char **argv)
@@ -54,13 +60,13 @@ int main(int argc,char **argv)
   }
   if ( (!raw)&&(!do_tex)&&(!do_html)&&(!do_plain)&&(!do_list)&&(!do_impress) ) {
     // default: 
-#ifdef DEFAULT_IMPRESS
-    do_impress=1;
-#else
-    do_tex=1;
-    do_plain=1;
-    do_list=1;
-#endif
+    if (strcmp(argv[0]+strlen(argv[0])-4,"pasr")==0) {
+      do_tex=1;
+      do_plain=1;
+      do_list=1;
+    } else {
+      do_impress=1;
+    }
   }
   if (optind<argc) {
     inputFile=argv[optind++];
