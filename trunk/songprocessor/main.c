@@ -70,9 +70,9 @@ int main(int argc,char **argv)
     }
   }
   if (do_noakk) {
-    do_process_noakk(inputFile,do_tex,do_plain,do_html,do_list,do_impress);
+    return do_process_noakk(inputFile,do_tex,do_plain,do_html,do_list,do_impress);
   } else {
-    do_process(inputFile,do_tex,do_plain,do_html,do_list,do_impress);
+    return do_process(inputFile,do_tex,do_plain,do_html,do_list,do_impress);
   }
   return 0;
 }
