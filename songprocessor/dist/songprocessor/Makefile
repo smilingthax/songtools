@@ -21,7 +21,6 @@ ifeq "$(STATIC)" "1"
 endif
 CPPFLAGS+=-I../xsltlib
 LDFLAGS+=../xsltlib/libxsltext.a
-FLAGS+=-DDEFAULT_IMPRESS
 
 OBJECTS1=$(SOURCES1:.c=.o) $(SOURCES2:.cpp=.o)
 all: $(EXEC1)
