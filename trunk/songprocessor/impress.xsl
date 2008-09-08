@@ -97,7 +97,7 @@
      <xsl:with-param name="position" select="$position"/>
    </xsl:call-template>
    <xsl:call-template name="output_blkp">
-     <xsl:with-param name="position" select="$position"/>
+     <xsl:with-param name="position" select="concat($position,'_b')"/>
    </xsl:call-template>
  </xsl:template>
  <xsl:template match="from" mode="from_list">
@@ -127,6 +127,9 @@
        </xsl:call-template>
      </xsl:with-param>
      <xsl:with-param name="black_back" select="$out_black"/>
+     <xsl:with-param name="add_files">
+       <xsl:apply-templates select="content/*" mode="get_add_images"/>
+     </xsl:with-param>
    </xsl:call-template>
    <xsl:apply-templates select="title" mode="links">
      <xsl:with-param name="linkTo" select="$file"/>
@@ -135,7 +138,8 @@
 
  <xsl:template match="blkp" mode="file_multi"/>
  <xsl:template match="blkp" mode="file_single" name="output_blkp">
-   <draw:page draw:name="page{generate-id(.)}" draw:style-name="dp3" draw:master-page-name="Default">
+   <xsl:param name="position" select="concat('page',generate-id(.))"/>
+   <draw:page draw:name="{$position}" draw:style-name="dp3" draw:master-page-name="Default">
      <office:forms form:automatic-focus="false" form:apply-design-mode="false"/>
    </draw:page>
  </xsl:template>
@@ -164,6 +168,7 @@
    <xsl:param name="impress_page_w" select="28"/><!-- everything in cm -->
    <xsl:param name="impress_page_h" select="21"/>
    <xsl:param name="odpName" select="func:get_image_name(.)"/>
+   <xsl:param name="position" select="concat('page',generate-id(.))"/><!-- only relevant for standalone -->
    <xsl:variable name="impress_page_ratio" select="$impress_page_w div $impress_page_h"/>
    <xsl:variable name="bgstyle">
      <xsl:choose>
@@ -183,7 +188,7 @@
                                                   $impress_page_h - $img_border)"/>
    <xsl:variable name="impress_x" select="$impress_page_x + ($impress_page_w - $impress_w) div 2"/> <!-- center -->
    <xsl:variable name="impress_y" select="$impress_page_y + ($impress_page_h - $impress_h) div 2"/>
-   <draw:page draw:name="page{generate-id(.)}" draw:style-name="{$bgstyle}" draw:master-page-name="Default">
+   <draw:page draw:name="{$position}" draw:style-name="{$bgstyle}" draw:master-page-name="Default">
      <office:forms form:automatic-focus="false" form:apply-design-mode="false"/>
      <draw:frame draw:style-name="gr1" draw:text-style-name="P2" draw:layer="layout" svg:width="{$impress_w}cm" svg:height="{$impress_h}cm" svg:x="{$impress_x}cm" svg:y="{$impress_y}cm"><!-- gr1 / gr2 to choose center/top -->
        <draw:image xlink:href="{$odpName}" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
@@ -298,6 +303,7 @@
    <xsl:param name="copyright"/>
    <xsl:param name="source"/>
    <xsl:param name="lbfrom"/>
+   <xsl:param name="position" select="position()"/>
    <!--  select="title[1]/text()" -->
    <xsl:variable name="inNodes">
      <xsl:apply-templates select="content"/>
@@ -317,6 +323,7 @@
      <xsl:with-param name="inCopyright" select="$copyright"/>
      <xsl:with-param name="inSource" select="$source"/>
      <xsl:with-param name="inLBfrom" select="exsl:node-set($lbfrom)/*[1]"/>
+     <xsl:with-param name="position" select="$position"/>
    </xsl:apply-templates>
  </xsl:template>
 
@@ -325,6 +332,7 @@
    <xsl:param name="inCopyright"/><!-- Copyright: -->
    <xsl:param name="inSource"/><!-- Aus: -->
    <xsl:param name="inLBfrom"/><!-- Liednummer /Grün,Rot -->
+   <xsl:param name="position"/><!-- Liedposition (für einzigartigen seitennamen) -->
    <xsl:variable name="tr1" select="set:leading(../page,.)"/>
    <xsl:variable name="tr2" select=".|set:trailing(../page,.)"/>
    <xsl:variable name="tr3" select="set:trailing($tr1,$tr1[@endpage][1])"/>
@@ -341,7 +349,7 @@
        <xsl:when test="$inLBfrom[self::GML]">PLBred</xsl:when>
      </xsl:choose>
    </xsl:variable>
-   <draw:page draw:name="page_{generate-id(..)}_{count($tr3)+1}" draw:style-name="{$style}" draw:master-page-name="Default">
+   <draw:page draw:name="{$position}_{(position()-1) div 2+1}" draw:style-name="{$style}" draw:master-page-name="Default">
      <office:forms form:automatic-focus="false" form:apply-design-mode="false"/>
      <xsl:copy-of select="$images/draw:page/draw:frame"/>
 <!--     <draw:frame presentation:style-name="pr2" draw:text-style-name="P2" draw:layer="layout" svg:width="26.035cm" svg:height="18.818cm" svg:x="1.27cm" svg:y="0.635cm" presentation:class="title" presentation:user-transformed="true">-->
