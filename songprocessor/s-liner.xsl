@@ -110,7 +110,8 @@
                  <xsl:copy-of select="$indent"/>
                </xsl:when>
                <xsl:otherwise>
-                 <xsl:copy-of select="func:strip-root(preceding-sibling::*[1][self::next])"/>
+<!-- TODO                 <xsl:copy-of select="func:strip-root(preceding-sibling::*[1][self::next])"/> -->
+                 <xsl:copy-of select="func:strip-root(next)"/>
                </xsl:otherwise>
              </xsl:choose>
              <xsl:copy-of select="node()"/>
@@ -243,7 +244,8 @@
 
  <xsl:template match="br" mode="_songcontent_inline">
    <xsl:param name="indent" select="/.."/>
-   <br no="{@no}"><next><xsl:copy-of select="$indent"/></next></br><!-- @break ignored, see songcontent_block -->
+<!--  TODO <br no="{@no}"><next><xsl:copy-of select="$indent"/></next></br>--><!-- @break ignored, see songcontent_block -->
+   <br no="{@no}"/><next><xsl:copy-of select="$indent"/></next><!-- @break ignored, see songcontent_block -->
  </xsl:template>
 
  <xsl:template match="xlang" mode="_songcontent_inline">

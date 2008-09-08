@@ -24,6 +24,7 @@
    <lang short="zu">Zulu</lang>
    <lang short="bg">Bulgarisch</lang>
    <lang short="grc">Griechisch</lang><!-- Alt-griechisch -->
+   <lang short="el">Griechisch</lang><!-- Neu-griechisch -->
  </xsl:variable>
 
  <xsl:template name="full-lang">
