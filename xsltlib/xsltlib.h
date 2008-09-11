@@ -7,4 +7,5 @@
 #include "zip_ext/zipext.h"
 #include "enclose/enclose.h"
 #include "imagetools/imagefun.h"
+#include "path/path.h"
 
