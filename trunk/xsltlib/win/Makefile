@@ -1,7 +1,7 @@
-SOURCES1=split.c zipext.c  zip.c unzip.c ioapi.c  enclose.c imagefun.c
+SOURCES1=split.c zipext.c  zip.c unzip.c ioapi.c  enclose.c imagefun.c  path.c
 SOURCES2=textItem.cpp extension.cpp speed.cpp processor.cpp parset.cpp ptools.cpp
 LIB1=libxsltext.a
-DIRS=enclose imagetools mine_ext parset split
+DIRS=enclose imagetools mine_ext parset split path zip_ext
 XML=1
 
 #MINGW=/export/wingcc/i386-mingw32msvc/bin/
