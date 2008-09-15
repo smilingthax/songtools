@@ -114,7 +114,8 @@
                  <xsl:copy-of select="func:strip-root(next)"/>
                </xsl:otherwise>
              </xsl:choose>
-             <xsl:copy-of select="node()"/>
+<!-- TODO as above             <xsl:copy-of select="node()"/> -->
+             <xsl:copy-of select="node()[not(self::next)]"/>
            </line><xsl:value-of select="$nl"/>
          </xsl:for-each>
        </xsl:otherwise>
@@ -173,9 +174,7 @@
      <xsl:with-param name="indent" select="func:strip-root($this/indent)"/>
    </xsl:call-template>
  </xsl:template>
- <!-- }}} -->
 
- <!-- {{{ inline tags -->
 <!--
  <xsl:template match="img" mode="_songcontent">
    ...
@@ -186,7 +185,9 @@
    <page-cand break="-1"/>
  </xsl:template>
  -->
+ <!-- }}} -->
 
+ <!-- {{{ inline tags -->
  <xsl:template match="rep" mode="_songcontent_inline">
    <xsl:param name="ctxt" select="/.."/>
    <xsl:param name="indent" select="/.."/>

@@ -614,9 +614,6 @@
      <xsl:with-param name="indent" select="func:strip-root($this/indent)"/>
    </xsl:call-template>
  </xsl:template>
- <!-- }}} -->
-
- <!-- {{{ inline tags -->
 
  <xsl:template match="img" mode="_songcontent">
    <xsl:copy>
@@ -625,7 +622,9 @@
    </xsl:copy>
    <page-cand break="-1"/>
  </xsl:template>
+ <!-- }}} -->
 
+ <!-- {{{ inline tags -->
  <xsl:template match="rep" mode="_songcontent_inline">
    <xsl:param name="ctxt" select="/.."/>
    <xsl:param name="indent" select="/.."/>
