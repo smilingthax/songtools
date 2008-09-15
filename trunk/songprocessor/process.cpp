@@ -33,6 +33,7 @@ void init_transformer()
   load_doczip();
   load_enclose();
   load_tools();
+  load_path();
 #ifndef WIN32
   setenv("LIBXSLT_PLUGINS_PATH","",0); // avoid external plugins
 #endif
@@ -138,22 +139,27 @@ void end_transformer()
   xmlCleanupParser();
 }
 
-int do_process(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress)
+int do_process(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress,const char *imgpath)
 {
-  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),true,(split_impress!=0));
+  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),true,(split_impress!=0),imgpath);
 }
 
-int do_process_noakk(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress)
+int do_process_noakk(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress,const char *imgpath)
 {
-  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),false,(split_impress!=0));
+  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),false,(split_impress!=0),imgpath);
 }
 
-int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_akk,bool with_splitimpress)
+int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_akk,bool with_splitimpress,const char *imgpath)
 {
   char *interSheets[3],*secSheets[5],*secOutput[5];
   const char *params[16+1];
 
   init_transformer();
+  if (!imgpath) {
+    imgpath="/home/thobi/src/tsng";
+  }
+  path_register_prefix("img",imgpath);
+
   if (!with_akk) {
     interSheets[0]="helper/no-akk.xsl";
     interSheets[1]=NULL;

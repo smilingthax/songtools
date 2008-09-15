@@ -172,13 +172,13 @@
      <xsl:with-param name="indent" select="str:padding(string-length($first),' ')"/>
    </xsl:call-template>
  </xsl:template>
+
+ <xsl:template match="img" mode="_songcontent">
+   <line no="1"><xsl:text>*Img:</xsl:text><xsl:value-of select="@href"/></line><xsl:value-of select ="$nl"/>
+ </xsl:template>
  <!-- }}} -->
 
  <!-- {{{ inline tags -->
- <xsl:template match="img" mode="_songcontent">
-   <xsl:text>*Img:</xsl:text><xsl:value-of select="@href"/><xsl:value-of select ="$nl"/>
- </xsl:template>
-
  <xsl:template match="rep" mode="_songcontent_inline">
    <xsl:param name="ctxt" select="/.."/>
    <xsl:param name="indent" select="/.."/>
