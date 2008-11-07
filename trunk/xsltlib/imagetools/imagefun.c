@@ -6,6 +6,18 @@
 #include "imagefun.h"
 #include <string.h>
 
+static int xmlPIensure(xmlParserInputBufferPtr ibuf,int len)
+{
+  if (xmlBufferLength(ibuf->buffer)>=len) {
+    return -1;
+  }
+  if ( (xmlParserInputBufferRead(ibuf,len)<=0)||(xmlBufferLength(ibuf->buffer)<len) ) {
+    xmlFreeParserInputBuffer(ibuf); 
+    return 0;
+  }
+  return -1;
+}
+
 static char *png_sig="\211PNG\r\n\032\n";
 #define png_IHDR 0x49484452
 #define png_IEND 0x49454e44
@@ -24,8 +36,7 @@ static int get_png_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,int
   }
 
   // read signature(8) + first chunk(8+guess size: 13)
-  if ( (xmlParserInputBufferRead(ibuf,29)<=0)||(xmlBufferLength(ibuf->buffer)<29) ) {
-    xmlFreeParserInputBuffer(ibuf); 
+  if (!xmlPIensure(ibuf,29)) {
     return -1;
   }
   buf=(const unsigned char *)xmlBufferContent(ibuf->buffer);
@@ -76,8 +87,7 @@ static int get_jpeg_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,in
   }
 
   // read "signature"(4)
-  if ( (xmlParserInputBufferRead(ibuf,4)<=0)||(xmlBufferLength(ibuf->buffer)<4) ) {
-    xmlFreeParserInputBuffer(ibuf); 
+  if (!xmlPIensure(ibuf,4)) {
     return -1;
   }
   buf=(const unsigned char *)xmlBufferContent(ibuf->buffer);
@@ -94,8 +104,7 @@ static int get_jpeg_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,in
       break;
     }
     if (  ( (marker>=jpeg_RST0)&&(marker<=jpeg_RST7) )||(marker==jpeg_TEM)  ) { // stand-alone marker
-      if ( (xmlParserInputBufferRead(ibuf,2)<=0)||(xmlBufferLength(ibuf->buffer)<2) ) {
-        xmlFreeParserInputBuffer(ibuf); 
+      if (!xmlPIensure(ibuf,2)) {
         return -1;
       }
       buf=(const unsigned char *)xmlBufferContent(ibuf->buffer);
@@ -103,16 +112,14 @@ static int get_jpeg_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,in
       xmlBufferShrink(ibuf->buffer,2);
       continue;
     }
-    if ( (xmlParserInputBufferRead(ibuf,2)<=0)||(xmlBufferLength(ibuf->buffer)<2) ) {
-      xmlFreeParserInputBuffer(ibuf); 
+    if (!xmlPIensure(ibuf,2)) {
       return -1;
     }
     buf=(const unsigned char *)xmlBufferContent(ibuf->buffer);
     len=(buf[0]<<8)+buf[1];
     xmlBufferShrink(ibuf->buffer,2);
     if ( (marker>=jpeg_SOF0)&&(marker<=jpeg_SOF3) ) { // only this formats, for now
-      if ( (xmlParserInputBufferRead(ibuf,6)<=0)||(xmlBufferLength(ibuf->buffer)<6) ) {
-        xmlFreeParserInputBuffer(ibuf); 
+      if (!xmlPIensure(ibuf,6)) {
         return -1;
       }
       buf=(const unsigned char *)xmlBufferContent(ibuf->buffer);
@@ -123,8 +130,7 @@ static int get_jpeg_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,in
       xmlFreeParserInputBuffer(ibuf); 
       return 0;
     }
-    if ( (xmlParserInputBufferRead(ibuf,len)<=0)||(xmlBufferLength(ibuf->buffer)<len) ) {
-      xmlFreeParserInputBuffer(ibuf); 
+    if (!xmlPIensure(ibuf,len)) {
       return -1;
     }
     xmlBufferShrink(ibuf->buffer,len-2);
