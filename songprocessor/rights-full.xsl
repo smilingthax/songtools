@@ -78,6 +78,7 @@
  </xsl:template>
 
  <xsl:template match="rights-full" mode="_do_rights">
+   <xsl:variable name="title" select="../title[1]/text()"/>
    <xsl:message>rights-full is obsolete ("<xsl:value-of select="$title"/>")</xsl:message>
    <rights><common-full><xsl:value-of select="."/></common-full></rights>
  </xsl:template>

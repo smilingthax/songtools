@@ -23,8 +23,9 @@
    <lang short="ln">Lingála</lang>
    <lang short="zu">Zulu</lang>
    <lang short="bg">Bulgarisch</lang>
-   <lang short="grc">Griechisch</lang><!-- Alt-griechisch -->
-   <lang short="el">Griechisch</lang><!-- Neu-griechisch -->
+   <lang short="grc">Griechisch(alt)</lang><!-- Alt-griechisch -->
+   <lang short="el">Griechisch(neu)</lang><!-- Neu-griechisch -->
+   <lang short="sw">Suaheli</lang><!-- od: Swahili -->
  </xsl:variable>
 
  <xsl:template name="full-lang">
