@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                 xmlns:exsl="http://exslt.org/common"
@@ -19,43 +19,42 @@
    <book short="DBH3">Du bist Herr 3</book>
    <book short="DBH4">Du bist Herr 4</book>
    <book short="DBH5">Du bist Herr 5</book>
-   <book short="EKG">Evangelisches Kirchengesangbuch</book> <!-- altes gesangbuch -->
+   <book short="EKG">Evangelisches Kirchengesangbuch</book> <!-- altes gesangbuch (BY?) -->
    <book short="EG">Evangelisches Gesangbuch</book>
    <book short="FL">Feiern &amp; Loben</book>
-   <book short="Iwdd">Ich will dir danken</book> <!-- (grünes Liederbuch) -->
+   <book short="IWDD">Ich will dir danken (grünes Liederbuch)</book> <!-- (grünes Liederbuch) -->
+   <book short="GmL">Gemeindelieder (rotes Liederbuch)</book> 
+   <book short="NGmL">Neue Gemeindelieder</book>
    <book short="Mneu">Neues Gesangbuch für die Evangelisch-methodistische Kirche</book>
-   <book short="Smu">Singt mit uns</book>
-   <book short="SdLdL1">Singt das Lied der Lieder, Band 1</book>
-   <book short="SdLdL2">Singt das Lied der Lieder, Band 2</book>
-   <book short="SdLdL3">Singt das Lied der Lieder, Band 3</book>
-   <book short="JuF">Jesus - unsere Freude</book>
+   <book short="SMU">Singt mit uns</book>
+   <book short="SDLDL1">Singt das Lied der Lieder, Band 1</book>
+   <book short="SDLDL2">Singt das Lied der Lieder, Band 2</book>
+   <book short="SDLDL3">Singt das Lied der Lieder, Band 3</book>
+   <book short="JUF">Jesus - unsere Freude</book>
    <book short="Lut84">Lutherbibel 1984</book>
 <!-- preliminary: -->
    <book short="Wied03">Wiedenester Jugendliederbuch 2002/2003</book>
    <book short="Wied15">Wiedenester Jugendliederbuch 15. Ausgabe</book>
-   <book short="Ctw1+2">Come To Worship 1 + 2 (Melodie)</book>
+   <book short="CTW1+2">Come To Worship 1 + 2 (Melodie)</book>
    <book short="UL">Unser Liederbuch</book> 
    <book short="ML2">Meine Liederbuch 2: Ökumene heute</book> 
    <!-- GL: Gemeindelieder[GmL], Gotteslob[GL], Glaubenslieder[GlL] -->
-   <book short="GL">Gemeindelieder (rotes Liederbuch)</book> 
-   <book short="GLneu">Neue Gemeindelieder</book>
-<!--   <book short="GL">Gotteslob (Katholisches Gesangbuch)</book>-->
+   <book short="LL">Lebenslieder</book>
+   <book short="LLP">Lebenslieder Plus</book>
+   <book short="LUH">Lehre uns Herr</book>
+   <book short="SVJ0">Singt von Jesus (1971)</book> <!-- 1971 -->
+   <book short="SVJ1">Singt von Jesus (1981)</book> <!-- 1981 -->
+   <book short="SVJ2">Singt von Jesus, Band 2</book> <!-- 1990? -->
+   <book short="SVJ3">Singt von Jesus, Band 3</book>
+   <book short="GL">Gotteslob (Katholisches Gesangbuch)</book>
+   <book short="LDL">Lied des Lebens</book>
+   <book short="WT4">Worship Together Songbook 4.0</book>
+   <book short="Gll">Glaubenslieder</book>
+   <book short="Gll2">Glaubenslieder 2</book>
 <!-- unassigned: 
-   <book short="SvJ0">Singt von Jesus</book> <!-- 1971 -->
-   <book short="SvJ1">Singt von Jesus</book> <!-- 1981 -->
-   <book short="SvJ2">Singt von Jesus, Band 2</book> <!-- 1990? -->
-   <book short="SvJ3">Singt von Jesus, Band 3</book>
-   <book short="Ll">Lebenslieder</book>
-   <book short="LlP">Lebenslieder Plus</book>
-   <book short="LuH">Lehre uns Herr</book>
-   <book short="DgL">Das gute Land</book>
-   <book short="LdL">Lied des Lebens</book>
+   <book short="DGL">Das gute Land</book>
    <book short="ML1">Meine Liederbuch (1:) für heute und morgen</book> 
    <book short=""></book> 
--->
-<!-- maybe: 
-   <book short="Rot" see="GL"/>
-   <book short="Grün" see="Iwdd"/>
 -->
  </xsl:variable>
 

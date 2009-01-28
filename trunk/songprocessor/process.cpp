@@ -117,6 +117,7 @@ bool do_transform(char *inputFile,char *outputFile,char **interSheets,char **sec
       xsltFreeTransformContext(ctxt);
     } else {
       res2 = xsltApplyStylesheet(cur2, res, params);
+// TODO: check ctxt->state==XSLT_STATE_STOPPED 
     }
     if (!res2) {
       theResult=-1;
