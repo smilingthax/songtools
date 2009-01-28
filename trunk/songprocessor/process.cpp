@@ -140,19 +140,19 @@ void end_transformer()
   xmlCleanupParser();
 }
 
-int do_process(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress,const char *imgpath)
+int do_process(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress,int snippet,const char *imgpath)
 {
-  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),true,(split_impress!=0),imgpath);
+  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),(snippet!=0),true,(split_impress!=0),imgpath);
 }
 
-int do_process_noakk(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress,const char *imgpath)
+int do_process_noakk(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress,int snippet,const char *imgpath)
 {
-  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),false,(split_impress!=0),imgpath);
+  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),(snippet!=0),false,(split_impress!=0),imgpath);
 }
 
-int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_akk,bool with_splitimpress,const char *imgpath)
+int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_snippet,bool with_akk,bool with_splitimpress,const char *imgpath)
 {
-  char *interSheets[3],*secSheets[5],*secOutput[5];
+  char *interSheets[3],*secSheets[7],*secOutput[7];
   const char *params[16+1];
 
   init_transformer();
@@ -191,6 +191,11 @@ int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,
   if (with_impress) {
     secSheets[iS]="impress.xsl";
     secOutput[iS]="oolist";
+    iS++;
+  }
+  if (with_snippet) {
+    secSheets[iS]="snippet.xsl";
+    secOutput[iS]="snip.txt";
     iS++;
   }
   secSheets[iS]=NULL;
