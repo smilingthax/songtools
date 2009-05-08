@@ -138,6 +138,12 @@
    <xsl:call-template name="nl_hlp"/>
  </xsl:template>
 
+ <xsl:template match="text()[not(preceding-sibling::node())]" mode="_songcontent_inline">
+   <xsl:call-template name="nl_hlp">
+     <xsl:with-param name="inText" select="concat($nl,.)"/> <!-- trick to also(!) remove the leading whitespace -->
+   </xsl:call-template>
+ </xsl:template>
+
  <!-- default: remove, you can override -->
  <xsl:template match="akk" mode="_songcontent_inline">
    <xsl:choose>
@@ -145,6 +151,7 @@
        <xsl:text> </xsl:text>
      </xsl:when>
      <xsl:when test="text()='_'"/>
+     <xsl:when test="text()='-'"/>
      <xsl:otherwise>
        <xsl:value-of select="text()"/>
      </xsl:otherwise>

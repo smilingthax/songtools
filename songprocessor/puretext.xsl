@@ -140,7 +140,9 @@
 
  <!-- override: print [akk] -->
  <xsl:template match="akk" mode="_songcontent_inline">
-   <xsl:text>[</xsl:text><xsl:value-of select="@note"/><xsl:text>]</xsl:text>
+   <xsl:if test="not(text()='-')">
+     <xsl:text>[</xsl:text><xsl:value-of select="@note"/><xsl:text>]</xsl:text>
+   </xsl:if>
    <xsl:value-of select="text()"/>
    <xsl:choose>
      <xsl:when test="not(text())">
@@ -243,8 +245,9 @@
  </xsl:template>
  <!-- }}} -->
 
- <!-- {{{ FUNCTION func:drop-nl (inText)  - kill leading whitespace -->
- <func:function name="func:drop_nl"><!-- speedup (included into nl_hlp) -->
+<!--
+ <!- - {{{ FUNCTION func:drop-nl (inText)  - kill leading whitespace - ->
+ <func:function name="func:drop_nl"><!- - speedup (included into nl_hlp) - ->
    <xsl:param name="inText"/>
    <xsl:variable name="first" select="substring(normalize-space($inText),1,1)"/>
    <func:result>
@@ -253,10 +256,10 @@
      </xsl:if>
    </func:result>
  </func:function>
- <!-- }}} -->
+ <!- - }}} - ->
 
- <!-- {{{ TEMPLATE nl_hlp (inText)  - kill all \n's including following whitespaces -->
- <xsl:template name="nl_hlp"><!-- speedup -->
+ <!- - {{{ TEMPLATE nl_hlp (inText)  - kill all \n's including following whitespaces - ->
+ <xsl:template name="nl_hlp"><!- - speedup - ->
    <xsl:param name="inText" select="."/>
    <xsl:choose>
      <xsl:when test="function-available('mine:nl_hlp')">
@@ -273,7 +276,8 @@
      </xsl:otherwise>
    </xsl:choose>
  </xsl:template>
- <!-- }}} -->
+ <!- - }}} - ->
+-->
 
  <!-- {{{ FUNCTION func:strip-root(node)  -  but keep attribs -->
  <func:function name="func:strip-root">
