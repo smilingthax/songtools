@@ -1,6 +1,7 @@
 /* Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING */
 #include "extension.h"
 #include <math.h>
+#include <string.h>
 #include <libxml/xpathInternals.h>
 #include <libxslt/xslt.h>
 //#include <libxslt/xsltInternals.h>
