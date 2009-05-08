@@ -10,7 +10,7 @@
  </xsl:template>
 
  <xsl:template match="akk">
-   <xsl:if test="text()!='_'"> 
+   <xsl:if test="not(text()='_' or text()='-')"> 
      <xsl:value-of select="text()"/>
    </xsl:if>
    <xsl:if test="not(text())">
