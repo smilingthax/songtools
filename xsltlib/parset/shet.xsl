@@ -199,6 +199,7 @@
  </xsl:template>
 
  <xsl:template match="@*|comment()" mode="_split_token">
+   <!-- copy @* for now. maybe we can just discard it. but we can't let the default rule convert it to text ... --> 
    <xsl:copy-of select="."/>
  </xsl:template>
 
@@ -276,7 +277,6 @@
  </xsl:template>
 
  <xsl:template match="@*|comment()" mode="_add_akks">
-   <!-- copy @* for now. maybe we can just discard it. but we can't let the default rule convert it to text ... --> 
    <xsl:copy-of select="."/>
  </xsl:template>
 
