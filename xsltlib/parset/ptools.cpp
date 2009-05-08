@@ -1,5 +1,6 @@
 /* Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING */
 #include <assert.h>
+#include <string.h>
 #include "ptools.h"
 
 using namespace std;

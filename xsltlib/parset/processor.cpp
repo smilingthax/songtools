@@ -1,6 +1,7 @@
 /* Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING */
 #include <assert.h>
 #include <stdexcept>
+#include <string.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 //#include <libxslt/xslt.h>

@@ -2,6 +2,7 @@
 #define _TEXTiTEM_H
 #include <assert.h>
 #include <vector>
+#include <string.h>
 
 class AkkordItem {
 public:
