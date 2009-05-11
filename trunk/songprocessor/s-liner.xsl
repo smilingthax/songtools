@@ -88,7 +88,7 @@
              </xsl:when>
            </xsl:choose>
            <xsl:copy-of select="$innerLines"/>
-         </line><xsl:value-of select="$nl"/>
+         </line><xsl:value-of select="'&#10;'"/>
        </xsl:when>
        <xsl:otherwise>
          <xsl:variable name="nbr" select="@no|@break"/>
@@ -116,7 +116,7 @@
              </xsl:choose>
 <!-- TODO as above             <xsl:copy-of select="node()"/> -->
              <xsl:copy-of select="node()[not(self::next)]"/>
-           </line><xsl:value-of select="$nl"/>
+           </line><xsl:value-of select="'&#10;'"/>
          </xsl:for-each>
        </xsl:otherwise>
      </xsl:choose>
@@ -140,7 +140,7 @@
 
  <xsl:template match="text()[not(preceding-sibling::node())]" mode="_songcontent_inline">
    <xsl:call-template name="nl_hlp">
-     <xsl:with-param name="inText" select="concat($nl,.)"/> <!-- trick to also(!) remove the leading whitespace -->
+     <xsl:with-param name="inText" select="concat('&#10;',.)"/> <!-- trick to also(!) remove the leading whitespace -->
    </xsl:call-template>
  </xsl:template>
 
