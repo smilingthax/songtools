@@ -35,7 +35,7 @@
  </xsl:template>
 
  <xsl:template match="img">
-   <xsl:text>\picH{</xsl:text><xsl:value-of select="@href"/><xsl:text>}</xsl:text><xsl:value-of select="$nl"/>
+   <xsl:text>\picH{</xsl:text><xsl:value-of select="@href"/><xsl:text>}\esng{}</xsl:text><xsl:value-of select="$nl"/>
  </xsl:template>
 
  <xsl:template match="song/title" mode="inhalt">
@@ -68,7 +68,7 @@
          <xsl:with-param name="lang" select="@lang"/>
        </xsl:call-template>
      </xsl:variable>
-     <xsl:value-of select="str:subst($rhlp,'&amp;','\&amp;')"/>
+     <xsl:value-of select="str:subst(str:subst($rhlp,'&amp;','\&amp;'),'&quot;','\&quot;')"/>
    <xsl:text>} %}}}</xsl:text><xsl:value-of select="$nl"/><xsl:value-of select="$nl"/>
 <!-- one song/lang mode -->
 <!--
