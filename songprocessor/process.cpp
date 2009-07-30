@@ -39,7 +39,7 @@ void init_transformer()
 #endif
 }
 
-bool do_transform(char *inputFile,char *outputFile,char **interSheets,char **secSheets,char **secOutput,const char **params,int profile)
+bool do_transform(const char *inputFile,const char *outputFile,const char **interSheets,const char **secSheets,const char **secOutput,const char **params,int profile)
 {
   xsltStylesheetPtr cur = NULL, cur2;
   xmlDocPtr doc, res,res2;
@@ -52,7 +52,7 @@ bool do_transform(char *inputFile,char *outputFile,char **interSheets,char **sec
 
   // Do the transform.
   int theResult=0;
-  cur = xsltParseStylesheetFile((xmlChar *)"shet.xsl");
+  cur = xsltParseStylesheetFile((const xmlChar *)"shet.xsl");
   if (inputFile) {
 //    doc = xmlReadFile(inputFile,"iso-8859-1",0); 
     doc = xmlParseFile(inputFile); 
@@ -85,7 +85,7 @@ bool do_transform(char *inputFile,char *outputFile,char **interSheets,char **sec
 
   if (interSheets) {
     for (iA=0; interSheets[iA] &&(theResult!=-1); iA++) {
-      cur2 = xsltParseStylesheetFile((xmlChar *)interSheets[iA]);
+      cur2 = xsltParseStylesheetFile((const xmlChar *)interSheets[iA]);
       res2 = xsltApplyStylesheet(cur2, res, params);
       if (!res2) {
         theResult=-1;
@@ -104,7 +104,7 @@ bool do_transform(char *inputFile,char *outputFile,char **interSheets,char **sec
     return (theResult!=-1);
   }
   for (iA=0; secSheets[iA] && secOutput[iA] &&(theResult!=-1) ; iA++) {
-    cur2 = xsltParseStylesheetFile((xmlChar *)secSheets[iA]);
+    cur2 = xsltParseStylesheetFile((const xmlChar *)secSheets[iA]);
     printf("Processing %s\n",secSheets[iA]);
     if (profile&2) {
       xsltTransformContextPtr ctxt;
@@ -152,7 +152,7 @@ int do_process_noakk(char *inputFile,int tex,int plain,int html,int list,int imp
 
 int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_snippet,bool with_akk,bool with_splitimpress,const char *imgpath)
 {
-  char *interSheets[3],*secSheets[7],*secOutput[7];
+  const char *interSheets[3],*secSheets[7],*secOutput[7];
   const char *params[16+1];
 
   init_transformer();
