@@ -101,6 +101,7 @@
      <xsl:when test="not(text())">
        <xsl:text> </xsl:text>
      </xsl:when>
+     <xsl:when test="text()='-'"/>
      <xsl:when test="text()='_'"/>
      <xsl:otherwise>
        <xsl:value-of select="text()"/>

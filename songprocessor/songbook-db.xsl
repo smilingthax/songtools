@@ -12,6 +12,7 @@
    <book short="FJ1">Feiert Jesus!</book>
    <book short="FJ2">Feiert Jesus! 2</book>
    <book short="FJ3">Feiert Jesus! 3</book>
+   <book short="FJTOGO">Feiert Jesus! to go</book>
    <book short="ILJ1">In love with Jesus</book>
    <book short="ILJ2">In love with Jesus 2</book>
    <book short="DBH1">Du bist Herr 1</book>

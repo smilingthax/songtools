@@ -81,11 +81,14 @@
  <xsl:template match="song" mode="file_single" name="filecontent">
    <xsl:param name="position" select="position()"/>
 <!--  <xsl:call-template name="output_blkp"/>-->
+   <xsl:variable name="copy"><xsl:call-template name="copyright"/></xsl:variable>
    <xsl:call-template name="output_pages">
      <xsl:with-param name="copyright">
-       <xsl:text>© </xsl:text>
+       <xsl:if test="$copy!=''">
+         <xsl:text>© </xsl:text>
 <!--       <xsl:text>Copyright: </xsl:text>-->
-       <xsl:call-template name="copyright"/>
+         <xsl:value-of select="$copy"/>
+       </xsl:if> 
      </xsl:with-param>
      <xsl:with-param name="source">
        <xsl:text>Quelle: </xsl:text>
@@ -372,7 +375,7 @@
          <text:p text:style-name="P1"><xsl:copy-of select="$inSource"/></text:p><!-- TODO? handle formatting? -->
        </draw:text-box><xsl:value-of select="$nl"/>
      </draw:frame><xsl:value-of select="$nl"/>
-     <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.0cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
+     <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
        <draw:text-box>
          <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p><!-- TODO: smd -->
        </draw:text-box><xsl:value-of select="$nl"/>
