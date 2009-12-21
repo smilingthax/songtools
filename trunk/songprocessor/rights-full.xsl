@@ -353,18 +353,16 @@
            </token>
          </xsl:when>
          <xsl:when test="not($lang) and text-by[@lang]/text()">
-           <token>
-             <xsl:for-each select="text-by/@lang">
+           <xsl:for-each select="text-by/@lang">
+             <token>
                <xsl:call-template name="full-lang">
                  <xsl:with-param name="lang" select="."/>
                </xsl:call-template>
                <xsl:text>: </xsl:text>
                <xsl:value-of select="$inSong/text-by[@lang=current()]"/>
-               <xsl:if test="following-sibling::.">
-                 <xsl:text>, </xsl:text>
-               </xsl:if>
-             </xsl:for-each>
-           </token>
+             </token>
+             <tokensep>, </tokensep>
+           </xsl:for-each>
          </xsl:when>
        </xsl:choose>
      </xsl:for-each>
