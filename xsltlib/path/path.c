@@ -33,7 +33,7 @@ int ensure_pathdata() // {{{
   struct _PATH_DATA *tmp;
 
   if (remap_len>=remap_size) {
-    remap_size+=10;
+    remap_size+=10*sizeof(struct _PATH_DATA);
     tmp=realloc(remaps,remap_size);
     if (!tmp) {
       return -1;
