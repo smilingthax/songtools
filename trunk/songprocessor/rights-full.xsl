@@ -419,7 +419,6 @@
        <xsl:if test="melody-full[@for]">
          <token>
            <xsl:text>Für </xsl:text><xsl:value-of select="melody-full[@for][last()]/@for"/><xsl:text> (Melodie): </xsl:text>
-           <xsl:text>Melodie: </xsl:text>
            <xsl:value-of select="melody-full[@for][last()]"/>
          </token>
          <tokensep>, </tokensep>
