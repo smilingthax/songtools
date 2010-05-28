@@ -26,6 +26,7 @@
    <lang short="grc">Griechisch(alt)</lang><!-- Alt-griechisch -->
    <lang short="el">Griechisch(neu)</lang><!-- Neu-griechisch -->
    <lang short="sw">Suaheli</lang><!-- od: Swahili -->
+   <lang short="gsw">Schweizerdeutsch</lang>
  </xsl:variable>
 
  <xsl:template name="full-lang">

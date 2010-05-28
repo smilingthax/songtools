@@ -14,6 +14,8 @@ cd $FILEDIR
 i=allimpress.odp
 echo "Processing $i"
 soffice -headless "macro:///Standard.Module1.SaveAsPDF($FILEDIR/$i)"
+echo "Minimizing"
+sleep 1
 j=`basename $i .odp`.pdf
 pdftops -level3 -paperw 794 -paperh 595 $j - | ps2pdf - _tmp.pdf
 mv _tmp.pdf $j
