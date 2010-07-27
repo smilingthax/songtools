@@ -90,7 +90,7 @@
    <xsl:variable name="config">
      <base/>
      <vers>
-       <first><xsl:text>. </xsl:text></first>
+       <first><num fmt="#"/><xsl:text>. </xsl:text></first>
      </vers>
      <refr>
        <first><xsl:text>Refr: </xsl:text></first>
