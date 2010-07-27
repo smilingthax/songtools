@@ -527,7 +527,7 @@
      </base>
      <vers>
        <pre><page-cand block="1"/></pre>
-       <first format='Pvers'><xsl:text>.</xsl:text><text:tab/></first>
+       <first format='Pvers'><num fmt="#"/><xsl:text>.</xsl:text><text:tab/></first>
        <indent format='Pvers'><text:tab/></indent>
      </vers>
      <refr>

@@ -18,7 +18,7 @@
    <xsl:variable name="config">
      <base/>
      <vers>
-       <first><xsl:text>#. </xsl:text></first>
+       <first><num fmt="#"/><xsl:text>. </xsl:text></first>
        <indent><xsl:text>   </xsl:text></indent>
      </vers>
      <refr>
@@ -170,10 +170,30 @@
    </xsl:call-template>
  </xsl:template>
 
+ <!-- {{{ _songcontent_do_number -->
+ <xsl:template match="num" mode="_songcontent_do_number">
+   <xsl:param name="num"/>
+   <xsl:value-of select="format-number($num,@fmt)"/>
+ </xsl:template>
+
+ <xsl:template match="@*|node()|comment()" mode="_songcontent_do_number">
+   <xsl:param name="num"/>
+   <xsl:copy>
+     <xsl:apply-templates select="@*|node()|comment()" mode="_songcontent_do_number">
+       <xsl:with-param name="num" select="$num"/>
+     </xsl:apply-templates>
+   </xsl:copy>
+ </xsl:template>
+ <!-- }}} -->
+
  <xsl:template match="vers" mode="_songcontent">
    <xsl:param name="config" select="/.."/>
    <xsl:variable name="this" select="$config/*[name()=name(current())]"/>
-   <xsl:variable name="first"><first><xsl:value-of select="@no"/><xsl:text>. </xsl:text></first></xsl:variable>
+   <xsl:variable name="first">
+     <xsl:apply-templates select="$this/first" mode="_songcontent_do_number">
+       <xsl:with-param name="num" select="@no"/>
+     </xsl:apply-templates>
+   </xsl:variable>
    <xsl:copy-of select="$this/pre/@*|$this/pre/node()"/>
    <xsl:call-template name="songcontent_block">
      <xsl:with-param name="ctxt" select="$config|.."/>
