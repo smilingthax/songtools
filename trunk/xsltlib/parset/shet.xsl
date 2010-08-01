@@ -14,6 +14,8 @@
  <xsl:variable name="nl"><xsl:text>
 </xsl:text></xsl:variable>
 
+ <xsl:param name="inNodes"/>
+
  <xsl:include href="split.xsl"/>
 
  <xsl:template match="/songs">
@@ -21,9 +23,16 @@
  </xsl:template>
 
  <xsl:template match="/">
-   <songs-out>
-     <xsl:apply-templates select="*"/>
-   </songs-out>
+   <xsl:choose>
+     <xsl:when test="$inNodes">
+       <xsl:apply-templates select="$inNodes"/>
+     </xsl:when>
+     <xsl:otherwise>
+       <songs-out>
+         <xsl:apply-templates select="*"/>
+       </songs-out>
+     </xsl:otherwise>
+   </xsl:choose>
  </xsl:template>
   
  <xsl:template match="@*|node()|comment()">
