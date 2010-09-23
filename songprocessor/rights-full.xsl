@@ -305,7 +305,7 @@
      <xsl:if test="$lang"><xsl:attribute name="lang"><xsl:value-of select="$lang"/></xsl:attribute></xsl:if>
      <xsl:for-each select="$inSong"><!-- ensure context -->
        <xsl:variable name="is_by_both" select="text-by/text() = melody-by/text()"/>
-       <xsl:if test="text-by[not(@lang)]">
+       <xsl:if test="text-by[not(@lang)]/text()">
          <token>
            <xsl:choose>
              <xsl:when test="$is_by_both">
