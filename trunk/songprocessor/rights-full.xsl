@@ -335,7 +335,7 @@
          </xsl:if>
          <tokensep>, </tokensep>
        </xsl:if>
-       <xsl:if test="melody-by and not($is_by_both)">
+       <xsl:if test="melody-by/text() and not($is_by_both)">
          <token>
            <xsl:text>Melodie: </xsl:text>
            <xsl:value-of select="melody-by/text()"/>
