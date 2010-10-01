@@ -151,8 +151,7 @@
   <style:text-properties fo:font-size="32pt" fo:font-weight="bold"/>
 </style:style>
 <style:style style:name="Txlang" style:family="text">
-<!--  <style:text-properties fo:font-style="italic"/>-->
-  <style:text-properties fo:font-style="italic" fo:color="#ffff99"/>
+  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#808000"/>
 </style:style>
   </office:automatic-styles>
   <office:body>

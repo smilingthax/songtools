@@ -36,6 +36,7 @@
 <!-- preliminary: -->
    <book short="Wied03">Wiedenester Jugendliederbuch 2002/2003</book>
    <book short="Wied15">Wiedenester Jugendliederbuch 15. Ausgabe</book>
+   <book short="Wied16">Wiedenester Jugendliederbuch 16. Ausgabe</book>
    <book short="CTW1+2">Come To Worship 1 + 2 (Melodie)</book>
    <book short="UL">Unser Liederbuch</book> 
    <book short="ML2">Meine Liederbuch 2: Ökumene heute</book> 
