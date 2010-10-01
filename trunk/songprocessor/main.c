@@ -14,7 +14,7 @@ void usage(char *pn)
     def=def_tex;
   }
 
-  printf("Songprocessor (c) 2004-2009 by Tobias Hoffmann\n\n"
+  printf("Songprocessor (c) 2004-2010 by Tobias Hoffmann\n\n"
          "Usage: %s [-txphr] [input file]\n"
          "   -t,-x,-p,-l,-i,-S: output tex, html, plain, list, impress, snippet\n"
          "   -r: output raw (is always generated, use this switch to suppress fallback to default)\n"
@@ -22,7 +22,8 @@ void usage(char *pn)
          "Options:\n"
          "   -n: No chords\n"
          "   -s: Split impress\n"
-         "   -I [path]: Path for [img]... URIs (only impress)\n\n"
+         "   -I [path]: Path for [img]... URIs (only impress)\n"
+         "   -P [preset]: Use certain settings (if backend supports it)\n\n"
          "   -h: What you're seeing :-)\n"
          " [input file]: File to input instead of default songs.xml\n",
          pn,def);
@@ -32,9 +33,9 @@ int main(int argc,char **argv)
 {
   char *inputFile="songs.xml";
   int do_html=0,do_tex=0,do_plain=0,do_list=0,do_impress=0,do_splitimpress=0,do_snippet=0,raw=0,o,do_noakk=0;
-  const char *imgpath=NULL;
+  const char *imgpath=NULL,*preset=NULL;
 
-  while ((o=getopt(argc,argv,"tlipxhrnSsI:"))!=-1) {
+  while ((o=getopt(argc,argv,"tlipxhrnSsI:P:"))!=-1) {
     switch (o) {
     case 't':
       do_tex=1;
@@ -69,6 +70,9 @@ int main(int argc,char **argv)
     case 'I':
       imgpath=optarg;
       break;
+    case 'P':
+      preset=optarg;
+      break;
     }
   }
   if ( (!raw)&&(!do_tex)&&(!do_html)&&(!do_plain)&&(!do_list)&&(!do_impress)&&(!do_snippet) ) {
@@ -88,10 +92,5 @@ int main(int argc,char **argv)
       return 1;
     }
   }
-  if (do_noakk) {
-    return do_process_noakk(inputFile,do_tex,do_plain,do_html,do_list,do_impress,do_splitimpress,do_snippet,imgpath);
-  } else {
-    return do_process(inputFile,do_tex,do_plain,do_html,do_list,do_impress,do_splitimpress,do_snippet,imgpath);
-  }
-  return 0;
+  return do_process(inputFile,do_tex,do_plain,do_html,do_list,do_impress,do_splitimpress,do_snippet,!do_noakk,imgpath,preset);
 }

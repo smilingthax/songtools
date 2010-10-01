@@ -50,7 +50,10 @@
 </xsl:text></xsl:variable>
 
  <xsl:param name="out_split" select="'0'"/>
- <xsl:param name="out_black" select="'1'"/>
+ <xsl:param name="presetname" select="''"/>
+ <xsl:variable name="ps_doc" select="document('oopreset.xml')"/>
+ <xsl:variable name="preset" select="exsl:node-set(func:if($ps_doc/presets/preset[@name=$presetname],
+                                                   $ps_doc/presets/preset[@name=$presetname],$ps_doc/presets/preset[not(@name)]))/preset"/>
 
  <xsl:include href="rights-full.xsl"/>
  <xsl:include href="lang-db.xsl"/>
@@ -67,9 +70,9 @@
          <xsl:with-param name="content_nodes">
            <xsl:apply-templates select="songs-out/*" mode="file_single"/>
          </xsl:with-param>
-         <xsl:with-param name="black_back" select="$out_black"/>
+         <xsl:with-param name="black_back" select="count($preset/black)"/>
          <xsl:with-param name="add_files">
-<!--           <copy fromhref="smd_claim-onblack.png" tohref="Pictures/smd_claim-onblack.png" mime="image/png"/> TODO: smd -->
+           <xsl:copy-of select="$preset/copy"/>
            <xsl:apply-templates select="songs-out/*" mode="get_add_images"/>
          </xsl:with-param>
        </xsl:call-template>
@@ -129,7 +132,7 @@
          <xsl:with-param name="position" select="0"/>
        </xsl:call-template>
      </xsl:with-param>
-     <xsl:with-param name="black_back" select="$out_black"/>
+     <xsl:with-param name="black_back" select="count($preset/black)"/>
      <xsl:with-param name="add_files">
        <xsl:apply-templates select="content/*" mode="get_add_images"/>
      </xsl:with-param>
@@ -157,7 +160,7 @@
 <!- -       <xsl:call-template name="output_blkp"/>- ->
        <xsl:call-template name="output_img"/>
      </xsl:with-param>
-     <xsl:with-param name="black_back" select="$out_black"/>
+     <xsl:with-param name="black_back" select="count($preset/black)"/>
    </xsl:call-template>
    <xsl:apply-templates select="title" mode="links">
      <xsl:with-param name="linkTo" select="$file"/>
@@ -348,51 +351,49 @@
    <xsl:variable name="style" select="func:default($images/draw:page/@draw:style-name,'dp1')"/>
    <xsl:variable name="lb">
      <xsl:choose>
+       <xsl:when test="not($preset/set-lb)"/>
        <xsl:when test="$inLBfrom[self::IWDD]">PLBgreen</xsl:when>
        <xsl:when test="$inLBfrom[self::GML]">PLBred</xsl:when>
      </xsl:choose>
    </xsl:variable>
    <draw:page draw:name="{$position}_{(position()-1) div 2+1}" draw:style-name="{$style}" draw:master-page-name="Default">
      <office:forms form:automatic-focus="false" form:apply-design-mode="false"/>
+     <xsl:copy-of select="$preset/prestatic/*"/>
      <xsl:copy-of select="$images/draw:page/draw:frame"/>
-<!--     <draw:frame presentation:style-name="pr2" draw:text-style-name="P2" draw:layer="layout" svg:width="26.035cm" svg:height="18.818cm" svg:x="1.27cm" svg:y="0.635cm" presentation:class="title" presentation:user-transformed="true">-->
-<!-- TODO: smd 
-<draw:frame draw:style-name="gr1" draw:text-style-name="P2" draw:layer="layout" svg:width="4.906cm" svg:height="1.025cm" svg:x="12.594cm" svg:y="19.975cm">
-  <draw:image xlink:href="Pictures/smd_claim-onblack.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
-</draw:frame>-->
-     <draw:frame draw:style-name="gr1" draw:text-style-name="P2" draw:layer="layout" svg:width="27.0cm" svg:height="19.13cm" svg:x="0.5cm" svg:y="0.0cm"><!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
+     <draw:frame draw:text-style-name="P2" draw:layer="layout"><!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
+       <xsl:copy-of select="$preset/set-text/@*|$preset/set-text/node()"/>
        <draw:text-box>
          <xsl:copy-of select="node()[not(self::img)]"/>
        </draw:text-box><xsl:value-of select="$nl"/>
      </draw:frame><xsl:value-of select="$nl"/>
-     <draw:frame draw:style-name="gr3" draw:layer="layout" svg:width="15.00cm" svg:height="0cm" svg:x="0.5cm" svg:y="20.66cm">
+     <draw:frame draw:style-name="gr3" draw:layer="layout">
+       <xsl:copy-of select="$preset/set-rights/@*|$preset/set-rights/node()"/>
        <draw:text-box>
          <text:p text:style-name="P1"><xsl:copy-of select="$inCopyright"/></text:p><!-- TODO? handle formatting? -->
        </draw:text-box><xsl:value-of select="$nl"/>
      </draw:frame><xsl:value-of select="$nl"/>
-     <draw:frame draw:style-name="gr3" draw:layer="layout" svg:width="7.5cm" svg:height="0cm" svg:x="19.5cm" svg:y="21.1cm">
+     <draw:frame draw:style-name="gr3" draw:layer="layout">
+       <xsl:copy-of select="$preset/set-from/@*|$preset/set-from/node()"/>
        <draw:text-box>
          <text:p text:style-name="P1"><xsl:copy-of select="$inSource"/></text:p><!-- TODO? handle formatting? -->
        </draw:text-box><xsl:value-of select="$nl"/>
      </draw:frame><xsl:value-of select="$nl"/>
-     <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
-       <draw:text-box>
-         <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p><!-- TODO: smd -->
-       </draw:text-box><xsl:value-of select="$nl"/>
-     </draw:frame><xsl:value-of select="$nl"/>
-     <draw:frame draw:style-name="gr3" draw:text-style-name="P5" draw:layer="layout" svg:width="1.5cm" svg:height="0cm" svg:x="26.5cm" svg:y="21.1cm">
+     <draw:frame draw:style-name="gr3" draw:text-style-name="P5" draw:layer="layout">
+       <xsl:copy-of select="$preset/set-pgof/@*|$preset/set-pgof/node()"/>
        <draw:text-box>
          <text:p text:style-name="P5"><xsl:value-of select="$inPgOf"/></text:p>
        </draw:text-box><xsl:value-of select="$nl"/>
      </draw:frame><xsl:value-of select="$nl"/>
      <!-- Rotes/Grünes Lb -->
-   <xsl:if test="string-length($lb)">
-     <draw:frame draw:style-name="gr2" draw:text-style-name="{$lb}" draw:layer="layout" svg:width="3.0cm" svg:height="2.0cm" svg:x="24.1cm" svg:y="1.7cm">
-       <draw:text-box>
-         <text:p text:style-name="{$lb}"><xsl:value-of select="$inLBfrom/text()"/></text:p>
-       </draw:text-box>
-     </draw:frame><xsl:value-of select="$nl"/>
-   </xsl:if>
+     <xsl:if test="string-length($lb)">
+       <draw:frame draw:style-name="gr2" draw:text-style-name="{$lb}" draw:layer="layout">
+         <xsl:copy-of select="$preset/set-lb/@*|$preset/set-lb/node()"/>
+         <draw:text-box>
+           <text:p text:style-name="{$lb}"><xsl:value-of select="$inLBfrom/text()"/></text:p>
+         </draw:text-box>
+       </draw:frame><xsl:value-of select="$nl"/>
+     </xsl:if>
+     <xsl:copy-of select="$preset/poststatic/*"/>
      <presentation:notes draw:style-name="dp2">
        <draw:page-thumbnail draw:style-name="gr2" draw:layer="layout" svg:width="14.848cm" svg:height="11.135cm" svg:x="3.07cm" svg:y="2.257cm" draw:page-number="1" presentation:class="page"/><xsl:value-of select="$nl"/>
        <draw:frame presentation:style-name="pr1" draw:text-style-name="P3" draw:layer="layout" svg:width="16.79cm" svg:height="13.365cm" svg:x="2.098cm" svg:y="14.107cm" presentation:class="notes" presentation:placeholder="true"><xsl:value-of select="$nl"/>
@@ -409,7 +410,7 @@
    <xsl:param name="lastSplit" select="'0'"/>
    <xsl:variable name="nextEnd" select="set:leading($inNodes[self::page-cand],$inNodes[self::page-cand][@endpage or @break &lt;0])|
                                         $inNodes[self::page-cand][@endpage or @break &lt; 0][1]"/>
-   <xsl:variable name="splitpt_set" select="$nextEnd[@no &lt;= 26 + $lastSplit]"/>
+   <xsl:variable name="splitpt_set" select="$nextEnd[@no &lt;= 2*$preset/linesPerPage + $lastSplit]"/>
    <xsl:variable name="no_block" select="count($splitpt_set/@block)=0"/><!-- is there no block-start ? -->
    <xsl:variable name="splitpt" select="$splitpt_set[$no_block or @block or @endpage or @break &lt; 0][last()]|$nextEnd[last()]"/>
    <xsl:variable name="tree1" select="set:leading($inNodes,$splitpt)"/>
