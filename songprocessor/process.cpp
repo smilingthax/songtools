@@ -1,8 +1,9 @@
 /* Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING */
 #include "process.h"
 #include "parseakk.h"
-#include <vector>
-#include <map>
+//#include <vector>
+//#include <map>
+#include <string>
 #include <math.h>
 //#include <libxml/xmlmemory.h>
 //#include <libxml/xmlIO.h>
@@ -140,17 +141,12 @@ void end_transformer()
   xmlCleanupParser();
 }
 
-int do_process(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress,int snippet,const char *imgpath)
+int do_process(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress,int snippet,int with_akk,const char *imgpath,const char *preset)
 {
-  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),(snippet!=0),true,(split_impress!=0),imgpath);
+  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),(snippet!=0),(with_akk!=0),(split_impress!=0),imgpath,preset);
 }
 
-int do_process_noakk(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress,int snippet,const char *imgpath)
-{
-  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),(snippet!=0),false,(split_impress!=0),imgpath);
-}
-
-int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_snippet,bool with_akk,bool with_splitimpress,const char *imgpath)
+int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_snippet,bool with_akk,bool with_splitimpress,const char *imgpath,const char *preset)
 {
   const char *interSheets[3],*secSheets[7],*secOutput[7];
   const char *params[16+1];
@@ -205,7 +201,18 @@ int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,
   if (with_splitimpress) {
     params[iP]="out_split";
     iP++;
-    params[iP]="1";
+    params[iP]="'1'";
+    iP++;
+  }
+  string ptmp;
+  if (preset) {
+    params[iP]="presetname";
+    iP++;
+    // bah: we have to quote it
+    ptmp.assign("'");
+    ptmp.append(preset); // TODO?! also quote \' ?
+    ptmp.append("'");
+    params[iP]=ptmp.c_str();
     iP++;
   }
   params[iP]=0;

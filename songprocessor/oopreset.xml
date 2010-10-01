@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<presets xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0"
+         xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+         xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0"
+         xmlns:xlink="http://www.w3.org/1999/xlink">
+  <preset>
+    <black/>
+    <linesPerPage>13</linesPerPage>
+    <set-text draw:style-name="gr1" svg:x="0.5cm" svg:y="0.0cm" svg:width="27.0cm" svg:height="19.13cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
+    <set-rights svg:x="0.5cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>
+    <set-from svg:x="19.5cm" svg:y="21.1cm" svg:width="7.5cm" svg:height="0cm"/>
+    <set-lb svg:x="24.1cm" svg:y="1.7cm" svg:width="3.0cm" svg:height="2.0cm"/>
+    <set-pgof svg:x="26.5cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
+    <poststatic>
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
+        <draw:text-box>
+          <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p>
+        </draw:text-box>
+      </draw:frame>
+    </poststatic>
+  </preset>
+  <preset name="feg">
+    <black/>
+    <linesPerPage>13</linesPerPage>
+    <set-text draw:style-name="gr1" svg:x="0.5cm" svg:y="0.0cm" svg:width="27.0cm" svg:height="19.13cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
+    <set-rights svg:x="0.5cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>
+    <set-from svg:x="19.5cm" svg:y="21.1cm" svg:width="7.5cm" svg:height="0cm"/>
+    <set-lb svg:x="24.1cm" svg:y="1.7cm" svg:width="3.0cm" svg:height="2.0cm"/>
+    <set-pgof svg:x="26.5cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
+    <poststatic>
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
+        <draw:text-box>
+          <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p>
+        </draw:text-box>
+      </draw:frame>
+    </poststatic>
+  </preset>
+  <preset name="nok">
+    <black/>
+    <linesPerPage>8.5</linesPerPage>
+    <copy fromhref="nok-bg.jpg" tohref="Pictures/nok-bg.jpg" mime="image/jpeg"/>
+    <set-text draw:style-name="gr2" svg:x="0.5cm" svg:y="0.0cm" svg:width="27.0cm" svg:height="15.13cm"/>
+    <set-rights svg:x="0.5cm" svg:y="16.66cm" svg:width="15.0cm" svg:height="0cm"/>
+    <set-from svg:x="19.5cm" svg:y="17.1cm" svg:width="7.5cm" svg:height="0cm"/>
+    <set-pgof svg:x="26.5cm" svg:y="17.1cm" svg:width="1.5cm" svg:height="0cm"/>
+    <prestatic>
+      <draw:frame draw:style-name="gr2" draw:text-style-name="P2" draw:layer="layout" svg:width="28cm" svg:height="3.74cm" svg:x="0cm" svg:y="17.26cm">
+        <draw:image xlink:href="Pictures/nok-bg.jpg" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
+      </draw:frame>
+    </prestatic>
+    <poststatic>
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="17.1cm">
+        <draw:text-box>
+          <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p>
+        </draw:text-box>
+      </draw:frame>
+    </poststatic>
+  </preset>
+  <preset name="smd">
+    <linesPerPage>13</linesPerPage>
+    <copy fromhref="smd_claim-onblack.png" tohref="Pictures/smd_claim-onblack.png" mime="image/png"/>
+    <set-text draw:style-name="gr2" svg:x="" svg:y="" svg:width="" svg:height=""/>
+    <set-rights svg:x="0.5cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>
+    <set-from svg:x="19.5cm" svg:y="21.1cm" svg:width="7.5cm" svg:height="0cm"/>
+    <set-pgof svg:x="26.5cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
+    <prestatic>
+      <draw:frame draw:style-name="gr1" draw:text-style-name="P2" draw:layer="layout" svg:width="4.906cm" svg:height="1.025cm" svg:x="12.594cm" svg:y="19.975cm">
+        <draw:image xlink:href="Pictures/smd_claim-onblack.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
+      </draw:frame>
+    </prestatic>
+  </preset>
+</presets>
