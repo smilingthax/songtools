@@ -410,7 +410,7 @@
    <xsl:param name="lastSplit" select="'0'"/>
    <xsl:variable name="nextEnd" select="set:leading($inNodes[self::page-cand],$inNodes[self::page-cand][@endpage or @break &lt;0])|
                                         $inNodes[self::page-cand][@endpage or @break &lt; 0][1]"/>
-   <xsl:variable name="splitpt_set" select="$nextEnd[@no &lt;= 2*$preset/linesPerPage + $lastSplit]"/>
+   <xsl:variable name="splitpt_set" select="$nextEnd[position()=1 or @no &lt;= 2*$preset/linesPerPage + $lastSplit]"/>
    <xsl:variable name="no_block" select="count($splitpt_set/@block)=0"/><!-- is there no block-start ? -->
    <xsl:variable name="splitpt" select="$splitpt_set[$no_block or @block or @endpage or @break &lt; 0][last()]|$nextEnd[last()]"/>
    <xsl:variable name="tree1" select="set:leading($inNodes,$splitpt)"/>
@@ -452,7 +452,8 @@
    <xsl:copy>
      <xsl:attribute name="no"><!-- sum of lines up to here -->
        <xsl:value-of select="count($tr1[@text:style-name!='P3'])*2+
-                             count($tr1[@text:style-name='P3'])"/>
+                             count($tr1[@text:style-name='P3'])-
+                             count($tr1[child::text:span[@text:style-name='Txlang']])"/>
      </xsl:attribute>
      <xsl:attribute name="self"><!-- number of lines contained in <page-cand>..</page-cand> -->
        <xsl:value-of select="func:if(node(),count(text:p[@text:style-name!='P3'])*2+
@@ -477,6 +478,23 @@
    <xsl:copy-of select="."/>
  </xsl:template>
  <!-- }}} -->
+
+ <!-- special Txlang handling -->
+ <xsl:template match="/text:p[child::text:span[@text:style-name='Txlang']]" mode="_break_calc">
+   <xsl:copy>
+     <xsl:copy-of select="@*"/>
+     <xsl:apply-templates select="node()" mode="_move_txlang"/>
+   </xsl:copy>
+ </xsl:template>
+ <xsl:template match="text:tab" mode="_move_txlang">
+ </xsl:template>
+ <xsl:template match="text:span" mode="_move_txlang">
+   <xsl:copy>
+     <xsl:copy-of select="@*"/>
+     <xsl:copy-of select="preceding-sibling::text:tab"/>
+     <xsl:copy-of select="node()"/>
+   </xsl:copy>
+ </xsl:template>
 
  <xsl:template match="song/title" mode="links">
    <xsl:param name="linkTo"/>
@@ -679,8 +697,8 @@
  <xsl:template match="xlang" mode="_songcontent_inline">
    <xsl:param name="ctxt" select="/.."/>
    <xsl:param name="indent" select="/.."/>
-   <text:s text:c="2"/>
    <text:span text:style-name="Txlang">
+   <text:s text:c="4"/>
    <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
      <xsl:with-param name="ctxt" select="$ctxt"/>
      <xsl:with-param name="indent" select="$indent"/>
