@@ -294,6 +294,15 @@
  <xsl:template match="style:default-style/style:text-properties/@fo:country" mode="_output_odp_style">
    <xsl:attribute name="fo:country">DE</xsl:attribute>
  </xsl:template>
+
+ <xsl:template match="office:master-styles/style:master-page" mode="_output_odp_style">
+   <xsl:copy>
+     <xsl:copy-of select="@*"/>
+     <xsl:copy-of select="$preset/premaster/@*|$preset/premaster/node()"/>
+<!--     <xsl:apply-templates select="node()" mode="_output_odp_style"/>-->
+     <xsl:copy-of select="node()"/>
+   </xsl:copy>
+ </xsl:template>
  
  <xsl:template match="@*|node()|comment()" mode="_output_odp_style">
    <xsl:param name="black_back"/>
@@ -372,12 +381,14 @@
          <text:p text:style-name="P1"><xsl:copy-of select="$inCopyright"/></text:p><!-- TODO? handle formatting? -->
        </draw:text-box><xsl:value-of select="$nl"/>
      </draw:frame><xsl:value-of select="$nl"/>
-     <draw:frame draw:style-name="gr3" draw:layer="layout">
-       <xsl:copy-of select="$preset/set-from/@*|$preset/set-from/node()"/>
-       <draw:text-box>
-         <text:p text:style-name="P1"><xsl:copy-of select="$inSource"/></text:p><!-- TODO? handle formatting? -->
-       </draw:text-box><xsl:value-of select="$nl"/>
-     </draw:frame><xsl:value-of select="$nl"/>
+     <xsl:if test="$preset/set-from">
+       <draw:frame draw:style-name="gr3" draw:layer="layout">
+         <xsl:copy-of select="$preset/set-from/@*|$preset/set-from/node()"/>
+         <draw:text-box>
+           <text:p text:style-name="P1"><xsl:copy-of select="$inSource"/></text:p><!-- TODO? handle formatting? -->
+         </draw:text-box><xsl:value-of select="$nl"/>
+       </draw:frame><xsl:value-of select="$nl"/>
+     </xsl:if>
      <draw:frame draw:style-name="gr3" draw:text-style-name="P5" draw:layer="layout">
        <xsl:copy-of select="$preset/set-pgof/@*|$preset/set-pgof/node()"/>
        <draw:text-box>
