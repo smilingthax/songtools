@@ -395,7 +395,8 @@ Zeile 3
  bla</refr>
 fasel</vers>
   </code>
-  Die Blocktags sind: §refr>, §vers>, §bridge>, §ending>, §xlate>
+  Die Blocktags sind: §refr>, §vers>, §bridge>, §ending>.
+  Zusätzlich gibt es §showrefr/>, §showvers/> und §showbridge/> um Blöcke wiederholt ausgeben zu können.
 
   <tag>refr</tag>
   Gehört zur <ref to="blocktags">Gruppe der Blocktags</ref> und erzeugt einen Refrain-Block.
@@ -461,6 +462,15 @@ Bridge: Bridge Zeile 1
 Schluss: Ending Zeile 1
          Zeile 2
   </code>
+
+  <tag>showrefr</tag>
+  <tag>showvers</tag>
+  <tag>showbridge</tag>
+  <attr opt="1" name="no">Der zu wiederholende Block</attr>
+  <attr opt="1" name="as">(nur showvers, nur zusammen mit <attref name="no"/>) Neue Versnummer</attr>
+  Mit diesen Tags lassen sich wiederkehrende Refrains, etc., sehr einfach einfügen.
+  Wenn <attref name="no"/> angegeben ist, dann muss der referenzierte Block ebenfalls mit explizitem <attref name="no"/>-Attribut
+  versehen sein.
 
   <section id="inline">Die Gruppe der Inlinetags</section>
   Inlinetags sind Tags, sowohl innerhalb als auch außerhalb von <ref to="blocktags">Blocktags</ref>
@@ -532,6 +542,16 @@ XYZZY
 (Jo(en.): Jo)
 (Übersetzung: Ausländisch für iXYpsilonZetZetYpsilon)
   </code>
+
+  <tag>xlang</tag>
+  Diese Tag tritt nicht explizit auf, liegt aber dem folgenden Syntax zugrunde:
+  <code>
+Englischer Text 1
+^Deutsche Übersetzung
+Englisch 2
+^Mehr Deutsch
+  </code>
+  Erzeugt werden kann also eine zeilenweise Übersetzung des Liedtextes.
 
   <section id="akkstyle">Richtlinien für die Akkordeingabe</section>
   <code>
