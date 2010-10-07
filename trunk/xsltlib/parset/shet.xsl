@@ -130,9 +130,17 @@
 
  <xsl:template match="/vers" mode="_split_token">
    <xsl:param name="wo"/>
+   <xsl:param name="as"/>
    <xsl:copy>
      <xsl:copy-of select="@*"/>
-     <xsl:attribute name="no"><xsl:value-of select="mine:get_no(preceding-sibling::vers|.)"/></xsl:attribute>
+     <xsl:choose>
+       <xsl:when test="$as">
+         <xsl:attribute name="no"><xsl:value-of select="$as"/></xsl:attribute>
+       </xsl:when>
+       <xsl:otherwise>
+         <xsl:attribute name="no"><xsl:value-of select="mine:get_no(preceding-sibling::vers|preceding-sibling::showvers[@as]|.)"/></xsl:attribute>
+       </xsl:otherwise>
+     </xsl:choose>
      <xsl:apply-templates select="node()" mode="_split_token">
        <xsl:with-param name="wo" select="$wo"/>
      </xsl:apply-templates>
@@ -167,6 +175,20 @@
        <xsl:with-param name="wo" select="$wo"/>
      </xsl:apply-templates>
    </xsl:copy>
+ </xsl:template>
+
+ <xsl:template match="/showvers" mode="_split_token">
+   <xsl:param name="wo"/>
+   <xsl:choose>
+     <xsl:when test="@no">
+       <xsl:apply-templates select="../vers[@no=current()/@no]" mode="_split_token">
+         <xsl:with-param name="as" select="@as"/>
+       </xsl:apply-templates>
+     </xsl:when>
+     <xsl:otherwise>
+       <xsl:apply-templates select="preceding-sibling::vers[1]" mode="_split_token"/>
+     </xsl:otherwise>
+   </xsl:choose>
  </xsl:template>
 
  <xsl:template match="/showrefr" mode="_split_token">
@@ -223,10 +245,21 @@
    </xsl:copy>
  </xsl:template>
  
+ <xsl:template match="/base" mode="_add_akks">
+   <xsl:copy>
+     <xsl:copy-of select="@*"/>
+     <xsl:attribute name="no"><xsl:value-of select="mine:get_no(preceding-sibling::base|.)"/></xsl:attribute>
+     <xsl:apply-templates select="@*|node()" mode="_add_akks">
+       <xsl:with-param name="level" select="0"/>
+       <xsl:with-param name="no" select="0"/>
+     </xsl:apply-templates>
+   </xsl:copy>
+ </xsl:template>
+
  <xsl:template match="/vers" mode="_add_akks">
    <xsl:copy>
      <xsl:copy-of select="@*"/>
-     <xsl:apply-templates select="node()" mode="_add_akks">
+     <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="1"/>
        <xsl:with-param name="no" select="@no"/>
      </xsl:apply-templates>
@@ -235,9 +268,7 @@
  
  <xsl:template match="/refr" mode="_add_akks">
    <xsl:copy>
-        <xsl:copy-of select="@*[name()!='no']"/>
-<!--     <xsl:apply-templates select="@*|node()" mode="_add_akks"> -->
-                         <xsl:apply-templates select="node()" mode="_add_akks">  <!-- COMPAT -->
+     <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="2"/>
        <xsl:with-param name="no" select="@no"/>
      </xsl:apply-templates>
@@ -246,9 +277,7 @@
  
  <xsl:template match="/ending" mode="_add_akks">
    <xsl:copy>
-        <xsl:copy-of select="@*[name()!='no']"/>
-<!--     <xsl:apply-templates select="@*|node()" mode="_add_akks"> -->
-                         <xsl:apply-templates select="node()" mode="_add_akks">  <!-- COMPAT -->
+     <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="3"/>
        <xsl:with-param name="no" select="@no"/>
      </xsl:apply-templates>
@@ -257,21 +286,19 @@
 
  <xsl:template match="/bridge" mode="_add_akks">
    <xsl:copy>
-        <xsl:copy-of select="@*[name()!='no']"/>
-<!--     <xsl:apply-templates select="@*|node()" mode="_add_akks"> -->
-                         <xsl:apply-templates select="node()" mode="_add_akks">  <!-- COMPAT -->
+     <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="4"/>
        <xsl:with-param name="no" select="@no"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
 
-        <xsl:template match="br" mode="_add_akks"> <!-- COMPAT -->
-          <xsl:copy>
-            <xsl:attribute name="no"><xsl:value-of select="@no"/></xsl:attribute>
-            <xsl:if test="@break != 0"><xsl:attribute name="break"><xsl:value-of select="@break"/></xsl:attribute></xsl:if>
-          </xsl:copy>
-        </xsl:template>
+ <xsl:template match="br" mode="_add_akks"> <!-- COMPAT: strips @break=0 as following sheets often just test '@break' -->
+   <xsl:copy>
+     <xsl:attribute name="no"><xsl:value-of select="@no"/></xsl:attribute>
+     <xsl:if test="@break != 0"><xsl:attribute name="break"><xsl:value-of select="@break"/></xsl:attribute></xsl:if>
+   </xsl:copy>
+ </xsl:template>
 
  <xsl:template match="*" mode="_add_akks">
    <xsl:param name="level"/>
@@ -289,7 +316,7 @@
    <xsl:copy-of select="."/>
  </xsl:template>
 
- <xsl:template match="akks">
+ <xsl:template match="akks"> <!-- {{{ grab chords -->
    <xsl:choose>
      <xsl:when test="@transpose"><xsl:value-of select="mine:noteAkks(@transpose)"/></xsl:when>
      <xsl:otherwise><xsl:value-of select="mine:noteAkks()"/></xsl:otherwise>
@@ -364,17 +391,20 @@
    <xsl:param name="no"/>
    <xsl:value-of select="mine:grabAkk($level,$no,.)"/>
  </xsl:template>
+ <!-- }}} -->
 
- <func:function name="mine:get_no"> <!-- call with 'preceding-sibling::tag|.' -->
+ <func:function name="mine:get_no"> <!-- {{{ call with 'preceding-sibling::tag|.' -->
    <xsl:param name="prec"/>
-   <xsl:variable name="pno" select="$prec[@no][1]"/>
+   <xsl:variable name="pno" select="$prec[@no or @as][1]"/>
    <xsl:variable name="add">
      <xsl:choose>
+       <xsl:when test="$pno/self::showvers"><xsl:value-of select="$pno/@as"/></xsl:when>
        <xsl:when test="$pno"><xsl:value-of select="$pno/@no"/></xsl:when>
        <xsl:otherwise>0</xsl:otherwise>
      </xsl:choose>
    </xsl:variable>
    <func:result select="count(set:trailing($prec,$pno))+$add"/>
  </func:function>
+ <!-- }}} -->
 
 </xsl:stylesheet>
