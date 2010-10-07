@@ -14,6 +14,10 @@
  <xsl:variable name="nl"><xsl:text>
 </xsl:text></xsl:variable>
 
+ <!-- to ease testing: -->
+ <xsl:template match="song/node()"/>
+ <xsl:template match="song/content"><xsl:call-template name="songcontent"/></xsl:template>
+
  <xsl:template name="songcontent">
    <xsl:variable name="config">
      <base/>
@@ -159,34 +163,7 @@
  </xsl:template>
 
  <!-- {{{ block tags -->
- <xsl:template match="base|refr|bridge|ending" mode="_songcontent">
-   <xsl:param name="config" select="/.."/>
-   <xsl:variable name="this" select="$config/*[name()=name(current())]"/>
-   <xsl:copy-of select="$this/pre/@*|$this/pre/node()"/>
-   <xsl:call-template name="songcontent_block">
-     <xsl:with-param name="ctxt" select="$config|.."/>
-     <xsl:with-param name="first" select="func:strip-root($this/first)"/>
-     <xsl:with-param name="indent" select="func:strip-root($this/indent)"/>
-   </xsl:call-template>
- </xsl:template>
-
- <!-- {{{ _songcontent_do_number -->
- <xsl:template match="num" mode="_songcontent_do_number">
-   <xsl:param name="num"/>
-   <xsl:value-of select="format-number($num,@fmt)"/>
- </xsl:template>
-
- <xsl:template match="@*|node()|comment()" mode="_songcontent_do_number">
-   <xsl:param name="num"/>
-   <xsl:copy>
-     <xsl:apply-templates select="@*|node()|comment()" mode="_songcontent_do_number">
-       <xsl:with-param name="num" select="$num"/>
-     </xsl:apply-templates>
-   </xsl:copy>
- </xsl:template>
- <!-- }}} -->
-
- <xsl:template match="vers" mode="_songcontent">
+ <xsl:template match="base|vers|refr|bridge|ending" mode="_songcontent">
    <xsl:param name="config" select="/.."/>
    <xsl:variable name="this" select="$config/*[name()=name(current())]"/>
    <xsl:variable name="first">
@@ -201,6 +178,29 @@
      <xsl:with-param name="indent" select="func:strip-root($this/indent)"/>
    </xsl:call-template>
  </xsl:template>
+
+ <!-- {{{ _songcontent_do_number -->
+ <xsl:template match="num" mode="_songcontent_do_number">
+   <xsl:param name="num"/>
+   <xsl:value-of select="format-number($num,@fmt)"/>
+ </xsl:template>
+
+ <xsl:template match="numattr" mode="_songcontent_do_number">
+   <xsl:param name="num"/>
+   <xsl:attribute name="{@name}">
+     <xsl:value-of select="format-number($num,@fmt)"/>
+   </xsl:attribute>
+ </xsl:template>
+
+ <xsl:template match="@*|node()|comment()" mode="_songcontent_do_number">
+   <xsl:param name="num"/>
+   <xsl:copy>
+     <xsl:apply-templates select="@*|node()|comment()" mode="_songcontent_do_number">
+       <xsl:with-param name="num" select="$num"/>
+     </xsl:apply-templates>
+   </xsl:copy>
+ </xsl:template>
+ <!-- }}} -->
 
 <!--
  <xsl:template match="img" mode="_songcontent">
