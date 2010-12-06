@@ -171,7 +171,8 @@
  <xsl:template match="img" mode="file_single" name="output_img">
    <xsl:param name="impress_page_x" select="0"/>
    <xsl:param name="impress_page_y" select="0"/>
-   <xsl:param name="impress_page_w" select="28"/><!-- everything in cm -->
+<!--   <xsl:param name="impress_page_w" select="28"/>--><!-- everything in cm -->
+   <xsl:param name="impress_page_w" select="func:if($preset/premaster/style:page-layout-name='PM3',37.33,28)"/> <!-- handle 16:9 ... TODO -->
    <xsl:param name="impress_page_h" select="21"/>
    <xsl:param name="odpName" select="func:get_image_name(.)"/>
    <xsl:param name="position" select="concat(position(),'_I')"/><!-- only relevant for standalone, TODO? -->
@@ -227,7 +228,7 @@
        <xsl:text>application/vnd.oasis.opendocument.presentation</xsl:text>
      </exsl:document>
      <exsl:document href="content.xml" encoding="UTF-8" method="xml" indent="yes">
-       <xsl:apply-templates select="document('oo-template/content.xml')" mode="_output_odp_content">
+       <xsl:apply-templates select="document(func:default($preset/content,'oo-template/content.xml'))" mode="_output_odp_content">
          <xsl:with-param name="content_nodes" select="$content_nodes"/>
        </xsl:apply-templates>
      </exsl:document>
@@ -464,7 +465,7 @@
      <xsl:attribute name="no"><!-- sum of lines up to here -->
        <xsl:value-of select="count($tr1[@text:style-name!='P3'])*2+
                              count($tr1[@text:style-name='P3'])-
-                             count($tr1[child::text:span[@text:style-name='Txlang']])"/>
+                             count($tr1[child::text:span[@text:style-name='Txlang']])*0.5"/>
      </xsl:attribute>
      <xsl:attribute name="self"><!-- number of lines contained in <page-cand>..</page-cand> -->
        <xsl:value-of select="func:if(node(),count(text:p[@text:style-name!='P3'])*2+
