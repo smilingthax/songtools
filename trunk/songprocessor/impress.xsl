@@ -321,26 +321,36 @@
    <xsl:param name="lbfrom"/>
    <xsl:param name="position" select="position()"/>
    <!--  select="title[1]/text()" -->
-   <xsl:variable name="inNodes">
-     <xsl:apply-templates select="content"/>
+   <xsl:variable name="inHasImages">
+     <xsl:apply-templates select="img" mode="file_single"/>
    </xsl:variable>
-   <xsl:variable name="inPNodes">
-     <xsl:apply-templates select="exsl:node-set($inNodes)/node()" mode="_break_calc"/>
-   </xsl:variable>
-   <xsl:variable name="inPages">
-     <xsl:call-template name="page_fix"> 
-       <xsl:with-param name="inNodes" select="exsl:node-set($inPNodes)/node()"/>
-     </xsl:call-template> 
-   </xsl:variable>
+   <xsl:choose>
+     <xsl:when test="count(exsl:node-set($inHasImages)/node())"> <!-- if we have out-ouf-content images, discard all contents! -->
+       <xsl:copy-of select="$inHasImages"/>
+     </xsl:when>
+     <xsl:otherwise>
+       <xsl:variable name="inNodes">
+         <xsl:apply-templates select="content"/>
+       </xsl:variable>
+       <xsl:variable name="inPNodes">
+         <xsl:apply-templates select="exsl:node-set($inNodes)/node()" mode="_break_calc"/>
+       </xsl:variable>
+       <xsl:variable name="inPages">
+         <xsl:call-template name="page_fix"> 
+          <xsl:with-param name="inNodes" select="exsl:node-set($inPNodes)/node()"/>
+         </xsl:call-template> 
+       </xsl:variable>
 <!-- 
 <exsl:document href="/dev/stdout"><xsl:copy-of select="$inPNodes"/></exsl:document>
 -->
-   <xsl:apply-templates select="exsl:node-set($inPages)/node()" mode="_output_page">
-     <xsl:with-param name="inCopyright" select="$copyright"/>
-     <xsl:with-param name="inSource" select="$source"/>
-     <xsl:with-param name="inLBfrom" select="exsl:node-set($lbfrom)/*[1]"/>
-     <xsl:with-param name="position" select="$position"/>
-   </xsl:apply-templates>
+       <xsl:apply-templates select="exsl:node-set($inPages)/node()" mode="_output_page">
+         <xsl:with-param name="inCopyright" select="$copyright"/>
+         <xsl:with-param name="inSource" select="$source"/>
+         <xsl:with-param name="inLBfrom" select="exsl:node-set($lbfrom)/*[1]"/>
+         <xsl:with-param name="position" select="$position"/>
+       </xsl:apply-templates>
+     </xsl:otherwise>
+   </xsl:choose>
  </xsl:template>
 
  <!-- {{{ the page template -->
