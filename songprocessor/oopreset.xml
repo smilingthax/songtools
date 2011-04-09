@@ -78,10 +78,14 @@
     </poststatic>
   </preset>
   <preset name="smd">
-    <linesPerPage>13</linesPerPage>
+    <black/>
+    <linesPerPage>10</linesPerPage>
     <copy fromhref="smd_claim-onblack.png" tohref="Pictures/smd_claim-onblack.png" mime="image/png"/>
-    <set-text draw:style-name="gr2" svg:x="" svg:y="" svg:width="" svg:height=""/>
+    <set-text draw:style-name="gr2" svg:x="0.5cm" svg:y="0.0cm" svg:width="27.0cm" svg:height="19.13cm"/>
+<!--
     <set-rights svg:x="0.5cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>
+-->
+    <set-rights svg:x="0.5cm" svg:y="21.1cm" svg:width="13.5cm" svg:height="0cm"/>
     <set-from svg:x="19.5cm" svg:y="21.1cm" svg:width="7.5cm" svg:height="0cm"/>
     <set-pgof svg:x="26.5cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
     <prestatic>

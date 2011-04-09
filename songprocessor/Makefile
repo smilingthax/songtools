@@ -53,5 +53,6 @@ clean:
                       | sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@;\
                       [ -s $@ ] || rm -f $@'
 
+$(EXEC1): ../xsltlib/libxsltext.a
 $(EXEC1): $(OBJECTS1)
 	$(CXX) -o $@ $^ $(LDFLAGS)
