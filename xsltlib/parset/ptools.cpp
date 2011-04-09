@@ -93,6 +93,7 @@ void normalizeBrTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&it
   } else if (tag==ProcTraverse::BF_TAG) {
     item->unclosed_empty=true;
     set_bf=1;
+  } else if (tag==ProcTraverse::XLANG_TAG) { // HACK  for empty xlang
   } else {
     may_ignore_nl=0;
     last_br=NULL;
@@ -350,9 +351,14 @@ void substXlangTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&ite
     active=true;
   } else if ( (active)&&(tag==ProcTraverse::BR_TAG) ) {
     assert( (parent.ns.back()->type==ProcNodeBufferItem::NODE_ELEM)&&(parent.tag(parent.ns.back()->name)==ProcTraverse::XLANG_TAG) );
-    ProcNodeBufferItem *add=new ProcNodeBufferItem(parent.ns.back()->name);
-    add->type=ProcNodeBufferItem::NODE_ELEM_END;
-    parent.push(add);
+    if ( (parent.last)&&(parent.last->is_element_open())&&(parent.tag(parent.last->name)==ProcTraverse::XLANG_TAG) ) { // empty tag
+      // TODO:  problem:   normalizeBr will have seen the openItem  and stopped eating whitespace (see HACK in normalizeBrTool::openItem)
+      parent.pop();
+    } else {
+      ProcNodeBufferItem *add=new ProcNodeBufferItem(parent.ns.back()->name);
+      add->type=ProcNodeBufferItem::NODE_ELEM_END;
+      parent.push(add);
+    }
     parent.ns.pop_back();
     active=false;
   }
