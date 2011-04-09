@@ -647,18 +647,6 @@
 <exsl:document href="/dev/stdout"><o><xsl:copy-of select="$inNodes"/></o></exsl:document>
  -->
  <!-- {{{ block tags -->
- <xsl:template match="vers" mode="_songcontent">
-   <xsl:param name="config" select="/.."/>
-   <xsl:variable name="this" select="$config/*[name()=name(current())]"/>
-   <xsl:variable name="first"><first format='Pvers'><xsl:value-of select="@no"/><xsl:text>.</xsl:text><text:tab/></first></xsl:variable>
-   <xsl:copy-of select="$this/pre/@*|$this/pre/node()"/>
-   <xsl:call-template name="songcontent_block">
-     <xsl:with-param name="ctxt" select="$config|.."/>
-     <xsl:with-param name="first" select="func:strip-root(exsl:node-set($first)/first)"/>
-     <xsl:with-param name="indent" select="func:strip-root($this/indent)"/>
-   </xsl:call-template>
- </xsl:template>
-
  <xsl:template match="img" mode="_songcontent">
    <xsl:copy>
      <xsl:attribute name="odpName"><xsl:value-of select="func:get_image_name(.)"/></xsl:attribute>
