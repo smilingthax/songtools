@@ -6,7 +6,8 @@
                 xmlns:exsl="http://exslt.org/common"
                 xmlns:str="http://exslt.org/strings"
                 xmlns:mine="thax.home/mine-ext-speed"
-                extension-element-prefixes="exsl set func str mine">
+                xmlns:thobi="thax.home/split"
+                extension-element-prefixes="exsl set func str mine thobi">
 
  <xsl:output method="text" encoding="iso-8859-1"/>
  <xsl:variable name="nl"><xsl:text>
@@ -41,14 +42,15 @@
  <xsl:template match="song/title" mode="inhalt">
    <xsl:param name="lang"/>
    <xsl:value-of select="."/>
-   <xsl:if test="following-sibling::title[@lang=$lang or not(@lang)]"><xsl:text>|</xsl:text></xsl:if>
+   <xsl:if test="following-sibling::title[@lang=$lang]"><xsl:text>|</xsl:text></xsl:if>
  </xsl:template>
 
  <xsl:template match="song/content">
 <!-- multi song/lang mode -->
    <xsl:text>\sng{</xsl:text>
-   <xsl:apply-templates select="../title[@lang=current()/@lang or not(@lang)]" mode="inhalt">
-     <xsl:with-param name="lang" select="@lang"/>
+   <xsl:variable name="lang" select="mine:main_lang(@lang)"/>
+   <xsl:apply-templates select="../title[@lang=$lang]" mode="inhalt">
+     <xsl:with-param name="lang" select="$lang"/>
    </xsl:apply-templates>
    <xsl:text>} %{{{</xsl:text>
    <xsl:value-of select="$nl"/>
@@ -246,17 +248,24 @@
  </xsl:template>
 
  <!-- Helper functions -->
- <xsl:template name="rep_it">
+ <!-- {{{ TEMPLATE rep_it (inNodes, anz)  - repeates >inNodes >anz times -->
+ <xsl:template name="rep_it"><!-- speedup -->
    <xsl:param name="inNodes"/>
    <xsl:param name="anz"/>
-   <xsl:if test="$anz>0">
-     <xsl:call-template name="rep_it">
-       <xsl:with-param name="inNodes" select="$inNodes"/>
-       <xsl:with-param name="anz" select="$anz -1"/>
-     </xsl:call-template>
-     <xsl:copy-of select="$inNodes"/>
-   </xsl:if>
+   <xsl:choose>
+     <xsl:when test="function-available('mine:rep_it')">
+       <xsl:copy-of select="mine:rep_it($inNodes,$anz)"/>
+     </xsl:when>
+     <xsl:when test="$anz>0">
+       <xsl:call-template name="rep_it">
+         <xsl:with-param name="inNodes" select="$inNodes"/>
+         <xsl:with-param name="anz" select="$anz -1"/>
+       </xsl:call-template>
+       <xsl:copy-of select="$inNodes"/>
+     </xsl:when>
+   </xsl:choose>
  </xsl:template>
+ <!-- }}} -->
 
  <func:function name="str:subst"><!-- speedup -->
    <xsl:param name="inText"/>
@@ -303,5 +312,15 @@
      </xsl:choose>
    </func:result>
  </func:function>
+
+ <func:function name="mine:main_lang"> <!-- {{{ main_lang('en+de')='en' -->
+   <xsl:param name="lang"/>
+   <xsl:variable name="split" select="thobi:separate($lang,'+')"/>
+   <xsl:if test="count($split/split)>=1">
+     <xsl:message terminate="yes">Bad lang: <xsl:value-of select="$lang"/></xsl:message>
+   </xsl:if>
+   <func:result select="$split[1][self::text()]"/>
+ </func:function>
+ <!-- }}} -->
 
 </xsl:stylesheet>
