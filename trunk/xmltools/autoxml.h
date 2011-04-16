@@ -49,7 +49,7 @@ public:
   }
   void reset(xmlDocPtr _doc=NULL) {
     if (doc!=_doc) {
-      xmlFree(doc);
+      xmlFreeDoc(doc);
       doc=_doc;
     }
   }
