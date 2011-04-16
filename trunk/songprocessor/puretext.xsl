@@ -3,10 +3,11 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                 xmlns:func="http://exslt.org/functions"
                 xmlns:exsl="http://exslt.org/common"
+                xmlns:thobi="thax.home/split"
                 xmlns:str="http://exslt.org/strings"
                 xmlns:mine="thax.home/mine-ext-speed"
                 xmlns:ec="thax.home/enclose"
-                extension-element-prefixes="func mine ec exsl str">
+                extension-element-prefixes="func mine ec exsl str thobi">
 
  <xsl:import href="s-liner.xsl"/>
 
@@ -54,7 +55,7 @@
 
  <xsl:template match="song/content">
 <!-- multi song/lang mode -->
-   <xsl:apply-templates select="../title[@lang=current()/@lang or not(@lang)]">
+   <xsl:apply-templates select="../title[@lang=mine:main_lang(current()/@lang)]">
      <xsl:with-param name="lang" select="@lang"/>
    </xsl:apply-templates>
 <!-- -->
@@ -283,6 +284,16 @@
  <func:function name="func:strip-root">
    <xsl:param name="node"/>
    <func:result select="$node[1]/@*|$node[1]/node()"/>
+ </func:function>
+ <!-- }}} -->
+ 
+ <func:function name="mine:main_lang"> <!-- {{{ main_lang('en+de')='en' -->
+   <xsl:param name="lang"/>
+   <xsl:variable name="split" select="thobi:separate($lang,'+')"/>
+   <xsl:if test="count($split/split)>=1">
+     <xsl:message terminate="yes">Bad lang: <xsl:value-of select="$lang"/></xsl:message>
+   </xsl:if>
+   <func:result select="$split[1][self::text()]"/>
  </func:function>
  <!-- }}} -->
 

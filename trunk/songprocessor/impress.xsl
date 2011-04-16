@@ -536,7 +536,7 @@
 <!-- multi song/lang mode -->
 <!--
    <text:p text:style-name="Px">
-   <xsl:apply-templates select="../title[@lang=current()/@lang or not(@lang)]">
+   <xsl:apply-templates select="../title[@lang=mine:main_lang(current()/@lang)]">
      <xsl:with-param name="lang" select="@lang"/>
    </xsl:apply-templates></text:p>
    <text:p text:style-name="Px"><xsl:text>- - - - -</xsl:text></text:p><xsl:value-of select="$nl"/>-->
@@ -856,6 +856,16 @@
    <!-- generate id from inTag and add the original extensition. -->
    <xsl:variable name="extension" select="thobi:separate($inTag/@href,'.')[preceding-sibling::split and self::text()][position()=last()]"/>
    <func:result>Pictures/pic<xsl:value-of select="generate-id($inTag)"/><xsl:if test="$extension">.</xsl:if><xsl:value-of select="$extension"/></func:result>
+ </func:function>
+ <!-- }}} -->
+ 
+ <func:function name="mine:main_lang"> <!-- {{{ main_lang('en+de')='en' -->
+   <xsl:param name="lang"/>
+   <xsl:variable name="split" select="thobi:separate($lang,'+')"/>
+   <xsl:if test="count($split/split)>=1">
+     <xsl:message terminate="yes">Bad lang: <xsl:value-of select="$lang"/></xsl:message>
+   </xsl:if>
+   <func:result select="$split[1][self::text()]"/>
  </func:function>
  <!-- }}} -->
 

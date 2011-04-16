@@ -45,7 +45,7 @@
  </xsl:template>
 
  <xsl:template match="song/content">
-   <xsl:apply-templates select="../title[@lang=current()/@lang or not(@lang)]" mode="inhalt">
+   <xsl:apply-templates select="../title[@lang=mine:main_lang(current()/@lang)]" mode="inhalt">
      <xsl:with-param name="lang" select="@lang"/>
    </xsl:apply-templates>
  </xsl:template>

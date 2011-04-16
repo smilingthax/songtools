@@ -17,6 +17,8 @@
 #include <libxslt/extensions.h>
 #include <libexslt/exslt.h>
 #include "xsltlib.h"
+#include "autoxml.h"
+#include "autoxslt.h"
 
 using namespace std;
 
@@ -42,97 +44,84 @@ void init_transformer()
 
 bool do_transform(const char *inputFile,const char *outputFile,const char **interSheets,const char **secSheets,const char **secOutput,const char **params,int profile)
 {
-  xsltStylesheetPtr cur = NULL, cur2;
-  xmlDocPtr doc, res,res2;
-  int iA;
-
   int nbparams = 0;
   if (params) {
     for (;params[nbparams];nbparams++);
   }
 
-  // Do the transform.
-  int theResult=0;
-  cur = xsltParseStylesheetFile((const xmlChar *)"shet.xsl");
+  // Load input
+  auto_xmlDoc doc, res;
   if (inputFile) {
-//    doc = xmlReadFile(inputFile,"iso-8859-1",0); 
-    doc = xmlParseFile(inputFile); 
+//    doc.reset(xmlReadFile(inputFile,"iso-8859-1",0));
+    doc.reset(xmlParseFile(inputFile));
   } else {
-    doc = xmlParseFile("songs.xml");
+    doc.reset(xmlParseFile("songs.xml"));
   }
   if (!doc) {
     return false;
   }
+
+  // Do the transform.
   printf("Processing shet.xsl\n");
-  if (profile&1) {
-    xsltTransformContextPtr ctxt;
-    ctxt = xsltNewTransformContext(cur, doc);
-    if (ctxt == NULL) { 
-      theResult=-1;
+  {
+    auto_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)"shet.xsl"));
+    auto_xsltTransform ctxt(xsltNewTransformContext(cur, doc));
+    if (!ctxt) { 
       return false;
     }
-    res = xsltApplyStylesheetUser(cur, doc, params,NULL,stderr,ctxt);
-    xsltFreeTransformContext(ctxt);
-  } else {
-    res = xsltApplyStylesheet(cur, doc, params);
-  }
-  if (!res) {
-    theResult=-1;
-  } else if (outputFile) {
-    theResult=xsltSaveResultToFilename(outputFile, res, cur,0);
-  }
-  //  theResult=xsltSaveResultToFile(stdout, res, cur);
-  xsltFreeStylesheet(cur);
-
-  if (interSheets) {
-    for (iA=0; interSheets[iA] &&(theResult!=-1); iA++) {
-      cur2 = xsltParseStylesheetFile((const xmlChar *)interSheets[iA]);
-      res2 = xsltApplyStylesheet(cur2, res, params);
-      if (!res2) {
-        theResult=-1;
-      } else { 
-//        theResult=xsltSaveResultToFilename(secOutput[iA], res2, cur2,0);
-        xmlFreeDoc(res);
-        res = res2;
-      }
-      xsltFreeStylesheet(cur2);
+    res.reset(xsltApplyStylesheetUser(cur, doc, params, NULL, ((profile&1)?stderr:NULL), ctxt));
+    if (!res) {
+      return false;
     }
-  }
-
-  if ( (theResult==-1)||(!secSheets)||(!secOutput) ) { 
-    xmlFreeDoc(res);
-    xmlFreeDoc(doc);
-    return (theResult!=-1);
-  }
-  for (iA=0; secSheets[iA] && secOutput[iA] &&(theResult!=-1) ; iA++) {
-    cur2 = xsltParseStylesheetFile((const xmlChar *)secSheets[iA]);
-    printf("Processing %s\n",secSheets[iA]);
-    if (profile&2) {
-      xsltTransformContextPtr ctxt;
-      ctxt = xsltNewTransformContext(cur2, res);
-      if (ctxt == NULL) { 
-        theResult=-1;
+    if (outputFile) {
+      const int tmp=xsltSaveResultToFilename(outputFile, res, cur,0);
+  //    const int tmp=xsltSaveResultToFile(stdout, res, cur);
+      if (tmp==-1) {
         return false;
       }
-      res2 = xsltApplyStylesheetUser(cur2, res, params,NULL,stderr,ctxt);
-      xsltFreeTransformContext(ctxt);
-    } else {
-      res2 = xsltApplyStylesheet(cur2, res, params);
-// TODO: check ctxt->state==XSLT_STATE_STOPPED 
     }
-    if (!res2) {
-      theResult=-1;
-    } else {
-      theResult=xsltSaveResultToFilename(secOutput[iA], res2, cur2,0);
-      xmlFreeDoc(res2);
+    if (ctxt->state==XSLT_STATE_STOPPED) {  // e.g. xsl:message terminate
+      return false;
     }
-    xsltFreeStylesheet(cur2);
   }
 
-  xmlFreeDoc(res);
-  xmlFreeDoc(doc);
+  if (interSheets) {
+    for (int iA=0; interSheets[iA]; iA++) {
+      auto_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)interSheets[iA]));
+      doc.reset(xsltApplyStylesheet(cur, res, params));
+// TODO?! check  ctxt->state
+      if (!doc) {
+        return false;
+      }
+//      theResult=xsltSaveResultToFilename(secOutput[iA], doc, cur,0);
+      res.reset(doc.release()); // TODO!? swap
+    }
+  }
 
-  return (theResult!=-1);
+  if ( (!secSheets)||(!secOutput) ) { 
+    return true;
+  }
+  for (int iA=0; secSheets[iA] && secOutput[iA]; iA++) {
+    printf("Processing %s\n",secSheets[iA]);
+    auto_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)secSheets[iA]));
+    auto_xsltTransform ctxt(xsltNewTransformContext(cur, res));
+    if (!ctxt) { 
+      return false;
+    }
+    doc.reset(xsltApplyStylesheetUser(cur, res, params, NULL, ((profile&2)?stderr:NULL), ctxt));
+    if (!doc) {
+      return false;
+    } 
+    const int tmp=xsltSaveResultToFilename(secOutput[iA], doc, cur,0);
+    if (tmp==-1) {
+      return false;
+    }
+    if (ctxt->state==XSLT_STATE_STOPPED) {  // e.g. xsl:message terminate
+      return false;
+    }
+  }
+
+  return true;
 }
 
 void end_transformer()
