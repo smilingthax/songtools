@@ -58,6 +58,9 @@
    <xsl:if test="count(../content/@lang)!=1">
      <xsl:message terminate="yes">The language for title "<xsl:value-of select="text()"/>" is not uniquely defined (compare with &lt;content&gt;!)</xsl:message>
    </xsl:if>
+   <xsl:if test="mine:main_lang(../content/@lang)!=../content/@lang">
+     <xsl:message terminate="yes">Title-without-@lang is not allowed for xlang contents.</xsl:message>
+   </xsl:if>
    <xsl:copy>
      <xsl:attribute name="lang">
        <xsl:value-of select="../content/@lang"/>
@@ -404,6 +407,16 @@
      </xsl:choose>
    </xsl:variable>
    <func:result select="count(set:trailing($prec,$pno))+$add"/>
+ </func:function>
+ <!-- }}} -->
+ 
+ <func:function name="mine:main_lang"> <!-- {{{ main_lang('en+de')='en' -->
+   <xsl:param name="lang"/>
+   <xsl:variable name="split" select="thobi:separate($lang,'+')"/>
+   <xsl:if test="count($split/split)>=1">
+     <xsl:message terminate="yes">Bad lang: <xsl:value-of select="$lang"/></xsl:message>
+   </xsl:if>
+   <func:result select="$split[1][self::text()]"/>
  </func:function>
  <!-- }}} -->
 
