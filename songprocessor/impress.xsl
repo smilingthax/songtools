@@ -210,7 +210,7 @@
 
  <xsl:template match="img" mode="_img_pager">
    <xsl:call-template name="output_img">
-     <xsl:with-param name="impress_page_x" select="-0.5"/><!-- TODO: lilypond hack -->
+     <xsl:with-param name="impress_page_x" select="0"/>
      <xsl:with-param name="impress_page_y" select="0.1"/><!-- trial-and-error... -->
      <xsl:with-param name="impress_page_h" select="19.23"/><!-- only top-part used -->
      <xsl:with-param name="odpName" select="@odpName"/>
