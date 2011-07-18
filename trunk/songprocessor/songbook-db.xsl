@@ -12,6 +12,7 @@
    <book short="FJ1">Feiert Jesus!</book>
    <book short="FJ2">Feiert Jesus! 2</book>
    <book short="FJ3">Feiert Jesus! 3</book>
+   <book short="FJ4">Feiert Jesus! 4</book>
    <book short="FJTOGO">Feiert Jesus! to go</book>
    <book short="ILJ1">In love with Jesus</book>
    <book short="ILJ2">In love with Jesus 2</book>
@@ -33,13 +34,14 @@
    <book short="SDLDL3">Singt das Lied der Lieder, Band 3</book>
    <book short="JUF">Jesus - unsere Freude</book>
    <book short="Lut84">Lutherbibel 1984</book>
-<!-- preliminary: -->
    <book short="Wied03">Wiedenester Jugendliederbuch 2002/2003</book>
    <book short="Wied15">Wiedenester Jugendliederbuch 15. Ausgabe</book>
    <book short="Wied16">Wiedenester Jugendliederbuch 16. Ausgabe</book>
+<!-- preliminary: -->
    <book short="CTW1+2">Come To Worship 1 + 2 (Melodie)</book>
    <book short="UL">Unser Liederbuch</book> 
    <book short="ML2">Meine Liederbuch 2: Ökumene heute</book> 
+   <book short="SGIDH">So groß ist der Herr</book>
    <!-- GL: Gemeindelieder[GmL], Gotteslob[GL], Glaubenslieder[GlL] -->
    <book short="LL">Lebenslieder</book>
    <book short="LLP">Lebenslieder Plus</book>
@@ -53,8 +55,9 @@
    <book short="WT4">Worship Together Songbook 4.0</book>
    <book short="Gll">Glaubenslieder</book>
    <book short="Gll2">Glaubenslieder 2</book>
-<!-- unassigned: 
+   <book short="KFJ">Kinder feiern Jesus</book>
    <book short="DGL">Das gute Land</book>
+<!-- unassigned: 
    <book short="ML1">Meine Liederbuch (1:) für heute und morgen</book> 
    <book short=""></book> 
 -->
