@@ -177,6 +177,7 @@
      <xsl:with-param name="first" select="func:strip-root(exsl:node-set($first)/first)"/>
      <xsl:with-param name="indent" select="func:strip-root($this/indent)"/>
    </xsl:call-template>
+   <xsl:copy-of select="$this/post/node()"/>
  </xsl:template>
 
  <!-- {{{ _songcontent_do_number -->
