@@ -563,6 +563,7 @@
  <xsl:template name="songcontent">
    <xsl:variable name="config">
      <base>
+       <pre><page-cand block="1"/></pre>
        <first format="P2"/>
        <indent format="P2"/>
      </base>
