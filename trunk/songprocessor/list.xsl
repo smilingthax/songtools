@@ -6,6 +6,7 @@
                 xmlns:exsl="http://exslt.org/common"
                 xmlns:str="http://exslt.org/strings"
                 xmlns:mine="thax.home/mine-ext"
+                xmlns:thobi="thax.home/split"
                 extension-element-prefixes="exsl set func str mine">
 
  <xsl:output method="text" encoding="iso-8859-1"/>
@@ -65,5 +66,15 @@
    </xsl:variable>
    <func:result select="count(set:trailing($prec,$pno))+$add"/>
  </func:function>
+
+ <func:function name="mine:main_lang"> <!-- {{{ main_lang('en+de')='en' -->
+   <xsl:param name="lang"/>
+   <xsl:variable name="split" select="thobi:separate($lang,'+')"/>
+   <xsl:if test="count($split/split)>=1">
+     <xsl:message terminate="yes">Bad lang: <xsl:value-of select="$lang"/></xsl:message>
+   </xsl:if>
+   <func:result select="$split[1][self::text()]"/>
+ </func:function>
+ <!-- }}} -->
 
 </xsl:stylesheet>
