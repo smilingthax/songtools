@@ -355,7 +355,7 @@ void substXlangTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&ite
       // TODO:  problem:   normalizeBr will have seen the openItem  and stopped eating whitespace (see HACK in normalizeBrTool::openItem)
       parent.pop();
     } else {
-      ProcNodeBufferItem *add=new ProcNodeBufferItem(parent.ns.back()->name);
+      ProcNodeBufferItem *add=new ProcNodeBufferItem(parent.ns.back()->name); // "later 2"
       add->type=ProcNodeBufferItem::NODE_ELEM_END;
       parent.push(add);
     }
@@ -371,10 +371,10 @@ void substXlangTool::closeItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&it
       parent.tb.error("Bad!\n"); // TODO?
       return;
     }
-    delete item; // TODO? save for later?
+    delete item; // TODO? save for later? (or "later 2")
     item=NULL;
   } else if ( (parent.ns.back()->type==ProcNodeBufferItem::NODE_ELEM)&&(parent.tag(parent.ns.back()->name)==ProcTraverse::XLANG_TAG) ) { // we have to close
-    ProcNodeBufferItem *add=new ProcNodeBufferItem(parent.ns.back()->name);
+    ProcNodeBufferItem *add=new ProcNodeBufferItem(parent.ns.back()->name);  // "later"
     add->type=ProcNodeBufferItem::NODE_ELEM_END;
     parent.push(add);
     parent.ns.pop_back();
