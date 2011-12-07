@@ -104,6 +104,11 @@
      </ending>
      <quotes start="&quot;" end="&quot;"/>
      <tick><xsl:text>'</xsl:text></tick>
+     <rep>
+       <start>|: </start>
+       <simpleend> :|</simpleend>
+       <end> :| (<num fmt="#"/>x)</end>
+     </rep>
    </xsl:variable>
    <xsl:variable name="inNodes">
      <xsl:apply-templates select="*" mode="_songcontent">
@@ -185,10 +190,11 @@
  <xsl:template match="rep" mode="_songcontent_inline">
    <xsl:param name="ctxt" select="/.."/>
    <xsl:param name="indent" select="/.."/>
-   <xsl:text>|: </xsl:text>
+   <xsl:variable name="this" select="$ctxt/rep"/>
+   <xsl:copy-of select="$this/start/node()"/>
    <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
      <xsl:with-param name="ctxt" select="$ctxt"/>
-     <xsl:with-param name="indent"><xsl:copy-of select="$indent"/><xsl:text>   </xsl:text></xsl:with-param><!-- ?TODO str:padding -->
+     <xsl:with-param name="indent"><xsl:copy-of select="$indent"/><xsl:value-of select="str:padding(string-length($this/start/node()),' ')"/></xsl:with-param>
    </xsl:apply-templates>
    <xsl:choose>
      <xsl:when test="@no >2"><xsl:text> :| (</xsl:text><xsl:value-of select="@no"/><xsl:text>x)</xsl:text></xsl:when>
