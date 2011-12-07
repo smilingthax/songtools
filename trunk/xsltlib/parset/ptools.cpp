@@ -93,7 +93,21 @@ void normalizeBrTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&it
   } else if (tag==ProcTraverse::BF_TAG) {
     item->unclosed_empty=true;
     set_bf=1;
-  } else if (tag==ProcTraverse::XLANG_TAG) { // HACK  for empty xlang
+  } else if (tag==ProcTraverse::XLANG_TAG) {
+    // require preceding <br>, kill it. TODO
+    if (!last_br) {
+      // error
+//      parent.tb.error("xlang requires preceding br!\n"); // TODO?
+ProcNodeBufferItem *titem=new ProcNodeBufferItem((const xmlChar *)"BUG",NULL);
+titem->type=ProcNodeBufferItem::NODE_TEXT;
+parent.move(parent.last,titem,titem);
+      return;
+    }
+    increment_br(last_br,-1,-1);
+    // yes?
+    may_ignore_nl=0;
+    last_br=NULL;
+    empty_line=0;
   } else {
     may_ignore_nl=0;
     last_br=NULL;
@@ -343,6 +357,7 @@ substXlangTool::substXlangTool(ProcTraverse &parent) : procTool(parent),active(f
 
 void substXlangTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item)
 {
+  // more in normalizeBr!
   if (tag==ProcTraverse::XLANG_TAG) {
     if (active) {
       parent.tb.error("Double <xlang/> in one line\n"); // TODO?
@@ -351,14 +366,16 @@ void substXlangTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&ite
     active=true;
   } else if ( (active)&&(tag==ProcTraverse::BR_TAG) ) {
     assert( (parent.ns.back()->type==ProcNodeBufferItem::NODE_ELEM)&&(parent.tag(parent.ns.back()->name)==ProcTraverse::XLANG_TAG) );
-    if ( (parent.last)&&(parent.last->is_element_open())&&(parent.tag(parent.last->name)==ProcTraverse::XLANG_TAG) ) { // empty tag
+#if 0 
+    if ( (parent.last)&&(parent.last->is_element_open())&&(parent.tag(parent.last->name)==ProcTraverse::XLANG_TAG) ) { // empty tag: count as simple br
       // TODO:  problem:   normalizeBr will have seen the openItem  and stopped eating whitespace (see HACK in normalizeBrTool::openItem)
       parent.pop();
     } else {
+#endif
       ProcNodeBufferItem *add=new ProcNodeBufferItem(parent.ns.back()->name); // "later 2"
       add->type=ProcNodeBufferItem::NODE_ELEM_END;
       parent.push(add);
-    }
+//    }
     parent.ns.pop_back();
     active=false;
   }
@@ -373,7 +390,7 @@ void substXlangTool::closeItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&it
     }
     delete item; // TODO? save for later? (or "later 2")
     item=NULL;
-  } else if ( (parent.ns.back()->type==ProcNodeBufferItem::NODE_ELEM)&&(parent.tag(parent.ns.back()->name)==ProcTraverse::XLANG_TAG) ) { // we have to close
+  } else if ( (parent.ns.back()->type==ProcNodeBufferItem::NODE_ELEM)&&(parent.tag(parent.ns.back()->name)==ProcTraverse::XLANG_TAG) ) { // we have to close "early"
     ProcNodeBufferItem *add=new ProcNodeBufferItem(parent.ns.back()->name);  // "later"
     add->type=ProcNodeBufferItem::NODE_ELEM_END;
     parent.push(add);

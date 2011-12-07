@@ -25,6 +25,10 @@ comments:
 substAkkord:
 "|"CHAR         -> <akk note="C#/D#">CHAR</akk>
 
+substXlang:
+[...<br/>]
+^...<br/tag>     ->  <xlang>...</xlang><br/tag>
+
 |<-- done, TODO: do <akk> as NODE_AKK (? why); TODO: rework using the real xml-tree; TODO!: redo attrib as (kind of) argument for openNode
 <bf suppress="1"/>  ->
 OutputWhitespaceNormalization including empty-akk-WS-adjust.
