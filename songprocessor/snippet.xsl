@@ -61,6 +61,13 @@
      <ending/>
      <quotes start="&quot;" end="&quot;"/>
      <tick><xsl:text>'</xsl:text></tick>
+<!--
+     <rep>
+       <start/>
+       <simpleend/>
+       <end/>
+     </rep>
+-->
    </xsl:variable>
    <xsl:variable name="inNodes">
      <xsl:apply-templates select="*" mode="_songcontent">

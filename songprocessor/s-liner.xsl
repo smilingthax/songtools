@@ -40,6 +40,12 @@
      <quotes start="&#x201c;" end="&#x201d;"/>
      <quotes lang="de" start="&#x201e;" end="&#x201c;"/>
      <tick><xsl:text>&#x2019;</xsl:text></tick>
+     <rep>
+       <start>|: </start>
+       <simpleend> :|</simpleend>
+       <end> :|&#160;(<num fmt="#"/>x)</end>
+       <indent>   </indent>
+     </rep>
    </xsl:variable>
    <xsl:variable name="inNodes">
      <xsl:apply-templates select="*" mode="_songcontent">
@@ -219,15 +225,20 @@
  <xsl:template match="rep" mode="_songcontent_inline">
    <xsl:param name="ctxt" select="/.."/>
    <xsl:param name="indent" select="/.."/>
-   <xsl:variable name="tab"><xsl:text>   </xsl:text></xsl:variable>
-   <xsl:text>|: </xsl:text>
+   <xsl:variable name="this" select="$ctxt/rep"/>
+   <!-- TODO?! func:if(...,default) -->
+   <xsl:copy-of select="$this/start/node()"/>
    <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
      <xsl:with-param name="ctxt" select="$ctxt"/>
-     <xsl:with-param name="indent" select="$indent|exsl:node-set($tab)"/>
+     <xsl:with-param name="indent" select="$indent|func:strip-root($this/indent)"/>
    </xsl:apply-templates>
    <xsl:choose>
-     <xsl:when test="@no >2"><xsl:text> :| (</xsl:text><xsl:value-of select="@no"/><xsl:text>x)</xsl:text></xsl:when>
-     <xsl:otherwise><xsl:text> :|</xsl:text></xsl:otherwise>
+     <xsl:when test="@no >2">
+       <xsl:apply-templates select="$this/end[current()/@no=@no or not(@no)]/node()" mode="_songcontent_do_number">
+         <xsl:with-param name="num" select="@no"/>
+       </xsl:apply-templates>
+     </xsl:when>
+     <xsl:otherwise><xsl:copy-of select="$this/simpleend/node()"/></xsl:otherwise>
    </xsl:choose>
  </xsl:template>
 
@@ -281,6 +292,7 @@
  <xsl:template match="xlang" mode="_songcontent_inline">
    <xsl:param name="ctxt" select="/.."/>
    <xsl:param name="indent" select="/.."/>
+   <br no="1"/><next><xsl:copy-of select="$indent"/></next>
    <xsl:text>  ~</xsl:text>
    <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
      <xsl:with-param name="ctxt" select="$ctxt"/>

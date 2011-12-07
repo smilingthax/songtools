@@ -590,6 +590,12 @@
      <quotes lang="en" start="&#x201c;" end="&#x201d;"/>
      <quotes lang="de" start="&#x201e;" end="&#x201c;"/>
      <tick><xsl:text>&#x2019;</xsl:text></tick>
+     <rep>
+       <start>|:<text:tab/></start>
+       <simpleend> :|</simpleend>
+       <end> :|&#160;(<num fmt="#"/>x)</end>
+       <indent><text:tab/></indent>
+     </rep>
    </xsl:variable>
    <xsl:variable name="inNodes">
      <xsl:apply-templates select="*" mode="_songcontent">
@@ -658,33 +664,6 @@
  <!-- }}} -->
 
  <!-- {{{ inline tags -->
- <xsl:template match="rep" mode="_songcontent_inline">
-   <xsl:param name="ctxt" select="/.."/>
-   <xsl:param name="indent" select="/.."/>
-   <xsl:variable name="tab"><text:tab/></xsl:variable>
-   <xsl:text>|:</xsl:text><text:tab/>
-   <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
-     <xsl:with-param name="ctxt" select="$ctxt"/>
-     <xsl:with-param name="indent" select="$indent|exsl:node-set($tab)"/>
-   </xsl:apply-templates>
-   <xsl:choose>
-     <xsl:when test="@no >2"><xsl:text> :|&#160;(</xsl:text><xsl:value-of select="@no"/><xsl:text>x)</xsl:text></xsl:when>
-     <xsl:otherwise><xsl:text> :|</xsl:text></xsl:otherwise>
-   </xsl:choose>
- </xsl:template>
-
- <xsl:template match="quote" mode="_songcontent_inline">
-   <xsl:param name="ctxt" select="/.."/>
-   <xsl:param name="indent" select="/.."/>
-   <xsl:variable name="quotes" select="$ctxt/quotes[@lang=$ctxt/@lang or not(@lang)]"/>
-   <xsl:value-of select="func:if($quotes,string($quotes/@start),string('&quot;'))"/>
-   <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
-     <xsl:with-param name="ctxt" select="$ctxt"/>
-     <xsl:with-param name="indent" select="$indent"/>
-   </xsl:apply-templates>
-   <xsl:value-of select="func:if($quotes,string($quotes/@end),string('&quot;'))"/>
- </xsl:template>
-
  <xsl:template match="spacer" mode="_songcontent_inline">
    <text:s text:c="{@no *3}"/>
  </xsl:template>
