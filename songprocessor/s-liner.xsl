@@ -44,7 +44,7 @@
        <start>|: </start>
        <simpleend> :|</simpleend>
        <end> :|&#160;(<num fmt="#"/>x)</end>
-       <indent>   </indent>
+       <indent><xsl:text>   </xsl:text></indent>
      </rep>
    </xsl:variable>
    <xsl:variable name="inNodes">
