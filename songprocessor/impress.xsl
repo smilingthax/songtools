@@ -501,23 +501,6 @@
  </xsl:template>
  <!-- }}} -->
 
- <!-- special Txlang handling -->
- <xsl:template match="/text:p[child::text:span[@text:style-name='Txlang']]" mode="_break_calc">
-   <xsl:copy>
-     <xsl:copy-of select="@*"/>
-     <xsl:apply-templates select="node()" mode="_move_txlang"/>
-   </xsl:copy>
- </xsl:template>
- <xsl:template match="text:tab" mode="_move_txlang">
- </xsl:template>
- <xsl:template match="text:span" mode="_move_txlang">
-   <xsl:copy>
-     <xsl:copy-of select="@*"/>
-     <xsl:copy-of select="preceding-sibling::text:tab"/>
-     <xsl:copy-of select="node()"/>
-   </xsl:copy>
- </xsl:template>
-
  <xsl:template match="song/title" mode="links">
    <xsl:param name="linkTo"/>
    <xsl:choose>
@@ -564,28 +547,28 @@
    <xsl:variable name="config">
      <base>
        <pre><page-cand block="1"/></pre>
-       <first format="P2"/>
-       <indent format="P2"/>
+       <first text:style-name="P2"/>
+       <indent text:style-name="P2"/>
      </base>
      <vers>
        <pre><page-cand block="1"/></pre>
-       <first format='Pvers'><num fmt="#"/><xsl:text>.</xsl:text><text:tab/></first>
-       <indent format='Pvers'><text:tab/></indent>
+       <first text:style-name='Pvers'><num fmt="#"/><xsl:text>.</xsl:text><text:tab/></first>
+       <indent text:style-name='Pvers'><text:tab/></indent>
      </vers>
      <refr>
        <pre><page-cand block="1"/></pre>
-       <first format='Prefr'><xsl:text>Refr:</xsl:text><text:tab/></first>
-       <indent format='Prefr'><text:tab/></indent>
+       <first text:style-name='Prefr'><xsl:text>Refr:</xsl:text><text:tab/></first>
+       <indent text:style-name='Prefr'><text:tab/></indent>
      </refr>
      <bridge>
        <pre><page-cand block="1"/></pre>
-       <first format='Pbridge'><xsl:text>Bridge:</xsl:text><text:tab/></first>
-       <indent format='Pbridge'><text:tab/></indent>
+       <first text:style-name='Pbridge'><xsl:text>Bridge:</xsl:text><text:tab/></first>
+       <indent text:style-name='Pbridge'><text:tab/></indent>
      </bridge>
      <ending>
        <pre><page-cand block="1"/></pre>
-       <first format='Pending'><xsl:text>Schluss:</xsl:text><text:tab/></first>
-       <indent format='Pending'><text:tab/></indent>
+       <first text:style-name='Pending'><xsl:text>Schluss:</xsl:text><text:tab/></first>
+       <indent text:style-name='Pending'><text:tab/></indent>
      </ending>
      <quotes lang="en" start="&#x201c;" end="&#x201d;"/>
      <quotes lang="de" start="&#x201e;" end="&#x201c;"/>
@@ -599,18 +582,51 @@
    </xsl:variable>
    <xsl:variable name="inNodes">
      <xsl:apply-templates select="*" mode="_songcontent">
-       <xsl:with-param name="config" select="exsl:node-set($config)"/>
+       <xsl:with-param name="ctxt" select="exsl:node-set($config)|."/>
      </xsl:apply-templates>
      <page-cand endpage="1"/>
    </xsl:variable>
-   <xsl:apply-templates select="exsl:node-set($inNodes)" mode="_sc_post"/>
+   <xsl:apply-templates select="exsl:node-set($inNodes)/*" mode="_sc_post">
+     <xsl:with-param name="ctxt" select="exsl:node-set($config)|."/>
+   </xsl:apply-templates>
  </xsl:template>
 
  <!-- {{{ songcontent postprocessing: _sc_post -->
- <xsl:template match="/line" mode="_sc_post">
-   <text:p text:style-name="{@format}">
-     <xsl:apply-templates select="node()" mode="_sc_post"/><!-- kill all attribs -->
+ <xsl:template match="line" mode="_sc_post">
+   <xsl:param name="ctxt"/>
+   <xsl:param name="solrep" select="@solrep|exsl:node-set(0)[not(current()/@solrep)]"/> <!-- @solrep not always present; TRICK: variable not allowed here... -->
+   <xsl:param name="repindent" select="sum(preceding-sibling::*/@rep) + $solrep"/>
+
+   <xsl:variable name="blockfmt" select="$ctxt/block/first[current()/@firstpos]|$ctxt/block/indent[not(current()/@firstpos)]"/>
+   <xsl:variable name="indent">
+     <xsl:copy-of select="$blockfmt/node()"/>
+     <xsl:call-template name="rep_it">
+       <xsl:with-param name="inNodes" select="$ctxt/rep/indent/node()"/>
+       <xsl:with-param name="anz" select="$repindent - $solrep"/>
+     </xsl:call-template>
+   </xsl:variable> 
+
+   <text:p>
+     <xsl:copy-of select="$blockfmt/@*"/>
+     <xsl:choose>
+       <xsl:when test="@xlang">
+         <text:span text:style-name="Txlang">
+           <xsl:copy-of select="$indent"/>
+           <text:s text:c="4"/>
+           <xsl:apply-templates select="node()" mode="_sc_post">
+             <xsl:with-param name="ctxt" select="$ctxt"/>
+           </xsl:apply-templates>
+         </text:span>
+       </xsl:when>
+       <xsl:otherwise>
+         <xsl:copy-of select="$indent"/>
+         <xsl:apply-templates select="node()" mode="_sc_post">
+           <xsl:with-param name="ctxt" select="$ctxt"/>
+         </xsl:apply-templates>
+       </xsl:otherwise>
+     </xsl:choose>
    </text:p><xsl:value-of select="$nl"/>
+
    <xsl:choose>
      <xsl:when test="@no>1 and @break">
        <page-cand break="{@break}">
@@ -637,15 +653,17 @@
    <xsl:copy-of select="."/><xsl:value-of select="$nl"/>
  </xsl:template>
 
- <xsl:template match="/text()" mode="_sc_post"/>
-
+<!-- problem: overrides s-liner templates 
  <xsl:template match="@*|node()" mode="_sc_post">
+   <xsl:param name="ctxt"/>
    <xsl:copy>
-     <xsl:apply-templates select="@*|node()" mode="_sc_post"/>
+     <xsl:apply-templates select="@*|node()" mode="_sc_post">
+       < name="ctxt" select="$ctxt"/>
+     </xsl:apply-templates>
    </xsl:copy>
- </xsl:template>
+ </xsl:template> -->
 
- <xsl:template match="text()" mode="_sc_post">
+ <xsl:template match="line/text()" mode="_sc_post">
    <xsl:value-of select="translate(normalize-space(.),'&#160;',' ')"/>
  </xsl:template>
  <!-- }}} -->
@@ -655,6 +673,7 @@
  -->
  <!-- {{{ block tags -->
  <xsl:template match="img" mode="_songcontent">
+   <xsl:param name="ctxt"/>
    <xsl:copy>
      <xsl:attribute name="odpName"><xsl:value-of select="func:get_image_name(.)"/></xsl:attribute>
      <xsl:copy-of select="@*"/>
@@ -674,26 +693,12 @@
  </xsl:template>
  
  <xsl:template match="xlate" mode="_songcontent_inline">
-   <xsl:param name="ctxt" select="/.."/>
-   <xsl:param name="indent" select="/.."/>
+   <xsl:param name="ctxt"/>
    <xsl:text>(Übersetzung:&#160;</xsl:text>
    <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
      <xsl:with-param name="ctxt" select="$ctxt"/>
-     <xsl:with-param name="indent" select="$indent"/>
    </xsl:apply-templates>
    <xsl:text>)</xsl:text>
- </xsl:template>
-
- <xsl:template match="xlang" mode="_songcontent_inline">
-   <xsl:param name="ctxt" select="/.."/>
-   <xsl:param name="indent" select="/.."/>
-   <text:span text:style-name="Txlang">
-   <text:s text:c="4"/>
-   <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
-     <xsl:with-param name="ctxt" select="$ctxt"/>
-     <xsl:with-param name="indent" select="$indent"/>
-   </xsl:apply-templates>
-   </text:span>
  </xsl:template>
 
  <!-- ignore certain known tags -->
@@ -755,7 +760,7 @@
  <func:function name="func:default">
    <xsl:param name="value"/>
    <xsl:param name="default"/>
-   <func:result select="(exsl:node-set($value)|exsl:node-set($default))[1]"/>
+   <func:result select="exsl:node-set($value)|exsl:node-set($default)[not($value)]"/> 
  </func:function>
  <!-- }}} -->
  
@@ -839,13 +844,14 @@
  </func:function>
  <!-- }}} -->
  
- <func:function name="mine:main_lang"> <!-- {{{ main_lang('en+de')='en' -->
+ <func:function name="mine:main_lang"> <!-- {{{ main_lang('en+de')='en'   ('en+de',3)='de' -->
    <xsl:param name="lang"/>
+   <xsl:param name="num" select="1"/>
    <xsl:variable name="split" select="thobi:separate($lang,'+')"/>
    <xsl:if test="count($split/split)>=1">
      <xsl:message terminate="yes">Bad lang: <xsl:value-of select="$lang"/></xsl:message>
    </xsl:if>
-   <func:result select="$split[1][self::text()]"/>
+   <func:result select="$split[$num][self::text()]"/>
  </func:function>
  <!-- }}} -->
 
