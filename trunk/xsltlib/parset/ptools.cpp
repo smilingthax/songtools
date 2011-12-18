@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// TODO? xlang for empty line handling, e.g. @break for preceding br
 // {{{ normalizeBrTool
 normalizeBrTool::normalizeBrTool(ProcTraverse &parent) : procTool(parent),set_bf(-1),last_br(NULL),may_ignore_nl(1),empty_line(1)
 {
