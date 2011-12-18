@@ -112,15 +112,38 @@
    </xsl:variable>
    <xsl:variable name="inNodes">
      <xsl:apply-templates select="*" mode="_songcontent">
-       <xsl:with-param name="config" select="exsl:node-set($config)"/>
+       <xsl:with-param name="ctxt" select="exsl:node-set($config)|."/>
      </xsl:apply-templates>
    </xsl:variable>
-   <xsl:apply-templates select="exsl:node-set($inNodes)" mode="_sc_post"/>
+   <xsl:apply-templates select="exsl:node-set($inNodes)/*" mode="_sc_post">
+     <xsl:with-param name="ctxt" select="exsl:node-set($config)|."/>
+   </xsl:apply-templates>
  </xsl:template>
 
  <!-- {{{ songcontent postprocessing: _sc_post -->
  <xsl:template match="line" mode="_sc_post">
-   <xsl:value-of select="."/>
+   <xsl:param name="ctxt"/>
+   <xsl:param name="solrep" select="@solrep|exsl:node-set(0)[not(current()/@solrep)]"/> <!-- @solrep not always present; TRICK: variable not allowed here... -->
+   <xsl:param name="repindent" select="sum(preceding-sibling::*/@rep) + $solrep"/>
+   <xsl:choose>
+     <xsl:when test="@firstpos">
+       <xsl:value-of select="$ctxt/block/first"/>
+     </xsl:when>
+     <xsl:otherwise>
+       <xsl:value-of select="str:padding(string-length($ctxt/block/first),' ')"/>
+     </xsl:otherwise>
+   </xsl:choose>
+   <xsl:value-of select="str:padding(string-length($ctxt/rep/start)*($repindent - $solrep),' ')"/>
+
+   <xsl:if test="@xlang">
+     <xsl:text>  ~</xsl:text>
+   </xsl:if>
+   <xsl:apply-templates select="node()" mode="_sc_post">
+     <xsl:with-param name="ctxt" select="$ctxt"/>
+   </xsl:apply-templates>
+   <xsl:if test="@xlang">
+     <xsl:text>~</xsl:text>
+   </xsl:if>
    <xsl:if test="@no">
      <xsl:call-template name="rep_it">
        <xsl:with-param name="inNodes" select="$nl"/>
@@ -160,72 +183,28 @@
  </xsl:template>
 
  <!-- {{{ block tags -->
- <xsl:template match="base|refr|bridge|ending" mode="_songcontent">
-   <xsl:param name="config" select="/.."/>
-   <xsl:variable name="this" select="$config/*[name()=name(current())]"/>
-   <xsl:call-template name="songcontent_block">
-     <xsl:with-param name="ctxt" select="$config|.."/>
-     <xsl:with-param name="first" select="func:strip-root($this/first)"/>
-     <xsl:with-param name="indent" select="str:padding(string-length($this/first),' ')"/>
-   </xsl:call-template>
- </xsl:template>
-
- <xsl:template match="vers" mode="_songcontent">
-   <xsl:param name="config" select="/.."/>
-   <xsl:variable name="this" select="$config/*[name()=name(current())]"/>
-   <xsl:variable name="first"><xsl:value-of select="@no"/><xsl:text>. </xsl:text></xsl:variable>
-   <xsl:call-template name="songcontent_block">
-     <xsl:with-param name="ctxt" select="$config|.."/>
-     <xsl:with-param name="first" select="$first"/>
-     <xsl:with-param name="indent" select="str:padding(string-length($first),' ')"/>
-   </xsl:call-template>
- </xsl:template>
-
  <xsl:template match="img" mode="_songcontent">
+   <xsl:param name="ctxt"/>
    <line no="1"><xsl:text>*Img:</xsl:text><xsl:value-of select="@href"/></line><xsl:value-of select ="$nl"/>
  </xsl:template>
  <!-- }}} -->
 
  <!-- {{{ inline tags -->
- <xsl:template match="rep" mode="_songcontent_inline">
-   <xsl:param name="ctxt" select="/.."/>
-   <xsl:param name="indent" select="/.."/>
-   <xsl:variable name="this" select="$ctxt/rep"/>
-   <xsl:copy-of select="$this/start/node()"/>
-   <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
-     <xsl:with-param name="ctxt" select="$ctxt"/>
-     <xsl:with-param name="indent"><xsl:copy-of select="$indent"/><xsl:value-of select="str:padding(string-length($this/start/node()),' ')"/></xsl:with-param>
-   </xsl:apply-templates>
-   <xsl:choose>
-     <xsl:when test="@no >2"><xsl:text> :| (</xsl:text><xsl:value-of select="@no"/><xsl:text>x)</xsl:text></xsl:when>
-     <xsl:otherwise><xsl:text> :|</xsl:text></xsl:otherwise>
-   </xsl:choose>
- </xsl:template>
-
  <!-- TODO... -->
- <xsl:template match="cnr" mode="_songcontent">
-   <xsl:call-template name="songcontent"/>
- </xsl:template>
- <xsl:template match="next" mode="_songcontent">
-   <xsl:text> &amp; </xsl:text>
- </xsl:template>
-
- <xsl:template match="quote" mode="_songcontent_inline">
-   <xsl:param name="ctxt" select="/.."/>
-   <xsl:param name="indent" select="/.."/>
-   <xsl:variable name="quotes" select="$ctxt/quotes[@lang=$ctxt/@lang or not(@lang)]"/>
-   <xsl:value-of select="$quotes/@start"/>
+ <xsl:template match="cnr" mode="_songcontent_inlinex">
+   <xsl:param name="ctxt"/>
    <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
      <xsl:with-param name="ctxt" select="$ctxt"/>
-     <xsl:with-param name="indent" select="$indent"/>
    </xsl:apply-templates>
-   <xsl:value-of select="$quotes/@end"/>
+ </xsl:template>
+ <xsl:template match="next" mode="_songcontent_inline">
+   <xsl:text> &amp; </xsl:text>
  </xsl:template>
 
  <xsl:template match="spacer" mode="_songcontent_inline">
    <xsl:value-of select="str:padding(@no *2,' ')"/>
  </xsl:template>
- 
+
  <xsl:template match="hfill" mode="_songcontent_inline">
    <!-- TODO? this is just damage containment -->
    <xsl:value-of select="str:padding(20,' ')"/>
@@ -292,14 +271,15 @@
    <func:result select="$node[1]/@*|$node[1]/node()"/>
  </func:function>
  <!-- }}} -->
- 
- <func:function name="mine:main_lang"> <!-- {{{ main_lang('en+de')='en' -->
+
+ <func:function name="mine:main_lang"> <!-- {{{ main_lang('en+de')='en'   ('en+de',3)='de' -->
    <xsl:param name="lang"/>
+   <xsl:param name="num" select="1"/>
    <xsl:variable name="split" select="thobi:separate($lang,'+')"/>
    <xsl:if test="count($split/split)>=1">
      <xsl:message terminate="yes">Bad lang: <xsl:value-of select="$lang"/></xsl:message>
    </xsl:if>
-   <func:result select="$split[1][self::text()]"/>
+   <func:result select="$split[$num][self::text()]"/>
  </func:function>
  <!-- }}} -->
 
