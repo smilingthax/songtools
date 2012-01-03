@@ -62,6 +62,9 @@
 -->
  </xsl:template>
 
+ <!-- NOTE: handle inline elements which are absolutely positioned in first pass, 
+            those that are relativ to e.g. first lgroup-line (block,rep) in second pass (_sc_post) -->
+
  <!-- {{{ songcontent postprocessing: _sc_post -->
  <xsl:template match="/block" mode="_sc_post">
    <xsl:param name="ctxt"/>
@@ -309,7 +312,9 @@
    <inline start="{name()}">
      <xsl:copy-of select="@*"/>
    </inline>
-   <xsl:apply-templates select="*|text()" mode="_songcontent_inline"/>
+   <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
+     <xsl:with-param name="ctxt" select="$ctxt"/>
+   </xsl:apply-templates>
    <inline end="{name()}">
      <xsl:copy-of select="@*"/>
    </inline>
@@ -355,7 +360,7 @@
 
  <xsl:template match="xlate" mode="_songcontent_inline">
    <xsl:param name="ctxt"/>
-   <xsl:text>(Ãœbersetzung: </xsl:text>
+   <xsl:text>(Übersetzung: </xsl:text>
    <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
      <xsl:with-param name="ctxt" select="$ctxt"/>
    </xsl:apply-templates>
