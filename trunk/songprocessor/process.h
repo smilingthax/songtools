@@ -3,6 +3,8 @@
 
 #ifdef __cplusplus
  #include <vector>
+ #include <stdio.h>
+
  class SongContainer;
  class FlyTextTokens;
  extern std::vector<SongContainer *> songList;
