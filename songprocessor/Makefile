@@ -27,12 +27,12 @@ CPPFLAGS+=$(shell pkg-config --cflags $(PACKAGES))
 LDFLAGS+=$(shell pkg-config --libs $(PACKAGES))
 
 ifeq "$(STATIC)" "1"
-  LDFLAGS+=-static -pthread -lz -ldl -lgcrypt -lgpg-error
+  LDFLAGS+=-static -pthread -ldl -lgcrypt -lgpg-error
 #  LDFLAGS+=-static -pthread -ldl
 endif
 
 CPPFLAGS+=-I../xsltlib
-LDFLAGS+=../xsltlib/libxsltext.a
+LDFLAGS+=../xsltlib/libxsltext.a -lz
 
 OBJECTS1=$(SOURCES1:.c=.o) $(SOURCES2:.cpp=.o)
 all: $(EXEC1)
