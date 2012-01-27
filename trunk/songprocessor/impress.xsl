@@ -653,12 +653,16 @@
    <xsl:copy-of select="."/><xsl:value-of select="$nl"/>
  </xsl:template>
 
+ <xsl:template match="/img" mode="_sc_post">
+   <xsl:copy-of select="."/><xsl:value-of select="$nl"/>
+ </xsl:template>
+
 <!-- problem: overrides s-liner templates 
  <xsl:template match="@*|node()" mode="_sc_post">
    <xsl:param name="ctxt"/>
    <xsl:copy>
      <xsl:apply-templates select="@*|node()" mode="_sc_post">
-       < name="ctxt" select="$ctxt"/>
+       <xsl:with-param name="ctxt" select="$ctxt"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template> -->
