@@ -257,6 +257,9 @@
  <xsl:template match="*" mode="_songcontent_inline">
    <xsl:call-template name="error_trap"/>
  </xsl:template>
+ <xsl:template match="*" mode="_sc_post">
+   <xsl:call-template name="error_trap"/>
+ </xsl:template>
  <!-- }}} -->
 
  <xsl:template match="text()" mode="_songcontent"/>

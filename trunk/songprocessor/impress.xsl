@@ -363,7 +363,8 @@
    <xsl:variable name="tr2" select=".|set:trailing(../page,.)"/>
    <xsl:variable name="tr3" select="set:trailing($tr1,$tr1[@endpage][1])"/>
    <xsl:variable name="tr4" select="set:leading($tr2,$tr2[@endpage][1])|$tr2[@endpage][1]"/>
-   <xsl:variable name="inPgOf" select="func:if(count($tr3)+count($tr4)>1,concat(count($tr3)+1,'/',count($tr3)+count($tr4)))"/>
+<!--   <xsl:variable name="inPgOf" select="func:if(count($tr3)+count($tr4)>1,concat(count($tr3)+1,'/',count($tr3)+count($tr4)))"/>-->
+   <xsl:variable name="inPgOf" select="concat(count($tr3)+1,'/',count($tr3)+count($tr4))"/>
    <xsl:variable name="images-hlp">
      <xsl:apply-templates select="img" mode="_img_pager"/>
    </xsl:variable>
