@@ -31,6 +31,12 @@ public:
   unique_xmlDoc()=default;
   explicit unique_xmlDoc(xmlDocPtr doc) : ptr(doc) {}
 
+  unique_xmlDoc(unique_xmlDoc &&doc) : ptr(std::move(doc.ptr)) {}
+  unique_xmlDoc& operator=(unique_xmlDoc &&doc) {
+    std::swap(ptr,doc.ptr);
+    return *this;
+  }
+
   inline operator xmlDocPtr() { return ptr.get(); }
   inline xmlDocPtr operator->() const { return ptr.get(); }
   inline xmlDocPtr release() { return ptr.release(); }
