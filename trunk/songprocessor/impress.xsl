@@ -169,13 +169,14 @@
  -->
  
  <xsl:template match="img" mode="file_single" name="output_img">
-   <xsl:param name="impress_page_x" select="0"/>
-   <xsl:param name="impress_page_y" select="0"/>
-<!--   <xsl:param name="impress_page_w" select="28"/>--><!-- everything in cm -->
-   <xsl:param name="impress_page_w" select="func:if($preset/premaster/style:page-layout-name='PM3',37.33,28)"/> <!-- handle 16:9 ... TODO -->
-   <xsl:param name="impress_page_h" select="21"/>
+   <xsl:param name="impress_page_x" select="func:default($preset/set-fullimg/@x,0)"/>
+   <xsl:param name="impress_page_y" select="func:default($preset/set-fullimg/@y,0)"/>
+   <xsl:param name="impress_page_w" select="func:default($preset/set-fullimg/@width,28)"/>--><!-- everything in cm -->
+   <xsl:param name="impress_page_h" select="func:default($preset/set-fullimg/@height,21)"/>
    <xsl:param name="odpName" select="func:get_image_name(.)"/>
    <xsl:param name="position" select="concat(position(),'_I')"/><!-- only relevant for standalone, TODO? -->
+   <xsl:param name="xpos" select="func:default($preset/set-fullimg/@xpos,0.5)"/> <!-- 0 left, 0.5 center, 1 right -->
+   <xsl:param name="ypos" select="func:default($preset/set-fullimg/@ypos,0.5)"/>
    <xsl:variable name="impress_page_ratio" select="$impress_page_w div $impress_page_h"/>
    <xsl:variable name="bgstyle">
      <xsl:choose>
@@ -193,11 +194,11 @@
    <xsl:variable name="impress_h" select="func:if($img_ratio > $impress_page_ratio,
                                                   ($impress_page_w - $img_border) div $img_ratio,
                                                   $impress_page_h - $img_border)"/>
-   <xsl:variable name="impress_x" select="$impress_page_x + ($impress_page_w - $impress_w) div 2"/> <!-- center -->
-   <xsl:variable name="impress_y" select="$impress_page_y + ($impress_page_h - $impress_h) div 2"/>
+   <xsl:variable name="impress_x" select="$impress_page_x + $xpos*($impress_page_w - $impress_w)"/>
+   <xsl:variable name="impress_y" select="$impress_page_y + $ypos*($impress_page_h - $impress_h)"/>
    <draw:page draw:name="{$position}" draw:style-name="{$bgstyle}" draw:master-page-name="Default">
      <office:forms form:automatic-focus="false" form:apply-design-mode="false"/>
-     <draw:frame draw:style-name="gr1" draw:text-style-name="P2" draw:layer="layout" svg:width="{$impress_w}cm" svg:height="{$impress_h}cm" svg:x="{$impress_x}cm" svg:y="{$impress_y}cm"><!-- gr1 / gr2 to choose center/top -->
+     <draw:frame draw:style-name="gr1" draw:text-style-name="P2" draw:layer="layout" svg:width="{$impress_w}cm" svg:height="{$impress_h}cm" svg:x="{$impress_x}cm" svg:y="{$impress_y}cm">
        <draw:image xlink:href="{$odpName}" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
      </draw:frame>
    </draw:page>
@@ -210,9 +211,12 @@
 
  <xsl:template match="img" mode="_img_pager">
    <xsl:call-template name="output_img">
-     <xsl:with-param name="impress_page_x" select="0"/>
-     <xsl:with-param name="impress_page_y" select="0.1"/><!-- trial-and-error... -->
-     <xsl:with-param name="impress_page_h" select="19.23"/><!-- only top-part used -->
+     <xsl:with-param name="impress_page_x" select="func:default($preset/set-partimg/@x,func:default($preset/set-fullimg/@x,0))"/>
+     <xsl:with-param name="impress_page_y" select="func:default($preset/set-partimg/@y,func:default($preset/set-fullimg/@y,0)+0.1)"/>
+     <xsl:with-param name="impress_page_w" select="func:default($preset/set-partimg/@width,func:default($preset/set-fullimg/@width,28))"/>
+     <xsl:with-param name="impress_page_h" select="func:default($preset/set-partimg/@heigth,19.23)"/>
+     <xsl:with-param name="xpos" select="func:default($preset/set-partimg/@xpos,func:default($preset/set-fullimg/@ypos,0.5))"/>
+     <xsl:with-param name="ypos" select="func:default($preset/set-partimg/@ypos,func:default($preset/set-fullimg/@ypos,0.5))"/>
      <xsl:with-param name="odpName" select="@odpName"/>
    </xsl:call-template>
  </xsl:template>
