@@ -12,6 +12,8 @@
     <set-from svg:x="19.5cm" svg:y="21.1cm" svg:width="7.5cm" svg:height="0cm"/>
     <set-lb svg:x="24.1cm" svg:y="1.7cm" svg:width="3.0cm" svg:height="2.0cm"/>
     <set-pgof svg:x="26.5cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
+    <set-fullimg x="0" y="0" width="28" height="21"/> <!-- no units, no svg: namespace! -->
+    <set-partimg x="0" y="0.1" width="28" height="19.23"/> <!-- y: trial and error; height: only top part used -->
     <poststatic>
       <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
         <draw:text-box>
@@ -28,6 +30,8 @@
     <set-from svg:x="19.5cm" svg:y="21.1cm" svg:width="7.5cm" svg:height="0cm"/>
     <set-lb svg:x="24.1cm" svg:y="1.7cm" svg:width="3.0cm" svg:height="2.0cm"/>
     <set-pgof svg:x="26.5cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
+    <set-fullimg x="0" y="0" width="28" height="21"/> <!-- no units, no svg: namespace! -->
+    <set-partimg x="0" y="0.1" width="28" height="19.23"/> <!-- y: trial and error; height: only top part used -->
     <poststatic>
       <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
         <draw:text-box>
@@ -36,13 +40,16 @@
       </draw:frame>
     </poststatic>
   </preset>
-  <preset name="nok">
+  <preset name="nok"><!-- 16:9 (via PM3) -->
     <black/>
     <linesPerPage>8.5</linesPerPage>
     <copy fromhref="nok-bg.jpg" tohref="Pictures/nok-bg.jpg" mime="image/jpeg"/>
     <set-text draw:style-name="gr2" svg:x="5.0cm" svg:y="0.5cm" svg:width="28.0cm" svg:height="15.13cm"/>
     <set-rights svg:x="5.0cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>
+    <!-- no <set-from/>, <set-lb/> -->
     <set-pgof svg:x="30.77cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
+    <set-fullimg x="0" y="0" width="37.33" height="21"/>
+    <set-partimg x="4.5" y="0.6" width="28" height="19.23" ypos="0"/> <!-- xpos/ypos: 0 left, 0.5 center(default), 1 right -->
     <premaster style:page-layout-name="PM3">
       <draw:frame draw:style-name="gr2" draw:text-style-name="P2" draw:layer="layout" svg:width="21.0cm" svg:height="4.5cm" draw:transform="rotate (1.5707963267946) translate (0cm 21.0cm)">
         <draw:image xlink:href="Pictures/nok-bg.jpg" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
@@ -56,13 +63,15 @@
       </draw:frame>
     </poststatic>
   </preset>
-  <preset name="nok-black">
+  <preset name="nok-black"><!-- zwischenseiten ohne bild -->
     <black/>
     <linesPerPage>9.5</linesPerPage>
     <copy fromhref="nok-bg.jpg" tohref="Pictures/nok-bg.jpg" mime="image/jpeg"/>
     <set-text draw:style-name="gr2" svg:x="5.0cm" svg:y="0.5cm" svg:width="30.0cm" svg:height="15.13cm"/>
     <set-rights svg:x="5.0cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>
     <set-pgof svg:x="30.77cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
+    <set-fullimg x="0" y="0" width="37.33" height="21"/>
+    <set-partimg x="4.5" y="0.6" width="28" height="19.23" ypos="0"/>
     <premaster style:page-layout-name="PM3"/>
     <prestatic>
       <draw:frame draw:style-name="gr2" draw:text-style-name="P2" draw:layer="layout" svg:width="21.0cm" svg:height="4.5cm" draw:transform="rotate (1.5707963267946) translate (0cm 21.0cm)">
@@ -88,6 +97,8 @@
     <set-rights svg:x="0.5cm" svg:y="21.1cm" svg:width="13.5cm" svg:height="0cm"/>
     <set-from svg:x="19.5cm" svg:y="21.1cm" svg:width="7.5cm" svg:height="0cm"/>
     <set-pgof svg:x="26.5cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
+    <set-fullimg x="0" y="0" width="28" height="21"/>
+    <set-partimg x="0" y="0.1" width="28" height="19.23"/>
     <prestatic>
       <draw:frame draw:style-name="gr1" draw:text-style-name="P2" draw:layer="layout" svg:width="4.906cm" svg:height="1.025cm" svg:x="12.594cm" svg:y="19.975cm">
         <draw:image xlink:href="Pictures/smd_claim-onblack.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
@@ -103,6 +114,8 @@
     <set-from svg:x="19.5cm" svg:y="21.1cm" svg:width="7.5cm" svg:height="0cm"/>
     <set-lb svg:x="24.1cm" svg:y="1.7cm" svg:width="3.0cm" svg:height="2.0cm"/>
     <set-pgof svg:x="26.5cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
+    <set-fullimg x="0" y="0" width="28" height="21"/>
+    <set-partimg x="0" y="0.6" width="28" height="19.23" ypos="0"/>
     <poststatic>
       <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
         <draw:text-box>
