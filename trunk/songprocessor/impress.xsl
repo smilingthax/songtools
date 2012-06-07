@@ -377,6 +377,7 @@
    <xsl:variable name="lb">
      <xsl:choose>
        <xsl:when test="not($preset/set-lb)"/>
+       <xsl:when test="$images/draw:page and not(img/@force-lb)"/> <!-- should be only one img, because _songcontent adds page-break after img -->
        <xsl:when test="$inLBfrom[self::IWDD]">PLBgreen</xsl:when>
        <xsl:when test="$inLBfrom[self::GML]">PLBred</xsl:when>
      </xsl:choose>
