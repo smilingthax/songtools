@@ -676,6 +676,15 @@
  <xsl:template match="line/text()" mode="_sc_post">
    <xsl:value-of select="translate(normalize-space(.),'&#160;',' ')"/>
  </xsl:template>
+
+ <xsl:template match="spacer" mode="_sc_post">
+   <text:s text:c="{@no *3}"/>
+ </xsl:template>
+ 
+ <xsl:template match="hfill" mode="_sc_post">
+   <!-- TODO? this is just damage containment -->
+   <text:s text:c="20"/>
+ </xsl:template>
  <!-- }}} -->
 
  <!--
@@ -693,15 +702,6 @@
  <!-- }}} -->
 
  <!-- {{{ inline tags -->
- <xsl:template match="spacer" mode="_songcontent_inline">
-   <text:s text:c="{@no *3}"/>
- </xsl:template>
- 
- <xsl:template match="hfill" mode="_songcontent_inline">
-   <!-- TODO? this is just damage containment -->
-   <text:s text:c="20"/>
- </xsl:template>
- 
  <xsl:template match="xlate" mode="_songcontent_inline">
    <xsl:param name="ctxt"/>
    <xsl:text>(Übersetzung:&#160;</xsl:text>
