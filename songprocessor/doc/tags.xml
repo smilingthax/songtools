@@ -96,6 +96,7 @@
   <attr opt="1" name="whitebg">Weißer Hintergrund.</attr>
   <attr opt="1" name="blackbg">Schwarzer Hintergrund.</attr>
   <attr opt="1" name="border">Abstand zum Rand in Zentimetern.</attr>
+  <attr opt="1" name="force-lb">Liederbuchnummer nicht unterdrücken (impress).</attr>
   Diese Tag erzeugt eine Folie, die das Bild <attref name="href"/> enthält (abhängig vom Ausgabeformat). Siehe <ref to="struct"/>.<br/>
   Das Bild wird zentriert und proportional maximal skaliert, wobei mit <attref name="border"/> ein Rand erzwungen werden kann.
   Bei dieses Attribut wird in Zentimetern (nur der Zahlenwert!) angegeben; bei Verwendung der impress-Ausgabe hat eine Folie 
@@ -176,7 +177,7 @@
 
   <tag linkonly="1">common</tag><tag linkonly="1">text</tag><tag linkonly="1">melody</tag><tag linkonly="1">arrangement</tag>
   <tag linkonly="1">common-full</tag><tag linkonly="1">text-full</tag><tag linkonly="1">melody-full</tag><tag linkonly="1">arrangement-full</tag>
-  Zum anderen gibt es folgende wesentlich mächtigere Form des Tags:<br/>
+  Zum Anderen gibt es folgende wesentlich mächtigere Form des Tags:<br/>
   Die obigen beiden Beispiel sehen dann wie folgt aus:
   <code>
 <rights><common year="1998,1999">Mercy/Vineyard</common></rights>
@@ -217,6 +218,13 @@
 <from lang="de">Liederbuch 1/Nummer 5</from>
 <from lang="en">Liederbuch 2/Nummer 3</from>
 <from lang="en">FJ2/25</from>
+  </code>
+
+  <tag>ccli</tag>
+  Die CCLI-Rechteagentur vergibt eine eindeutige Nummer für jedes Lied. Ggf. kann diese auch 
+  als Teil der Liedrechte ausgegeben werden (die CCLI-Gemeindenummer wird dabei separat konfiguriert).
+  <code>
+<ccli>12323123</ccli>
   </code>
 
   <tag>meter</tag>
@@ -290,19 +298,19 @@ Das ist ein Test.
   |Nor|mal.
 
   <vers>
-  V|ers 1</vers>
+  Vers|_ 1</vers>
 
   <refr>
-  Ref|rain</refr>
+  Re|frain</refr>
 
   <vers>
-  V|ers 2</vers>
+  Vers|_ 2</vers>
 
   <vers>
-  V|ers 3</vers>
+  Vers|_ 3</vers>
 
   <vers no="5">
-  V|ers 5</vers>
+  Vers|_ 5</vers>
 </content>
   </code>
 Ergibt:
@@ -313,7 +321,7 @@ Normal.
     E
 1. Vers 1
 
-         G
+        G
 Refr: Refrain
 
     E
@@ -323,21 +331,42 @@ Refr: Refrain
     F
 5. Vers 4
   </code>
-  Es gibt noch zwei Sonderfälle: '||' im §content> Bereich besagt, dass beide Akkorde (oder entsprechend 
-  mehr für '|||...') "geeignet" über dem schließlich folgenden Buchstaben plaziert werden sollen.
-  '|_' kann am Ende eines Wortes verwendet werden, um die Akkorde noch über das vorige Wort zu setzen (falls
-  möglich, ansonsten wird das Wort "verlängert").
+  Um eine hilfreiche Platzierung zu gewährleisten, gibt es im §content>-Bereich folgende Regeln:
+  <ul>
+    <li>'|' und '|_' sollten nur an Silbengrenzen verwendet werden; '|' kann zusätzlich auch alleine (ohne Wort)
+      als '| ' stehen.</li>
+    <li>'|' ist zu verwenden, um anzuzeigen, dass der Akkord gleichzeitig mit der Silbe anzuschlagen ist;</li>
+    <li>hingegen ist '|_' zu verwenden, wenn der Akkord <em>nach</em> dem Anfang der Silbe anzuschlagen ist.
+      Dabei steht '|_' <em>nach</em> der Silbe -- im Gegensatz zu '|'.<br/>
+
+      Dennoch ist der Anfang der Silbe wichtig, aber dieser kann im Moment nicht immer automatisch bestimmt werden. 
+      Daher gibt es '|-' (einem '|-' wird nie ein Akkord zugeordnet).<br/>
+
+      An Wortanfängen ist die Silbengrenze aber klar, auf '|-' sollte also in diesem Fall verzichtet werden.
+      '|_' und '|' markieren ebenfalls bereits die Grenzen, '|-' ist nicht zusätzlich nötig.
+      </li>
+  </ul>
+  Um für längere Akkordnamen genügend Platz zu schaffen, wird der Text ggf. "verlängert", indem Leerzeichen,
+  '___' oder ' - ' eingefügt werden:
+  <ul>
+    <li>'...| |text' und 'Sil|be |text' wird mit Leerzeichen aufgefüllt.</li>
+    <li>Bei 'Wort|_ text' wird 'Wort___' verlängert.</li>
+    <li>Innerhalb eines '|Wor|tes' werden ' - ' eingefügt: 'Wor-tes'.</li>
+    <li>'Ganz|lan|-ges|_wort|_' wird ggf. zu 'Ganzlan - ges - wort___'</li>
+  </ul>
+  Erwähnenswert ist noch der Fall '||' (oder entsprechend mehr '|||...'). Hier ist stets dafür gesorgt,
+  dass die Akkorde genug Platz haben, ebenso bei '|_||...' oder '|_|_', etc.
   <code>
 <akks>
   C D Esus4 Fsus2 G Amaj7
 </akks>
 <content lang="de">
-  Te||xt Da|ta|_ Lan|geswort|_ ende
+  Te||xt Da|ta|_ Lan|ges|-wort|_ ende
 </content>
   </code>
   <code>
- C D   Esus4 Fsus2  G   Amaj7
-Text Data_____   Langeswort   ende
+ C D   Esus4 Fsus2     G   Amaj7
+Text Data_________  Langeswort__ ende
   </code>
   <br/>
   <tag linkonly="1">transinfo</tag>
@@ -390,10 +419,10 @@ Zeile 3
   also z.B. unzulässig:
   <code bad="1">
 <vers>
- bla
- <refr>
- bla</refr>
-fasel</vers>
+  bla
+  <refr>
+    bla</refr>
+  fasel</vers>
   </code>
   Die Blocktags sind: §refr>, §vers>, §bridge>, §ending>.
   Zusätzlich gibt es §showrefr/>, §showvers/> und §showbridge/> um Blöcke wiederholt ausgeben zu können.
