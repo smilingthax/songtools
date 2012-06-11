@@ -58,7 +58,7 @@
   </xsl:if>
  </xsl:template>
 
- <xsl:template match="a">
+ <xsl:template match="a|ul|ol|li|em">
    <xsl:copy-of select="."/>
  </xsl:template>
 
