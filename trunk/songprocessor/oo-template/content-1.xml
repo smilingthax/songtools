@@ -102,6 +102,14 @@
   <style:paragraph-properties fo:margin-left="0cm" fo:margin-right="0cm" fo:text-align="end" fo:text-indent="0cm"/>
   <style:text-properties fo:color="#23ff23" fo:font-size="40pt" fo:font-weight="bold" style:font-size-asian="18pt" style:font-size-complex="18pt"/>
 </style:style>
+<style:style style:name="PLBredW" style:family="paragraph"> <!-- Grünes Liederbuch Nummer auf Weiß -->
+  <style:paragraph-properties fo:margin-left="0cm" fo:margin-right="0cm" fo:text-align="end" fo:text-indent="0cm"/>
+  <style:text-properties fo:color="#dc2300" fo:font-size="40pt" fo:font-weight="bold" style:font-size-asian="18pt" style:font-size-complex="18pt"/>
+</style:style>
+<style:style style:name="PLBgreenW" style:family="paragraph"> <!-- Grünes Liederbuch Nummer auf Weiß -->
+  <style:paragraph-properties fo:margin-left="0cm" fo:margin-right="0cm" fo:text-align="end" fo:text-indent="0cm"/>
+  <style:text-properties fo:color="#00ae00" fo:font-size="40pt" fo:font-weight="bold" style:font-size-asian="18pt" style:font-size-complex="18pt"/>
+</style:style>
 <style:style style:name="Pvers" style:family="paragraph">
   <style:paragraph-properties fo:line-height="95%"/>
   <style:paragraph-properties fo:margin-left="1.2cm" fo:margin-right="0cm" fo:text-indent="-1.2cm">

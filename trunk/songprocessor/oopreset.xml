@@ -11,6 +11,11 @@
     <set-rights svg:x="0.5cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>
     <set-from svg:x="19.5cm" svg:y="21.1cm" svg:width="7.5cm" svg:height="0cm"/>
     <set-lb svg:x="24.1cm" svg:y="1.7cm" svg:width="3.0cm" svg:height="2.0cm"/>
+    <set-lb-img svg:x="24.6cm" svg:y="0cm" svg:width="3.0cm" svg:height="2.0cm"/>
+<!--
+xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
+<style:paragraph-properties fo:text-align="end"/>
+-->
     <set-pgof svg:x="26.5cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
     <set-fullimg x="0" y="0" width="28" height="21"/> <!-- no units, no svg: namespace! -->
     <set-partimg x="0" y="0.1" width="28" height="19.23"/> <!-- y: trial and error; height: only top part used -->

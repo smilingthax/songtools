@@ -182,7 +182,7 @@
      <xsl:choose>
        <xsl:when test="@blackbg">dp3</xsl:when>
        <xsl:when test="@whitebg">dp4</xsl:when>
-       <xsl:otherwise>dp1</xsl:otherwise><!-- default -->
+       <xsl:otherwise>dp1</xsl:otherwise><!-- default: use bgcolor from master -->
      </xsl:choose>
    </xsl:variable>
    <xsl:variable name="img_border" select="func:default(@border,0)"/>
@@ -378,6 +378,8 @@
      <xsl:choose>
        <xsl:when test="not($preset/set-lb)"/>
        <xsl:when test="$images/draw:page and not(img/@force-lb)"/> <!-- should be only one img, because _songcontent adds page-break after img -->
+       <xsl:when test="$inLBfrom[self::IWDD] and ($style='dp4' or ($style='dp1' and not(count($preset/black))))">PLBgreenW</xsl:when>
+       <xsl:when test="$inLBfrom[self::GML] and ($style='dp4' or ($style='dp1' and not(count($preset/black))))">PLBredW</xsl:when>
        <xsl:when test="$inLBfrom[self::IWDD]">PLBgreen</xsl:when>
        <xsl:when test="$inLBfrom[self::GML]">PLBred</xsl:when>
      </xsl:choose>
@@ -415,7 +417,11 @@
      <!-- Rotes/Grünes Lb -->
      <xsl:if test="string-length($lb)">
        <draw:frame draw:style-name="gr2" draw:text-style-name="{$lb}" draw:layer="layout">
+<!--  
          <xsl:copy-of select="$preset/set-lb/@*|$preset/set-lb/node()"/>
+-->
+         <xsl:copy-of select="func:default($preset/set-lb-img[$images/draw:page],$preset/set-lb)/@*|
+                              func:default($preset/set-lb-img[$images/draw:page],$preset/set-lb)/node()"/>
          <draw:text-box>
            <text:p text:style-name="{$lb}"><xsl:value-of select="$inLBfrom/text()"/></text:p>
          </draw:text-box>
