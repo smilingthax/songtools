@@ -59,9 +59,9 @@ private:
 
 class auto_xmlFree { // {{{
 public:
-  explicit auto_xmlFree() : data(NULL) {}
-  explicit auto_xmlFree(void *data) : data(data) {}
-  explicit auto_xmlFree(xmlChar *data) : data(data) {}
+  explicit _A_X_F_DEPR auto_xmlFree() : data(NULL) {}
+  explicit _A_X_F_DEPR auto_xmlFree(void *data) : data(data) {}
+  explicit _A_X_F_DEPR auto_xmlFree(xmlChar *data) : data(data) {}
   ~auto_xmlFree() {
     xmlFree(data);
   }
@@ -85,8 +85,8 @@ private:
 
 class auto_xmlDoc { // {{{
 public:
-  explicit auto_xmlDoc() : doc(NULL) {}
-  explicit auto_xmlDoc(xmlDocPtr doc) : doc(doc) {}
+  explicit _A_X_F_DEPR auto_xmlDoc() : doc(NULL) {}
+  explicit _A_X_F_DEPR auto_xmlDoc(xmlDocPtr doc) : doc(doc) {}
   ~auto_xmlDoc() {
     xmlFreeDoc(doc);
   }
