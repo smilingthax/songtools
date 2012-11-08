@@ -53,4 +53,4 @@ clean:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 
 $(LIB1): $(OBJECTS1)
-	$(AR) rcu $@ $^
+	$(AR) rscu $@ $^
