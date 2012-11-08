@@ -4,31 +4,23 @@ LIB1=libxsltext.a
 DIRS=enclose imagetools mine_ext parset split path zip_ext
 XML=1
 
-#MINGW=/export/wingcc/i386-mingw32msvc/bin/
-MINGW=i586-mingw32msvc-
-    MINGW=/export/wingcc/suse/usr/bin/i686-pc-mingw32-
+MINGW=/export/wingcc/suse/usr/bin/i686-w64-mingw32-
+LIBBASE=/export/wingcc/suse/usr/i686-w64-mingw32/sys-root/mingw
+
 CC=$(MINGW)gcc
 CXX=$(MINGW)g++
 STRIP=$(MINGW)strip
 AR=$(MINGW)ar
 #FLAGS=-I/export/wingcc/include/g++ -I/export/wingcc3/usr/include/g++/i486-suse-linux
-    LIBBASE=/export/wingcc/suse/usr/i686-pc-mingw32/sys-root/mingw
-
-#LIBXMLPATH=/export/wingcc/libxml2-2.6.23.win32
-#LIBXSLTPATH=/export/wingcc/libxslt-1.1.15.win32
-#ICONVPATH=/export/wingcc/iconv-1.9.1.win32
-#ZLIBPATH=/export/wingcc/zlib-1.2.3.win32
 
 # CFLAGS=-O3 -funroll-all-loops -finline-functions -Wall -g
 CFLAGS=-Wall -g
 LDFLAGS=-g -L$(ZLIBPATH)/bin -lzlib1
-CPPFLAGS=$(CFLAGS) $(FLAGS) -I$(ZLIBPATH)/include 
-    CPPFLAGS=$(CFLAGS) $(FLAGS) -I$(LIBBASE)/include 
+CPPFLAGS=$(CFLAGS) $(FLAGS) -I$(LIBBASE)/include 
 #-DZLIB_WINAPI
 
 ifeq "$(XML)" "1"
-#  CPPFLAGS+=-DWITH_XML -I$(LIBXMLPATH)/include -I$(LIBXSLTPATH)/include -I$(ICONVPATH)/include
-      CPPFLAGS+=-DWITH_XML -I$(LIBBASE)/include/libxml2
+  CPPFLAGS+=-DWITH_XML -I$(LIBBASE)/include/libxml2
 endif
 
 OBJECTS1=$(SOURCES1:.c=.o) $(SOURCES2:.cpp=.o)
