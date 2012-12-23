@@ -143,9 +143,7 @@
    </xsl:choose>
  </xsl:template>
 
- <xsl:template match="quote" mode="_songcontent">
-   <xsl:text>"</xsl:text>
-   <xsl:call-template name="songcontent"/>
+ <xsl:template match="sq|eq" mode="_songcontent">
    <xsl:text>"</xsl:text>
  </xsl:template>
 
