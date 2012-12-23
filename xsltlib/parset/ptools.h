@@ -35,14 +35,6 @@ private:
   ProcNodeBufferItem *check_for;
 };
 
-class substQuoteTool : public procTool {
-public:
-  substQuoteTool(ProcTraverse &parent);
-  void openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item);
-  void closeItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item,ProcNodeBufferItem *last);
-  int attribItem(ProcNodeBufferItem *item,const xmlChar *name,const xmlChar *value);
-};
-
 class substAkkTool : public procTool {
 public:
   substAkkTool(ProcTraverse &parent);

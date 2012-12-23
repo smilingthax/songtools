@@ -51,7 +51,6 @@ public:
   bool is_br() const;
   bool is_spacer() const;
   bool is_akk() const;
-  bool is_quote() const;
 
   bool is_whitespace(bool nl_as_WS=false) const;  // only for text
 
@@ -70,7 +69,7 @@ public:
   void set_value(const xmlChar *_value);
 
   enum { NODE_NONE, NODE_ELEM, NODE_ELEM_END, NODE_TEXT, NODE_ATTRIB,
-         NODE_BR, NODE_SPACER, NODE_AKK, NODE_QUOTE } type;
+         NODE_BR, NODE_SPACER, NODE_AKK } type;
   void build(TreeBuilder &tb) const;
   ProcNodeBufferItem *prev,*next;
 };
@@ -93,9 +92,9 @@ public:
   void push(ProcNodeBufferItem *item);
   void pop();
   void flush();
-  ProcNodeBufferItem *operator[](int index);
+//  ProcNodeBufferItem *operator[](int index);
 
-  enum Tagname { BLOCK_TAG, BR_TAG, BF_TAG, SPACER_TAG, AKK_TAG, QUOTE_TAG, QUOTES_TAG, COMMENT_TAG,
+  enum Tagname { BLOCK_TAG, BR_TAG, BF_TAG, SPACER_TAG, AKK_TAG, COMMENT_TAG,
                  XLANG_TAG,
                  UNKNOWN_TAG, NO_TAG=UNKNOWN_TAG };
   bool is_blocktag(const xmlChar *name);
@@ -108,7 +107,6 @@ private:
   typedef std::vector<procTool *> ProcTools;
   ProcTools tools;
 
-  friend class substQuoteTool;
   friend class normalizeBrTool;
   friend class substXlangTool;
 };

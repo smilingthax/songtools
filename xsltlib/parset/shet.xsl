@@ -83,14 +83,17 @@
        <xsl:with-param name="wo" select="../title[1]/text()"/>
      </xsl:apply-templates>
    </xsl:variable>
-<!--   <exsl:document href="/dev/stdout"><xsl:copy-of select="$sn1"/></exsl:document>-->
+<!-- 
+   <exsl:document href="/dev/stdout"><xsl:copy-of select="$sn1"/></exsl:document>
+-->
    <xsl:copy>
 <!--     <xsl:copy-of select="minex:parset(node(),../title[1]/text())|@*"/>-->
 <!--     <xsl:copy-of select="minex:parset($sn1,../title[1]/text())|@*"/>-->
      <xsl:copy-of select="@*"/>
      <xsl:apply-templates select="minex:parset($sn1,../title[1]/text())" mode="_add_akks">
-       <xsl:with-param name="level" select="0"/>
-       <xsl:with-param name="no" select="0"/>
+       <xsl:with-param name="level" select="-1"/>
+       <xsl:with-param name="no" select="-1"/>
+       <xsl:with-param name="debug" select="concat(../title[1]/text(),' (-> ',@lang,')')"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
@@ -98,10 +101,8 @@
 <!-- <xsl:template match="content//bf">
  </xsl:template>-->
 
- <xsl:template match="split[@char='&quot;']" mode="_split_token">
-   <quot>
-     <xsl:attribute name="no"><xsl:value-of select="count(preceding-sibling::split[@char='&quot;'])"/></xsl:attribute>
-   </quot>
+ <xsl:template match="split[@char='&quot;']" mode="_split_token"> <!-- LATER(_add_akks): transformed to <sq/> and <eq/> -->
+   <quot/>
  </xsl:template>
  
  <xsl:template match="split[@char='|']" mode="_split_token"> <!-- LATER: get following char -->
@@ -249,6 +250,10 @@
  </xsl:template>
  
  <xsl:template match="/base" mode="_add_akks">
+   <xsl:param name="debug"/>
+   <xsl:call-template name="check-quotes">
+     <xsl:with-param name="debug" select="$debug"/>
+   </xsl:call-template>
    <xsl:copy>
      <xsl:copy-of select="@*"/>
      <xsl:attribute name="no"><xsl:value-of select="mine:get_no(preceding-sibling::base|.)"/></xsl:attribute>
@@ -260,6 +265,10 @@
  </xsl:template>
 
  <xsl:template match="/vers" mode="_add_akks">
+   <xsl:param name="debug"/>
+   <xsl:call-template name="check-quotes">
+     <xsl:with-param name="debug" select="$debug"/>
+   </xsl:call-template>
    <xsl:copy>
      <xsl:copy-of select="@*"/>
      <xsl:apply-templates select="@*|node()" mode="_add_akks">
@@ -270,6 +279,10 @@
  </xsl:template>
  
  <xsl:template match="/refr" mode="_add_akks">
+   <xsl:param name="debug"/>
+   <xsl:call-template name="check-quotes">
+     <xsl:with-param name="debug" select="$debug"/>
+   </xsl:call-template>
    <xsl:copy>
      <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="2"/>
@@ -279,6 +292,10 @@
  </xsl:template>
  
  <xsl:template match="/ending" mode="_add_akks">
+   <xsl:param name="debug"/>
+   <xsl:call-template name="check-quotes">
+     <xsl:with-param name="debug" select="$debug"/>
+   </xsl:call-template>
    <xsl:copy>
      <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="3"/>
@@ -288,6 +305,10 @@
  </xsl:template>
 
  <xsl:template match="/bridge" mode="_add_akks">
+   <xsl:param name="debug"/>
+   <xsl:call-template name="check-quotes">
+     <xsl:with-param name="debug" select="$debug"/>
+   </xsl:call-template>
    <xsl:copy>
      <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="4"/>
@@ -301,6 +322,22 @@
      <xsl:attribute name="no"><xsl:value-of select="@no"/></xsl:attribute>
      <xsl:if test="@break != 0"><xsl:attribute name="break"><xsl:value-of select="@break"/></xsl:attribute></xsl:if>
    </xsl:copy>
+ </xsl:template>
+
+ <xsl:template match="quot[ancestor::xlang]" mode="_add_akks">
+   <!-- We're not as strict as we could:  we could get the Start-of-Line context and only consider <xlang>s in the same context -->
+   <xsl:variable name="prec" select="preceding::node()[ancestor::xlang]"/>
+   <xsl:choose>
+     <xsl:when test="count($prec[self::quot]) mod 2"><eq/></xsl:when><!-- closing -->
+     <xsl:otherwise><sq/></xsl:otherwise>
+   </xsl:choose>
+ </xsl:template>
+
+ <xsl:template match="quot" mode="_add_akks">
+   <xsl:choose>
+     <xsl:when test="count(preceding-sibling::quot) mod 2"><eq/></xsl:when><!-- closing -->
+     <xsl:otherwise><sq/></xsl:otherwise>
+   </xsl:choose>
  </xsl:template>
 
  <xsl:template match="*" mode="_add_akks">
@@ -317,6 +354,19 @@
 
  <xsl:template match="@*|comment()" mode="_add_akks">
    <xsl:copy-of select="."/>
+ </xsl:template>
+
+ <xsl:template name="check-quotes">
+   <xsl:param name="debug"/>
+   <xsl:variable name="quots" select=".//quot[not(ancestor::xlang)]"/>
+   <xsl:for-each select="$quots[not(preceding-sibling::quot)]">
+     <xsl:if test="count(.|following-sibling::quot) mod 2">
+       <xsl:message terminate="yes">Quoting problem (quotes over paragraph boundary?), Lied: <xsl:value-of select="$debug"/></xsl:message>
+     </xsl:if>
+   </xsl:for-each>
+   <xsl:if test="count(.//quot[ancestor::xlang]) mod 2">
+     <xsl:message terminate="yes">Quoting in xlang is weird, Lied: <xsl:value-of select="$debug"/></xsl:message>
+   </xsl:if>
  </xsl:template>
 
  <xsl:template match="akks"> <!-- {{{ grab chords -->
