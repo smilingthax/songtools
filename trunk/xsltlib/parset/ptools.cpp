@@ -241,61 +241,6 @@ void substSpacerTool::commentItem(ProcNodeBufferItem *&item)
 }
 // }}}
 
-// {{{ substQuoteTool
-substQuoteTool::substQuoteTool(ProcTraverse &parent) : procTool(parent)
-{
-}
-
-void substQuoteTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item)
-{
-  if (tag==ProcTraverse::QUOTE_TAG) {
-    // trivial heuristic to find matching pairs: no...no|1 -> <>...</>  // TODO? check for consistency
-    item->set_name((const xmlChar *)"quote"); // quot -> quote
-    item->type=ProcNodeBufferItem::NODE_QUOTE;
-    item->unclosed_empty=true;
-    item->no=-1;
-  }
-}
-
-void substQuoteTool::closeItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item,ProcNodeBufferItem *last)
-{
-  if (tag==ProcTraverse::QUOTE_TAG) {
-    assert(item==last);
-    item=NULL;
-    assert((last)&&(last->is_quote()));
-    assert(last->no!=-1);
-    if ((last->no&1)==0) { // open
-      last->type=ProcNodeBufferItem::NODE_ELEM;
-    } else { // close
-      if ( (parent.ns.empty())||(!parent.ns.back()) ) {
-        parent.tb.error("Quoting weird: got NULL\n");
-        return;
-      }
-      assert(parent.ns.back()->is_quote()); // expected one
-      parent.ns.pop_back();
-      if (parent.tag(parent.ns.back()->name)==ProcTraverse::QUOTES_TAG) { // matching one
-        parent.ns.pop_back();
-        last->type=ProcNodeBufferItem::NODE_ELEM_END;
-      } else {
-        parent.tb.error("Quote numbering is weird: got %s\n",parent.ns.back()->name);
-      }
-    } 
-  }
-}
-
-int substQuoteTool::attribItem(ProcNodeBufferItem *item,const xmlChar *name,const xmlChar *value)
-{
-  if (item->type==ProcNodeBufferItem::NODE_QUOTE) {
-    assert(item->unclosed_empty);
-    if (get_int_attr(item->no,"no",name,value)) {
-      return 1;
-    } 
-    return -1;
-  }
-  return 0;
-}
-// }}}
-
 // {{{ substAkkTool
 substAkkTool::substAkkTool(ProcTraverse &parent) : procTool(parent),check_for(NULL) 
 {

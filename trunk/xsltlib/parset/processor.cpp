@@ -55,7 +55,7 @@ void TreeBuilder::closeNode(const xmlChar *name)
   }
   assert((node)&&(node!=(xmlNodePtr)doc));
   if (strcmp((const char *)node->name,(const char *)name)!=0) {
-    error("Closing wrong node (%s, expected %s) (quotes over paragraph boundary?)",node->name,name);
+    error("Closing wrong node (%s, expected %s)",node->name,name);
   }
   node=node->parent;
 }
@@ -228,7 +228,7 @@ void ProcNodeBufferItem::set_value(const xmlChar *_value)
 
 bool ProcNodeBufferItem::is_element() const
 {
-  return (type==NODE_ELEM)||(type==NODE_ELEM_END)||(type==NODE_BR)||(type==NODE_SPACER)||(type==NODE_AKK)||(type==NODE_QUOTE);
+  return (type==NODE_ELEM)||(type==NODE_ELEM_END)||(type==NODE_BR)||(type==NODE_SPACER)||(type==NODE_AKK);
 }
 
 bool ProcNodeBufferItem::is_element_open() const
@@ -271,11 +271,6 @@ bool ProcNodeBufferItem::is_akk() const
   return (type==NODE_AKK);
 }
 
-bool ProcNodeBufferItem::is_quote() const
-{
-  return (type==NODE_QUOTE);
-}
-
 bool ProcNodeBufferItem::is_whitespace(bool nl_as_WS) const
 {
   if (type==NODE_TEXT) {
@@ -291,7 +286,7 @@ bool ProcNodeBufferItem::is_whitespace(bool nl_as_WS) const
 void ProcNodeBufferItem::build(TreeBuilder &tb) const
 {
   int val;
-// TODO? check unmatched_empty?
+// TODO? check unclosed_empty?
   ProcNodeBufferItem *item;
   switch (type) {
   case NODE_ELEM:
@@ -343,9 +338,6 @@ void ProcNodeBufferItem::build(TreeBuilder &tb) const
     tb.text(value);
     tb.closeNode(name);
     break;
-  case NODE_QUOTE:
-    tb.error("Unclosed NODE_QUOTE\n");
-    break; 
   case NODE_NONE:
     tb.error("Unexpected NODE_NONE\n");
     break;
@@ -507,6 +499,7 @@ void ProcTraverse::flush() // {{{
 }
 // }}}
 
+#if 0  // not used
 ProcNodeBufferItem *ProcTraverse::operator[](int index) // {{{
 {
   ProcNodeBufferItem *ret;
@@ -527,6 +520,7 @@ ProcNodeBufferItem *ProcTraverse::operator[](int index) // {{{
   return ret;
 }
 // }}}
+#endif
 
 ProcTraverse::ProcTraverse(TreeBuilder &tb) : tb(tb)
 {
@@ -535,14 +529,13 @@ ProcTraverse::ProcTraverse(TreeBuilder &tb) : tb(tb)
   tools.push_back(new substXlangTool(*this));
   tools.push_back(new normalizeBrTool(*this));
   tools.push_back(new substSpacerTool(*this));
-  tools.push_back(new substQuoteTool(*this));
   tools.push_back(new substAkkTool(*this));
 }
 
 ProcTraverse::~ProcTraverse()
 {
   if (ns.size()) {
-    tb.error("Quoting problem\n");
+    tb.error("Strange problem\n");
   }
   
   flush();
@@ -593,10 +586,6 @@ ProcTraverse::Tagname ProcTraverse::tag(const xmlChar *name)
     return SPACER_TAG;
   } else if (strcmp(nam,"akk")==0) {
     return AKK_TAG;
-  } else if (strcmp(nam,"quot")==0) { // have to find closing one
-    return QUOTE_TAG;
-  } else if (strcmp(nam,"quote")==0) { // are already done
-    return QUOTES_TAG;
   } else if (strcmp(nam,"xlang")==0) {
     return XLANG_TAG;
   }
