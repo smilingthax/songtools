@@ -85,9 +85,7 @@
    <xsl:call-template name="pullout_br"/>
  </xsl:template>
 
- <xsl:template match="quote" mode="_songcontent">
-   <xsl:text>"</xsl:text>
-   <xsl:apply-templates select="node()|comment()" mode="_songcontent"/>
+ <xsl:template match="sq|eq" mode="_songcontent">
    <xsl:text>"</xsl:text>
  </xsl:template>
 

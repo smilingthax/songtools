@@ -309,7 +309,7 @@
         (e.g. use sentinel non-ws for normalize and remove afterwards) -->
  <!-- {{{ inline tags -->
  <!-- general templates -->
- <xsl:template match="rep|xlate|quote" mode="_songcontent_inline">
+ <xsl:template match="rep|xlate" mode="_songcontent_inline">   <!-- xlate  just added here for clarity (overridden below) -->
    <xsl:param name="ctxt"/>
    <!-- TODO?! func:if(...,default) -->
    <inline start="{name()}">
@@ -323,7 +323,7 @@
    </inline>
  </xsl:template>
 
- <xsl:template match="tick|spacer|hfill" mode="_songcontent_inline"> <!-- "empty tags" -->
+ <xsl:template match="tick|spacer|hfill" mode="_songcontent_inline"> <!-- "empty tags" -->   <!-- tick(|sq|eq)  only for clarity -->
    <xsl:param name="ctxt"/>
    <xsl:copy-of select="."/>
  </xsl:template>
@@ -343,16 +343,25 @@
  </xsl:template>
 
  <!-- specific templates -->
- <xsl:template match="quote" mode="_songcontent_inline">
+ <xsl:template match="sq|eq" mode="_songcontent_inline">
    <xsl:param name="ctxt"/>
-   <xsl:variable name="lang" select="mine:main_lang($ctxt/@lang,number(func:if(ancestor::xlang,3,1)))"/>
+   <xsl:variable name="lang" select="mine:main_lang($ctxt/@lang,number(func:if(ancestor::xlang,3,1)))"/>   <!-- lang via context/param? -->
    <xsl:variable name="gotlang" select="$ctxt/quotes[@lang=$lang]"/>
    <xsl:variable name="quotes" select="exsl:node-set(func:if(count($gotlang),$gotlang,$ctxt/quotes[not(@lang)]))/quotes"/>
-   <xsl:value-of select="func:if($quotes,string($quotes/@start),string('&quot;'))"/>
-   <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
-     <xsl:with-param name="ctxt" select="$ctxt"/>
-   </xsl:apply-templates>
-   <xsl:value-of select="func:if($quotes,string($quotes/@end),string('&quot;'))"/>
+   <xsl:choose>
+     <xsl:when test="not($quotes)">
+       <xsl:text>&quot;</xsl:text>
+     </xsl:when>
+     <xsl:when test="self::sq">
+       <xsl:value-of select="$quotes/@start"/>
+     </xsl:when>
+     <xsl:when test="self::eq">
+       <xsl:value-of select="$quotes/@end"/>
+     </xsl:when>
+     <xsl:otherwise>
+       <xsl:message terminate="yes">Unexpected case</xsl:message>
+     </xsl:otherwise>
+   </xsl:choose>
  </xsl:template>
 
  <xsl:template match="tick" mode="_songcontent_inline">

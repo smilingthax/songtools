@@ -204,9 +204,11 @@
    </xsl:call-template>
  </xsl:template>
 
- <xsl:template match="quote">
+ <xsl:template match="sq">
    <xsl:text>{,,}</xsl:text>
-   <xsl:call-template name="songcontent"/>
+ </xsl:template>
+
+ <xsl:template match="eq">
    <xsl:text>{``}</xsl:text>
  </xsl:template>
 
