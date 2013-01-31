@@ -84,7 +84,11 @@
  <xsl:template match="song" mode="file_single" name="filecontent">
    <xsl:param name="position" select="position()"/>
 <!--  <xsl:call-template name="output_blkp"/>-->
-   <xsl:variable name="copy"><xsl:call-template name="copyright"/></xsl:variable>
+   <xsl:variable name="copy">
+     <xsl:call-template name="copyright">
+       <xsl:with-param name="withArrangement" select="count(content/img)"/> <!-- TODO: if img -->
+     </xsl:call-template>
+   </xsl:variable>
    <xsl:call-template name="output_pages">
      <xsl:with-param name="copyright">
        <xsl:if test="$copy!=''">
@@ -214,7 +218,7 @@
      <xsl:with-param name="impress_page_x" select="func:default($preset/set-partimg/@x,func:default($preset/set-fullimg/@x,0))"/>
      <xsl:with-param name="impress_page_y" select="func:default($preset/set-partimg/@y,func:default($preset/set-fullimg/@y,0)+0.1)"/>
      <xsl:with-param name="impress_page_w" select="func:default($preset/set-partimg/@width,func:default($preset/set-fullimg/@width,28))"/>
-     <xsl:with-param name="impress_page_h" select="func:default($preset/set-partimg/@heigth,19.23)"/>
+     <xsl:with-param name="impress_page_h" select="func:default($preset/set-partimg/@height,19.23)"/>
      <xsl:with-param name="xpos" select="func:default($preset/set-partimg/@xpos,func:default($preset/set-fullimg/@ypos,0.5))"/>
      <xsl:with-param name="ypos" select="func:default($preset/set-partimg/@ypos,func:default($preset/set-fullimg/@ypos,0.5))"/>
      <xsl:with-param name="odpName" select="@odpName"/>

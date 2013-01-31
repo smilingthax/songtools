@@ -203,6 +203,7 @@
  <xsl:template name="copyright">
    <xsl:param name="inSong" select="."/>
    <xsl:param name="lang"/>
+   <xsl:param name="withArrangement"/>
    <xsl:for-each select="$inSong"><!-- ensure context -->
      <xsl:variable name="check_lang"><!-- just to look up if language exists -->
        <xsl:if test="not(content/@lang)">
@@ -228,10 +229,12 @@
      <xsl:variable name="right-subset"><!-- sort by @no; use last, if multiple tags -->
        <xsl:call-template name="collapse_rights">
          <xsl:with-param name="inRights" select="$right/rights[not(@no)][last()]"/>
+         <xsl:with-param name="withArrangement" select="$withArrangement"/>
        </xsl:call-template>
        <xsl:for-each select="$right/rights/@no">
          <xsl:call-template name="collapse_rights">
            <xsl:with-param name="inRights" select="$right/rights[@no=current()][last()]"/>
+           <xsl:with-param name="withArrangement" select="$withArrangement"/>
          </xsl:call-template>
        </xsl:for-each>
      </xsl:variable>
@@ -241,11 +244,13 @@
            <xsl:call-template name="generate_text_music">
              <xsl:with-param name="inSong" select="."/>
              <xsl:with-param name="lang" select="$lang"/>
+             <xsl:with-param name="withArrangement" select="$withArrangement"/>
            </xsl:call-template>
          </xsl:when>
          <xsl:otherwise>
            <xsl:call-template name="generate_text_music">
              <xsl:with-param name="inSong" select="."/>
+             <xsl:with-param name="withArrangement" select="$withArrangement"/>
            </xsl:call-template>
            <!--
            <xsl:variable name="theSong" select="."/>
@@ -253,6 +258,7 @@
              <xsl:call-template name="generate_text_music">
                <xsl:with-param name="inSong" select="$theSong"/>
                <xsl:with-param name="lang" select="."/>
+               <xsl:with-param name="withArrangement" select="$withArrangement"/>
              </xsl:call-template>
            </xsl:for-each>
            -->
@@ -301,14 +307,20 @@
  <xsl:template name="generate_text_music">
    <xsl:param name="inSong"/>
    <xsl:param name="lang"/>
+   <xsl:param name="withArrangement"/>
    <text-music>
      <xsl:if test="$lang"><xsl:attribute name="lang"><xsl:value-of select="$lang"/></xsl:attribute></xsl:if>
      <xsl:for-each select="$inSong"><!-- ensure context -->
-       <xsl:variable name="is_by_both" select="text-by/text() = melody-by/text()"/>
+       <xsl:variable name="text_is_melody" select="text-by/text() = melody-by/text()"/>
+       <xsl:variable name="melody_is_arrangement" select="melody-by/text() = arrangement-by/text() and $withArrangement"/>
+       <xsl:variable name="is_all_three" select="$text_is_melody and $melody_is_arrangement"/>
        <xsl:if test="text-by[not(@lang)]/text()">
          <token>
            <xsl:choose>
-             <xsl:when test="$is_by_both">
+             <xsl:when test="$is_all_three">
+               <xsl:text>Text, Melodie und Satz: </xsl:text>
+             </xsl:when>
+             <xsl:when test="$text_is_melody">
                <xsl:text>Text und Melodie: </xsl:text>
              </xsl:when>
              <xsl:otherwise>
@@ -335,10 +347,24 @@
          </xsl:if>
          <tokensep>, </tokensep>
        </xsl:if>
-       <xsl:if test="melody-by/text() and not($is_by_both)">
+       <xsl:if test="melody-by/text() and not($is_all_three)">
          <token>
-           <xsl:text>Melodie: </xsl:text>
+           <xsl:choose>
+             <xsl:when test="$melody_is_arrangement">
+               <xsl:text>Melodie und Satz: </xsl:text>
+             </xsl:when>
+             <xsl:otherwise>
+               <xsl:text>Melodie: </xsl:text>
+             </xsl:otherwise>
+           </xsl:choose>
            <xsl:value-of select="melody-by/text()"/>
+         </token>
+         <tokensep>, </tokensep>
+       </xsl:if>
+       <xsl:if test="arrangement-by/text() and $withArrangement and not($melody_is_arrangement)">
+         <token>
+           <xsl:text>Satz: </xsl:text>
+           <xsl:value-of select="arrangement-by/text()"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
