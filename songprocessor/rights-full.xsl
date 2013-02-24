@@ -82,7 +82,7 @@
    <xsl:message>rights-full is obsolete ("<xsl:value-of select="$title"/>")</xsl:message>
    <rights><common-full><xsl:value-of select="."/></common-full></rights>
  </xsl:template>
- 
+
  <xsl:template match="text-full|melody-full|arrangement-full|common-full" mode="_do_one_rights">
    <xsl:param name="title"/>
    <xsl:param name="for"/>
@@ -347,7 +347,7 @@
          </xsl:if>
          <tokensep>, </tokensep>
        </xsl:if>
-       <xsl:if test="melody-by/text() and not($is_all_three)">
+       <xsl:if test="melody-by/text() and not($is_all_three) and not($text_is_melody)">
          <token>
            <xsl:choose>
              <xsl:when test="$melody_is_arrangement">
