@@ -24,7 +24,7 @@
             xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0"
             xmlns:dr3d="urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0"
             xmlns:math="http://www.w3.org/1998/Math/MathML"
-            xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0" 
+            xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0"
             xmlns:script="urn:oasis:names:tc:opendocument:xmlns:script:1.0"
             xmlns:ooo="http://openoffice.org/2004/office"
             xmlns:ooow="http://openoffice.org/2004/writer"
@@ -42,7 +42,7 @@
   array=array.add bla fasel...
   Idea: Nodesets: ns_clear('id/name'); ns_add('id/name'); ns_get('id/name');
 -->
- 
+
  <xsl:import href="s-liner.xsl"/>
 
  <xsl:output method="text" encoding="iso-8859-1"/>
@@ -52,12 +52,14 @@
  <xsl:param name="out_split" select="'0'"/>
  <xsl:param name="presetname" select="''"/>
  <xsl:variable name="ps_doc" select="document('oopreset.xml')"/>
- <xsl:variable name="preset" select="exsl:node-set(func:if($ps_doc/presets/preset[@name=$presetname],
-                                                   $ps_doc/presets/preset[@name=$presetname],$ps_doc/presets/preset[not(@name)]))/preset"/>
+ <xsl:variable name="preset" select="func:default($ps_doc/presets/preset[@name=$presetname],
+                                                  $ps_doc/presets/preset[not(@name)])"/>
 
  <xsl:include href="rights-full.xsl"/>
  <xsl:include href="lang-db.xsl"/>
  <xsl:strip-space elements="songs-out"/>
+
+ <xsl:key name="img_by_href" match="img" use="@href"/> <!-- faster lookup -->
 
  <xsl:template match="/">
    <xsl:choose>
@@ -65,6 +67,7 @@
        <xsl:apply-templates select="songs-out/*" mode="file_multi"/>
      </xsl:when>
      <xsl:otherwise>
+       <xsl:variable name="imgs" select="songs-out//img[count(.|key('img_by_href',@href)[1])=1]"/>
        <xsl:call-template name="output_odp">
          <xsl:with-param name="file" select="'allimpress.odp'"/>
          <xsl:with-param name="content_nodes">
@@ -73,7 +76,7 @@
          <xsl:with-param name="black_back" select="count($preset/black)"/>
          <xsl:with-param name="add_files">
            <xsl:copy-of select="$preset/copy"/>
-           <xsl:apply-templates select="songs-out/*" mode="get_add_images"/>
+           <xsl:apply-templates select="$imgs" mode="get_add_images"/>
          </xsl:with-param>
        </xsl:call-template>
      </xsl:otherwise>
@@ -95,7 +98,7 @@
          <xsl:text>© </xsl:text>
 <!--       <xsl:text>Copyright: </xsl:text>-->
          <xsl:value-of select="$copy"/>
-       </xsl:if> 
+       </xsl:if>
      </xsl:with-param>
      <xsl:with-param name="source">
        <xsl:text>Quelle: </xsl:text>
@@ -110,11 +113,12 @@
      <xsl:with-param name="position" select="concat($position,'_b')"/>
    </xsl:call-template>
  </xsl:template>
+
  <xsl:template match="from" mode="from_list">
    <xsl:value-of select="text()"/>
    <xsl:if test="count(following-sibling::from)">
      <xsl:text>; </xsl:text>
-   </xsl:if> 
+   </xsl:if>
  </xsl:template>
  <xsl:template match="from" mode="from_lbfrom">
    <xsl:choose>
@@ -124,11 +128,14 @@
      <xsl:when test="starts-with(translate(text(),'GML','gml'),'gml/')">
        <GML><xsl:value-of select="substring-after(text(),'/')"/></GML>
      </xsl:when>
-   </xsl:choose> 
+   </xsl:choose>
  </xsl:template>
 
  <xsl:template match="song" mode="file_multi">
    <xsl:variable name="file">oo-impress/<xsl:value-of select="func:escape_file(title[1]/text())"/>.odp</xsl:variable>
+   <xsl:variable name="imgs">
+     <xsl:apply-templates select="content//img" mode="get_add_images"/>
+   </xsl:variable>
    <xsl:call-template name="output_odp">
      <xsl:with-param name="file" select="$file"/>
      <xsl:with-param name="content_nodes">
@@ -137,9 +144,7 @@
        </xsl:call-template>
      </xsl:with-param>
      <xsl:with-param name="black_back" select="count($preset/black)"/>
-     <xsl:with-param name="add_files">
-       <xsl:apply-templates select="content/*" mode="get_add_images"/>
-     </xsl:with-param>
+     <xsl:with-param name="add_files" select="exsl:node-set($imgs)/copy[not(@tohref=preceding-sibling::copy/@tohref)]"/>
    </xsl:call-template>
    <xsl:apply-templates select="title" mode="links">
      <xsl:with-param name="linkTo" select="$file"/>
@@ -171,7 +176,7 @@
    </xsl:apply-templates>
  </xsl:template>
  -->
- 
+
  <xsl:template match="img" mode="file_single" name="output_img">
    <xsl:param name="impress_page_x" select="func:default($preset/set-fullimg/@x,0)"/>
    <xsl:param name="impress_page_y" select="func:default($preset/set-fullimg/@y,0)"/>
@@ -210,7 +215,7 @@
 
  <xsl:template mode="get_add_images" match="img">
    <xsl:variable name="img_info" select="tools:image-size(@href)"/>
-   <copy fromhref="{@href}" tohref="{func:get_image_name(.)}" mime="{$img_info/@type}"/>
+   <copy fromhref="{@href}" tohref="{func:get_image_name(key('img_by_href',@href)[1])}" mime="{$img_info/@type}"/>
  </xsl:template>
 
  <xsl:template match="img" mode="_img_pager">
@@ -262,7 +267,7 @@
 
  <xsl:template match="INSERT" mode="_output_odp_content">
    <xsl:param name="content_nodes"/>
-<!--   <xsl:copy-of select="$content_nodes"/> ... namespaces not reduced ... --> 
+<!--   <xsl:copy-of select="$content_nodes"/> ... namespaces not reduced ... -->
    <xsl:apply-templates select="exsl:node-set($content_nodes)/node()" mode="_output_odp_content"/>
  </xsl:template>
 
@@ -275,7 +280,7 @@
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
- 
+
  <xsl:template match="style:style[@style:name='Default-background']/style:graphic-properties" mode="_output_odp_style">
    <xsl:param name="black_back"/>
    <xsl:choose>
@@ -312,7 +317,7 @@
      <xsl:copy-of select="node()"/>
    </xsl:copy>
  </xsl:template>
- 
+
  <xsl:template match="@*|node()|comment()" mode="_output_odp_style">
    <xsl:param name="black_back"/>
    <xsl:copy>
@@ -344,11 +349,11 @@
          <xsl:apply-templates select="exsl:node-set($inNodes)/node()" mode="_break_calc"/>
        </xsl:variable>
        <xsl:variable name="inPages">
-         <xsl:call-template name="page_fix"> 
+         <xsl:call-template name="page_fix">
           <xsl:with-param name="inNodes" select="exsl:node-set($inPNodes)/node()"/>
-         </xsl:call-template> 
+         </xsl:call-template>
        </xsl:variable>
-<!-- 
+<!--
 <exsl:document href="/dev/stdout"><xsl:copy-of select="$inPNodes"/></exsl:document>
 -->
        <xsl:apply-templates select="exsl:node-set($inPages)/node()" mode="_output_page">
@@ -421,7 +426,7 @@
      <!-- Rotes/Grünes Lb -->
      <xsl:if test="string-length($lb)">
        <draw:frame draw:style-name="gr2" draw:text-style-name="{$lb}" draw:layer="layout">
-<!--  
+<!--
          <xsl:copy-of select="$preset/set-lb/@*|$preset/set-lb/node()"/>
 -->
          <xsl:copy-of select="func:default($preset/set-lb-img[$images/draw:page],$preset/set-lb)/@*|
@@ -620,7 +625,7 @@
        <xsl:with-param name="inNodes" select="$ctxt/rep/indent/node()"/>
        <xsl:with-param name="anz" select="$repindent - $solrep"/>
      </xsl:call-template>
-   </xsl:variable> 
+   </xsl:variable>
 
    <text:p>
      <xsl:copy-of select="$blockfmt/@*"/>
@@ -673,7 +678,7 @@
    <xsl:copy-of select="."/><xsl:value-of select="$nl"/>
  </xsl:template>
 
-<!-- problem: overrides s-liner templates 
+<!-- problem: overrides s-liner templates
  <xsl:template match="@*|node()" mode="_sc_post">
    <xsl:param name="ctxt"/>
    <xsl:copy>
@@ -690,7 +695,7 @@
  <xsl:template match="spacer" mode="_sc_post">
    <text:s text:c="{@no *3}"/>
  </xsl:template>
- 
+
  <xsl:template match="hfill" mode="_sc_post">
    <!-- TODO? this is just damage containment -->
    <text:s text:c="20"/>
@@ -704,7 +709,7 @@
  <xsl:template match="img" mode="_songcontent">
    <xsl:param name="ctxt"/>
    <xsl:copy>
-     <xsl:attribute name="odpName"><xsl:value-of select="func:get_image_name(.)"/></xsl:attribute>
+     <xsl:attribute name="odpName"><xsl:value-of select="func:get_image_name(key('img_by_href',@href)[1])"/></xsl:attribute>
      <xsl:copy-of select="@*"/>
    </xsl:copy>
    <page-cand break="-1"/>
@@ -722,7 +727,7 @@
  </xsl:template>
 
  <!-- ignore certain known tags -->
- <xsl:template match="bible" mode="_songcontent_inline"/> 
+ <xsl:template match="bible" mode="_songcontent_inline"/>
  <!-- }}} -->
 
  <!-- {{{ TEMPLATE rep_it (inNodes, anz)  - repeates >inNodes >anz times -->
@@ -780,10 +785,10 @@
  <func:function name="func:default">
    <xsl:param name="value"/>
    <xsl:param name="default"/>
-   <func:result select="exsl:node-set($value)|exsl:node-set($default)[not($value)]"/> 
+   <func:result select="exsl:node-set($value)|exsl:node-set($default)[not($value)]"/>
  </func:function>
  <!-- }}} -->
- 
+
  <!-- {{{ FUNCTION func:if (do_first,first [,second])  -  return (copy-of) $first or $second -->
  <func:function name="func:if">
    <xsl:param name="do_first"/>
@@ -810,7 +815,7 @@
    <func:result select="exsl:node-set($tmp)/hlp/@*"/>
  </func:function>
  <!-- }}} -->
- 
+
  <!-- {{{ FUNCTION func:get_attr(nodeset,name) -->
  <func:function name="func:get_attr">
    <xsl:param name="nodes"/>
@@ -825,7 +830,7 @@
    <func:result select="$node[1]/@*|$node[1]/node()"/>
  </func:function>
  <!-- }}} -->
- 
+
  <!-- {{{ FUNCTION set:replace(nodeset,delnode,insnode)  - remove $delnode and insert instead $insnode -->
  <func:function name="set:replace">
    <xsl:param name="nodeset"/>
@@ -854,7 +859,7 @@
  <xsl:template mode="_esc_file" match="split[@char=' ']">_</xsl:template>
  <xsl:template mode="_esc_file" match="split"/>
  <!-- }}} -->
- 
+
  <!-- {{{ FUNCTION func:get_image_name (img-Tag)  - return "the" image name for the image tag -->
  <func:function name="func:get_image_name">
    <xsl:param name="inTag"/>
@@ -863,7 +868,7 @@
    <func:result>Pictures/pic<xsl:value-of select="generate-id($inTag)"/><xsl:if test="$extension">.</xsl:if><xsl:value-of select="$extension"/></func:result>
  </func:function>
  <!-- }}} -->
- 
+
  <func:function name="mine:main_lang"> <!-- {{{ main_lang('en+de')='en'   ('en+de',3)='de' -->
    <xsl:param name="lang"/>
    <xsl:param name="num" select="1"/>
