@@ -122,7 +122,7 @@ list<xmlNodePtr> evalXPathList(xmlXPathContextPtr ctxt, xmlNodePtr node,const ch
   va_start(ap,fmt);
   char *query=a_vsprintf(fmt,ap);
   va_end(ap);
- 
+
   ctxt->node=node;
   res=xmlXPathEvalExpression((const xmlChar *)query,ctxt);
   free(query);

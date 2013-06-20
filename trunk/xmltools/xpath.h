@@ -6,7 +6,7 @@
 #include <libxml/xpath.h>
 
 class XPathContext {
-public: 
+public:
   XPathContext(xmlDocPtr doc);
   ~XPathContext();
 
@@ -22,7 +22,7 @@ public:
 private:
   XPathContext(const XPathContext &);
   const XPathContext &operator=(const XPathContext &);
-  
+
   xmlXPathContextPtr ctxt;
 };
 
