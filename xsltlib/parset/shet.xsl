@@ -34,7 +34,7 @@
      </xsl:otherwise>
    </xsl:choose>
  </xsl:template>
-  
+
  <xsl:template match="@*|node()|comment()">
    <xsl:copy>
      <xsl:apply-templates select="@*|node()|comment()"/>
@@ -49,11 +49,11 @@
      <xsl:message terminate="yes">Fehler[normal,vers,refr,ending,bridge,instrum] in den Akkorden, Lied: <xsl:value-of select="title[1]/text()"/></xsl:message>
    </xsl:if>
  </xsl:template>
- 
+
  <xsl:template match="song/song"><!-- TODO: should be DTD -->
    <xsl:message terminate="yes">Song tag enclosed in song tag.</xsl:message>
  </xsl:template>
- 
+
  <xsl:template match="song/title[not(@lang)]">
    <xsl:if test="count(../content/@lang)!=1">
      <xsl:message terminate="yes">The language for title "<xsl:value-of select="text()"/>" is not uniquely defined (compare with &lt;content&gt;!)</xsl:message>
@@ -83,7 +83,7 @@
        <xsl:with-param name="wo" select="../title[1]/text()"/>
      </xsl:apply-templates>
    </xsl:variable>
-<!-- 
+<!--
    <exsl:document href="/dev/stdout"><xsl:copy-of select="$sn1"/></exsl:document>
 -->
    <xsl:copy>
@@ -104,7 +104,7 @@
  <xsl:template match="split[@char='&quot;']" mode="_split_token"> <!-- LATER(_add_akks): transformed to <sq/> and <eq/> -->
    <quot/>
  </xsl:template>
- 
+
  <xsl:template match="split[@char='|']" mode="_split_token"> <!-- LATER: get following char -->
    <akk/>
  </xsl:template>
@@ -117,7 +117,7 @@
    <br/><xsl:value-of select="@char"/>
  </xsl:template>
 
- <!-- TRICK ; for now: '\' will be ignored TODO: why? --> 
+ <!-- TRICK ; for now: '\' will be ignored TODO: why? -->
  <xsl:template match="split[@char='\']" mode="_split_token"/>
 
  <xsl:template match="split[@char='^']" mode="_split_token">
@@ -206,7 +206,7 @@
      </xsl:otherwise>
    </xsl:choose>
  </xsl:template>
- 
+
  <xsl:template match="/showbridge" mode="_split_token">
    <xsl:param name="wo"/>
    <xsl:choose>
@@ -234,7 +234,7 @@
  </xsl:template>
 
  <xsl:template match="@*|comment()" mode="_split_token">
-   <!-- copy @* for now. maybe we can just discard it. but we can't let the default rule convert it to text ... --> 
+   <!-- copy @* for now. maybe we can just discard it. but we can't let the default rule convert it to text ... -->
    <xsl:copy-of select="."/>
  </xsl:template>
 
@@ -248,7 +248,7 @@
      <xsl:copy-of select="@*|node()"/>
    </xsl:copy>
  </xsl:template>
- 
+
  <xsl:template match="/base" mode="_add_akks">
    <xsl:param name="debug"/>
    <xsl:call-template name="check-quotes">
@@ -277,7 +277,7 @@
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
- 
+
  <xsl:template match="/refr" mode="_add_akks">
    <xsl:param name="debug"/>
    <xsl:call-template name="check-quotes">
@@ -290,7 +290,7 @@
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
- 
+
  <xsl:template match="/ending" mode="_add_akks">
    <xsl:param name="debug"/>
    <xsl:call-template name="check-quotes">
@@ -448,7 +448,7 @@
 
  <func:function name="mine:get_no"> <!-- {{{ call with 'preceding-sibling::tag|.' -->
    <xsl:param name="prec"/>
-   <xsl:variable name="pno" select="$prec[@no or @as][1]"/>
+   <xsl:variable name="pno" select="$prec[@no or @as][last()]"/>
    <xsl:variable name="add">
      <xsl:choose>
        <xsl:when test="$pno/self::showvers"><xsl:value-of select="$pno/@as"/></xsl:when>
