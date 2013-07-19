@@ -37,6 +37,7 @@
    <book short="Wied03">Wiedenester Jugendliederbuch 2002/2003</book>
    <book short="Wied15">Wiedenester Jugendliederbuch 15. Ausgabe</book>
    <book short="Wied16">Wiedenester Jugendliederbuch 16. Ausgabe</book>
+   <book short="Wied17">Wiedenester Jugendliederbuch 17. Ausgabe</book>
 <!-- preliminary: -->
    <book short="CTW1+2">Come To Worship 1 + 2 (Melodie)</book>
    <book short="UL">Unser Liederbuch</book> 
@@ -57,6 +58,7 @@
    <book short="Gll2">Glaubenslieder 2</book>
    <book short="KFJ">Kinder feiern Jesus</book>
    <book short="DGL">Das gute Land</book>
+   <book short="KAA">Kommt, atmet auf</book>
 <!-- unassigned: 
    <book short="ML1">Meine Liederbuch (1:) für heute und morgen</book> 
    <book short=""></book> 
