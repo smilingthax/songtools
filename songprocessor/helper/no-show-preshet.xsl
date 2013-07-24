@@ -8,6 +8,6 @@
    </xsl:copy>
  </xsl:template>
 
- <xsl:template match="refr[@repeated]|bridge[@repeated]|vers[@repeated]"/>
+ <xsl:template match="showrefr|showbridge|showvers"/>
 
 </xsl:stylesheet>

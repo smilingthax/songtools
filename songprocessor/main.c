@@ -4,23 +4,26 @@
 #include <string.h>
 #include "process.h"
 
-void usage(char *pn)
+void usage(char *pn, int default_tex)
 {
   const char *def_impress="impress";
   const char *def_tex="tex and plain";
-  const char *def=def_impress;
+  const char *def;
 
-  if (strcmp(pn+strlen(pn)-4,"pasr")==0) {
-    def=def_tex;
+  if (default_tex) {
+    def = def_tex;
+  } else {
+    def = def_impress;
   }
 
-  printf("Songprocessor (c) 2004-2010 by Tobias Hoffmann\n\n"
+  printf("Songprocessor (c) 2004-2013 by Tobias Hoffmann\n\n"
          "Usage: %s [-txphr] [input file]\n"
          "   -t,-x,-p,-l,-i,-S: output tex, html, plain, list, impress, snippet\n"
          "   -r: output raw (is always generated, use this switch to suppress fallback to default)\n"
          " If none of the above is given, as default %s will be generated\n\n"
          "Options:\n"
          "   -n: No chords\n"
+         "   -N: No show*\n"
          "   -s: Split impress\n"
          "   -I [path]: Path for [img]... URIs (only impress)\n"
          "   -P [preset]: Use certain settings (if backend supports it)\n\n"
@@ -32,40 +35,50 @@ void usage(char *pn)
 int main(int argc,char **argv)
 {
   char *inputFile="songs.xml";
-  int do_html=0,do_tex=0,do_plain=0,do_list=0,do_impress=0,do_splitimpress=0,do_snippet=0,raw=0,o,do_noakk=0;
+  int raw=0, o, as_pasr=0;
+  process_data_t opts = {};
   const char *imgpath=NULL,*preset=NULL;
 
-  while ((o=getopt(argc,argv,"tlipxhrnSsI:P:"))!=-1) {
+  if (strcmp(argv[0]+strlen(argv[0])-4,"pasr")==0) {
+    as_pasr = 1;
+  } else {
+    as_pasr = 0;
+  }
+
+  while ((o=getopt(argc,argv,"tlipxhrnNSsI:P:"))!=-1) {
     switch (o) {
     case 't':
-      do_tex=1;
+      opts.out_tex = 1;
       break;
     case 'x':
-      do_html=1;
+      opts.out_html = 1;
       break;
     case 'p':
-      do_plain=1;
+      opts.out_plain = 1;
       break;
     case 'l':
-      do_list=1;
+      opts.out_list = 1;
       break;
     case 'i':
-      do_impress=1;
+      opts.out_impress = 1;
       break;
     case 'S':
-      do_snippet=1;
+      opts.out_snippet = 1;
       break;
     case 'h':
-      usage(argv[0]);
+      usage(argv[0], as_pasr);
       return 1;
     case 'r':
       raw=1;
       break;
     case 'n':
-      do_noakk=1;
+      opts.inter_noakk = 1;
+      break;
+    case 'N':
+      opts.inter_noshow = 1;
       break;
     case 's':
-      do_splitimpress=1;
+      opts.split_impress = 1;
       break;
     case 'I':
       imgpath=optarg;
@@ -75,22 +88,28 @@ int main(int argc,char **argv)
       break;
     }
   }
-  if ( (!raw)&&(!do_tex)&&(!do_html)&&(!do_plain)&&(!do_list)&&(!do_impress)&&(!do_snippet) ) {
-    // default: 
-    if (strcmp(argv[0]+strlen(argv[0])-4,"pasr")==0) {
-      do_tex=1;
-      do_plain=1;
-      do_list=1;
+  if ( (!raw)&&
+       (!opts.out_tex)&&
+       (!opts.out_html)&&
+       (!opts.out_plain)&&
+       (!opts.out_list)&&
+       (!opts.out_impress)&&
+       (!opts.out_snippet) ) {
+    // default:
+    if (as_pasr) {
+      opts.out_tex=1;
+      opts.out_plain=1;
+      opts.out_list=1;
     } else {
-      do_impress=1;
+      opts.out_impress=1;
     }
   }
   if (optind<argc) {
     inputFile=argv[optind++];
     if (optind<argc) {
-      usage(argv[0]);
+      usage(argv[0], as_pasr);
       return 1;
     }
   }
-  return do_process(inputFile,do_tex,do_plain,do_html,do_list,do_impress,do_splitimpress,do_snippet,!do_noakk,imgpath,preset);
+  return do_process(inputFile, &opts, imgpath, preset);
 }
