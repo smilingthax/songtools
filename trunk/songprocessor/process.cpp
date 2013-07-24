@@ -66,7 +66,7 @@ bool do_transform(const char *inputFile,const char *outputFile,const char **inte
   {
     auto_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)"shet.xsl"));
     auto_xsltTransform ctxt(xsltNewTransformContext(cur, doc));
-    if (!ctxt) { 
+    if (!ctxt) {
       return false;
     }
     res.reset(xsltApplyStylesheetUser(cur, doc, params, NULL, ((profile&1)?stderr:NULL), ctxt));
@@ -98,20 +98,20 @@ bool do_transform(const char *inputFile,const char *outputFile,const char **inte
     }
   }
 
-  if ( (!secSheets)||(!secOutput) ) { 
+  if ( (!secSheets)||(!secOutput) ) {
     return true;
   }
   for (int iA=0; secSheets[iA] && secOutput[iA]; iA++) {
     printf("Processing %s\n",secSheets[iA]);
     auto_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)secSheets[iA]));
     auto_xsltTransform ctxt(xsltNewTransformContext(cur, res));
-    if (!ctxt) { 
+    if (!ctxt) {
       return false;
     }
     doc.reset(xsltApplyStylesheetUser(cur, res, params, NULL, ((profile&2)?stderr:NULL), ctxt));
     if (!doc) {
       return false;
-    } 
+    }
     const int tmp=xsltSaveResultToFilename(secOutput[iA], doc, cur,0);
     if (tmp==-1) {
       return false;
@@ -130,12 +130,13 @@ void end_transformer()
   xmlCleanupParser();
 }
 
-int do_process(char *inputFile,int tex,int plain,int html,int list,int impress,int split_impress,int snippet,int with_akk,const char *imgpath,const char *preset)
+int do_process(char *inputFile,process_data_t *opts,const char *imgpath,const char *preset)
 {
-  return do_process_hlp(inputFile,(tex!=0),(plain!=0),(html!=0),(list!=0),(impress!=0),(snippet!=0),(with_akk!=0),(split_impress!=0),imgpath,preset);
+  assert(opts);
+  return do_process_hlp(inputFile,*opts,imgpath,preset);
 }
 
-int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,bool with_list,bool with_impress,bool with_snippet,bool with_akk,bool with_splitimpress,const char *imgpath,const char *preset)
+int do_process_hlp(char *inputFile,process_data_t &opts,const char *imgpath,const char *preset)
 {
   const char *interSheets[3],*secSheets[7],*secOutput[7];
   const char *params[16+1];
@@ -146,39 +147,44 @@ int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,
   }
   path_register_prefix("img",imgpath);
 
-  if (!with_akk) {
-    interSheets[0]="helper/no-akk.xsl";
-    interSheets[1]=NULL;
-  } else {
-    interSheets[0]=NULL;
+  int iI=0;
+  if (opts.inter_noshow) {
+    interSheets[iI]="helper/no-show.xsl";
+    iI++;
   }
+  if (opts.inter_noakk) {
+    interSheets[iI]="helper/no-akk.xsl";
+    iI++;
+  }
+  interSheets[iI]=NULL;
+
   int iS=0;
-  if (with_html) {
+  if (opts.out_html) {
     secSheets[iS]="hateemel.xsl";
     secOutput[iS]="list.htm";
     iS++;
   }
-  if (with_tex) {
+  if (opts.out_tex) {
     secSheets[iS]="tex.xsl";
     secOutput[iS]="in1.tex";
     iS++;
   }
-  if (with_plain) {
+  if (opts.out_plain) {
     secSheets[iS]="puretext.xsl";
     secOutput[iS]="plain";
     iS++;
   }
-  if (with_list) {
+  if (opts.out_list) {
     secSheets[iS]="list.xsl";
     secOutput[iS]="list";
     iS++;
   }
-  if (with_impress) {
+  if (opts.out_impress) {
     secSheets[iS]="impress.xsl";
     secOutput[iS]="oolist";
     iS++;
   }
-  if (with_snippet) {
+  if (opts.out_snippet) {
     secSheets[iS]="snippet.xsl";
     secOutput[iS]="snip.txt";
     iS++;
@@ -187,7 +193,7 @@ int do_process_hlp(char *inputFile,bool with_tex,bool with_plain,bool with_html,
   secOutput[iS]=NULL;
 
   int iP=0;
-  if (with_splitimpress) {
+  if (opts.split_impress) {
     params[iP]="out_split";
     iP++;
     params[iP]="'1'";
