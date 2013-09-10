@@ -80,7 +80,7 @@
    <xsl:variable name="apos" select='"&apos;"'/>
    <xsl:variable name="sn1">
      <xsl:apply-templates select="thobi:septree(node(),concat('|&#010;*&quot;^\',$apos))" mode="_split_token">
-       <xsl:with-param name="wo" select="../title[1]/text()"/>
+       <xsl:with-param name="dbg_title" select="../title[1]/text()"/>
      </xsl:apply-templates>
    </xsl:variable>
 <!--
@@ -133,10 +133,15 @@
  </xsl:template>
 
  <xsl:template match="/vers" mode="_split_token">
-   <xsl:param name="wo"/>
+   <xsl:param name="dbg_title"/>
    <xsl:param name="as"/>
+   <xsl:param name="repeated"/>
    <xsl:copy>
+     <xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
      <xsl:copy-of select="@*"/>
+     <xsl:if test="$repeated">
+       <xsl:attribute name="repeated"><xsl:value-of select="$repeated"/></xsl:attribute>
+     </xsl:if>
      <xsl:choose>
        <xsl:when test="$as">
          <xsl:attribute name="no"><xsl:value-of select="$as"/></xsl:attribute>
@@ -146,75 +151,97 @@
        </xsl:otherwise>
      </xsl:choose>
      <xsl:apply-templates select="node()" mode="_split_token">
-       <xsl:with-param name="wo" select="$wo"/>
+       <xsl:with-param name="dbg_title" select="$dbg_title"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
 
  <xsl:template match="/refr" mode="_split_token">
-   <xsl:param name="wo"/>
+   <xsl:param name="dbg_title"/>
+   <xsl:param name="repeated"/>
    <xsl:copy>
+     <xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
      <xsl:attribute name="no"><xsl:value-of select="mine:get_no(preceding-sibling::refr|.)"/></xsl:attribute>
+     <xsl:if test="$repeated">
+       <xsl:attribute name="repeated"><xsl:value-of select="$repeated"/></xsl:attribute>
+     </xsl:if>
      <xsl:apply-templates select="@*|node()" mode="_split_token">
-       <xsl:with-param name="wo" select="$wo"/>
+       <xsl:with-param name="dbg_title" select="$dbg_title"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
 
  <xsl:template match="/ending" mode="_split_token">
-   <xsl:param name="wo"/>
+   <xsl:param name="dbg_title"/>
    <xsl:copy>
+     <xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
      <xsl:attribute name="no"><xsl:value-of select="mine:get_no(preceding-sibling::ending|.)"/></xsl:attribute>
      <xsl:apply-templates select="@*|node()" mode="_split_token">
-       <xsl:with-param name="wo" select="$wo"/>
+       <xsl:with-param name="dbg_title" select="$dbg_title"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
 
  <xsl:template match="/bridge" mode="_split_token">
-   <xsl:param name="wo"/>
+   <xsl:param name="dbg_title"/>
+   <xsl:param name="repeated"/>
    <xsl:copy>
+     <xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
      <xsl:attribute name="no"><xsl:value-of select="mine:get_no(preceding-sibling::bridge|.)"/></xsl:attribute>
+     <xsl:if test="$repeated">
+       <xsl:attribute name="repeated"><xsl:value-of select="$repeated"/></xsl:attribute>
+     </xsl:if>
      <xsl:apply-templates select="@*|node()" mode="_split_token">
-       <xsl:with-param name="wo" select="$wo"/>
+       <xsl:with-param name="dbg_title" select="$dbg_title"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
 
  <xsl:template match="/showvers" mode="_split_token">
-   <xsl:param name="wo"/>
+   <xsl:param name="dbg_title"/>
    <xsl:choose>
      <xsl:when test="@no">
        <xsl:apply-templates select="../vers[@no=current()/@no]" mode="_split_token">
          <xsl:with-param name="as" select="@as"/>
+         <xsl:with-param name="repeated" select="true()"/>
        </xsl:apply-templates>
      </xsl:when>
      <xsl:otherwise>
-       <xsl:apply-templates select="preceding-sibling::vers[1]" mode="_split_token"/>
+       <xsl:apply-templates select="preceding-sibling::vers[1]" mode="_split_token">
+         <xsl:with-param name="repeated" select="true()"/>
+       </xsl:apply-templates>
      </xsl:otherwise>
    </xsl:choose>
  </xsl:template>
 
  <xsl:template match="/showrefr" mode="_split_token">
-   <xsl:param name="wo"/>
+   <xsl:param name="dbg_title"/>
    <xsl:choose>
      <xsl:when test="@no">
-       <xsl:apply-templates select="../refr[@no=current()/@no]" mode="_split_token"/>
+       <xsl:apply-templates select="../refr[@no=current()/@no]" mode="_split_token">
+         <xsl:with-param name="repeated" select="true()"/>
+       </xsl:apply-templates>
      </xsl:when>
      <xsl:otherwise>
-       <xsl:apply-templates select="preceding-sibling::refr[1]" mode="_split_token"/>
+       <xsl:apply-templates select="preceding-sibling::refr[1]" mode="_split_token">
+         <xsl:with-param name="repeated" select="true()"/>
+       </xsl:apply-templates>
      </xsl:otherwise>
    </xsl:choose>
  </xsl:template>
 
  <xsl:template match="/showbridge" mode="_split_token">
-   <xsl:param name="wo"/>
+   <xsl:param name="dbg_title"/>
    <xsl:choose>
      <xsl:when test="@no">
-       <xsl:apply-templates select="../bridge[@no=current()/@no]" mode="_split_token"/>
+       <xsl:apply-templates select="../bridge[@no=current()/@no]" mode="_split_token">
+         <xsl:with-param name="repeated" select="true()"/>
+       </xsl:apply-templates>
      </xsl:when>
      <xsl:otherwise>
-       <xsl:apply-templates select="preceding-sibling::bridge[1]" mode="_split_token"/>
+       <xsl:apply-templates select="preceding-sibling::bridge[1]" mode="_split_token">
+         <xsl:with-param name="repeated" select="true()"/>
+       </xsl:apply-templates>
      </xsl:otherwise>
    </xsl:choose>
  </xsl:template>
@@ -224,11 +251,11 @@
  </xsl:template>
 
  <xsl:template match="*" mode="_split_token">
-   <xsl:param name="wo"/>
+   <xsl:param name="dbg_title"/>
    <xsl:copy>
      <xsl:copy-of select="@*"/>
      <xsl:apply-templates select="node()" mode="_split_token">
-       <xsl:with-param name="wo" select="$wo"/>
+       <xsl:with-param name="dbg_title" select="$dbg_title"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
