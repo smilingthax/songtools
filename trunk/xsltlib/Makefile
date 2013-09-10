@@ -3,12 +3,9 @@ SOURCES2=textItem.cpp extension.cpp speed.cpp processor.cpp parset.cpp ptools.cp
 LIB1=libxsltext.a
 DIRS=enclose imagetools mine_ext parset split path zip_ext
 
-CFLAGS=-O3 -funroll-all-loops -finline-functions -Wall -g
-CFLAGS+=`pkg-config --cflags libxml-2.0`
-#CFLAGS=-Wall -g
-#LDFLAGS=-g
-CPPFLAGS:=$(CFLAGS) $(FLAGS)
-CFLAGS:=
+PACKAGES=libxslt libexslt  # libxml-2.0
+
+include config.mk
 
 OBJECTS1=$(SOURCES1:.c=.o) $(SOURCES2:.cpp=.o)
 all: $(LIB1)
