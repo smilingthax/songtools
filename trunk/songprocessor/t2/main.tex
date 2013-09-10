@@ -13,7 +13,7 @@
 \hypersetup{pdfauthor={Tobias Hoffmann},pdftitle={Songs},pdfpagemode=FullScreen}
 %\hypersetup{pdfauthor={Tobias Hoffmann},pdftitle={Songs}}
 
-%%% Font definitions: 
+%%% Font definitions:
 \makeatletter\renewcommand\@xxxpt{28.2}\makeatother
 \renewcommand\seriesdefault{\bfdefault}
 % Refrain
@@ -24,7 +24,7 @@
 \newcommand\cprf{\fontseries{n}\selectfont}
 
 % Headline, none if \capf undefined!
-%\newcommand\capf{\LARGE\bfseries} 
+%\newcommand\capf{\LARGE\bfseries}
 % akkords, none if \akf undefined!
 %\newcommand\akf{\normalsize}
 %\newcommand\akf{\color[rgb]{1,0,0.2}\tiny}
@@ -109,15 +109,16 @@
 
 % Definition of Block/Inline-Tags
 \newbox\bxA
+\newcommand\blockskip{}%\vskip0.5\baselineskip}
 %\newcommand\myl[2]{{\settowidth{\dimA}{#1}\addtolength{\parindent}{\dimA}{\noindent#1\hangindent=\parindent\ignorespaces#2}}}
 %\newcommand\myl[2]{{\settowidth{\dimA}{#1}{#1\addtolength{\parindent}{\dimA}\ignorespaces#2}}}
 \newcommand\myl[2]{{\setbox\bxA=\hbox{#1}\setlength\dimA{\wd\bxA}{\leavevmode\box\bxA\addtolength{\parindent}{\dimA}\ignorespaces#2}}}
 \newcommand\rep[2][2]{\myl{|:\ }{#2\ :|\ifnum#1>2 \ \ (#1x)\fi}}
-\newcommand\refr[1]{{\reff\myl{Refr:\ }{#1}}}
-\newcommand\vers[2][\thevers]{\setcounter{vers}{#1}\myl{\thevers.\ \ }{#2}\addtocounter{vers}{1}}
-\newcommand\bridge[1]{\myl{Bridge:\ }{#1}}
-\newcommand\finally[1]{\myl{Schluss:\ }{#1}}
-\newcommand\xlate[1]{(Übersetzung: #1)}
+\newcommand\refr[1]{\blockskip{\reff\myl{Refr:\ }{#1}}}
+\newcommand\vers[2][\thevers]{\blockskip\setcounter{vers}{#1}\myl{\thevers.\ \ }{#2}\addtocounter{vers}{1}}
+\newcommand\bridge[1]{\blockskip\myl{Bridge:\ }{#1}}
+\newcommand\finally[1]{\blockskip\myl{Schluss:\ }{#1}}
+\newcommand\xlate[1]{\blockskip(Übersetzung: #1)}
 
 \newcommand\callresponse[1]{{\renewcommand\nl[1][0pt]{\\*[##1]\indent\nla\ignorespaces} 
                              \begin{tabular}[t]{@{}l|r@{}}#1\end{tabular}}}
@@ -128,7 +129,7 @@
 %%% End Commands
 
 %%% Conditionals
-% if header should be suppressed: shift rest of page up 
+% if header should be suppressed: shift rest of page up
 \ifx\capf\undefined
   \def\leftheader#1{\gdef\@leftheader{}}
   \setlength{\headheight}{0 pt}

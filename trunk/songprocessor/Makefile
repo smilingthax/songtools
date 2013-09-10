@@ -38,7 +38,7 @@ OBJECTS1=$(SOURCES1:.c=.o) $(SOURCES2:.cpp=.o)
 all: $(EXEC1)
 ifneq "$(MAKECMDGOALS)" "clean"
   -include $(SOURCES1:.c=.d) $(SOURCES2:.cpp=.d)
-endif 
+endif
 
 clean:
 	rm -f $(EXEC1) $(OBJECTS1) $(SOURCES1:.c=.d) $(SOURCES2:.cpp=.d)

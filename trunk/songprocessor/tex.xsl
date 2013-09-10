@@ -96,20 +96,28 @@
  <xsl:template name="songcontent">
    <xsl:apply-templates select="*|text()"/>
  </xsl:template>
- 
+
  <xsl:template match="br">
    <xsl:text>\nl</xsl:text>
-   <xsl:if test="@no>1">
-     <xsl:text>[</xsl:text><xsl:value-of select="@no *0.25"/>
-     <xsl:text>\baselineskip]</xsl:text>
-   </xsl:if><xsl:value-of select="$nl"/>
+   <xsl:choose>
+     <xsl:when test="not(following-sibling::*) and not(../following-sibling::*)">
+        <!-- HACK: last line of last block should have consistent spacing -->
+        <!-- TODO?  nlbreak ? -->
+        <xsl:text>[0.5\baselineskip]</xsl:text>
+     </xsl:when>
+     <xsl:when test="@no>1">
+       <xsl:text>[</xsl:text><xsl:value-of select="@no *0.25"/>
+       <xsl:text>\baselineskip]</xsl:text>
+     </xsl:when>
+   </xsl:choose><xsl:value-of select="$nl"/>
  </xsl:template>
- 
+<!-- disabled for songbook
  <xsl:template match="br[@break='-2']">
    <xsl:text>\ns</xsl:text>
    <xsl:value-of select="$nl"/>
  </xsl:template>
- 
+-->
+
  <xsl:template match="br[@break and @break!='-2']">
    <xsl:text>\nlbreak</xsl:text>
    <xsl:if test="@no>1">
@@ -145,6 +153,7 @@
  </xsl:template>
 
  <xsl:template match="base">
+   <xsl:text>\blockskip </xsl:text>
    <xsl:call-template name="songcontent"/>
  </xsl:template>
 
@@ -219,7 +228,7 @@
  <xsl:template match="hfill">
    <xsl:text>\hfill{}</xsl:text>
  </xsl:template>
- 
+
  <xsl:template match="xlate">
    <xsl:choose>
    <xsl:when test="@inner != 0">
