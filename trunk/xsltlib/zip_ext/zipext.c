@@ -39,7 +39,7 @@ int XmlZipClose(void *context)
 xmlOutputBufferPtr XmlZipCreate(const char *URI,xmlCharEncodingHandlerPtr encoder,int compression ATTRIBUTE_UNUSED)
 {
   xmlOutputBufferPtr out;
-  
+
   zip_fileinfo zi;
   struct tm *tm;
   time_t tt;
@@ -49,7 +49,7 @@ xmlOutputBufferPtr XmlZipCreate(const char *URI,xmlCharEncodingHandlerPtr encode
   if (!zipCur) {
     return NULL;
   }
-   
+
   // set up fileinfo
   time(&tt);
   tm=localtime(&tt);
@@ -64,7 +64,7 @@ xmlOutputBufferPtr XmlZipCreate(const char *URI,xmlCharEncodingHandlerPtr encode
 
   if (strncmp(URI,"zip:store/",10)==0)  { // store only
     err=zipOpenNewFileInZip(zipCur,URI+10,&zi,NULL,0,NULL,0,NULL,0,0);
-  } else { 
+  } else {
 //    err=zipOpenNewFileInZip(zipCur,URI,&zi,NULL,0,NULL,0,NULL,Z_DEFLATED,Z_DEFAULT_COMPRESSION);
     err=zipOpenNewFileInZip(zipCur,URI,&zi,NULL,0,NULL,0,NULL,Z_DEFLATED,9);
   }
@@ -92,8 +92,8 @@ struct _docZipPreComp {
   xmlNsPtr *nsList;
   int nsNr;
 };
- 
-void deallocDocZip(docZipPreComp *comp) 
+
+void deallocDocZip(docZipPreComp *comp)
 {
   if (!comp) {
     return;
@@ -128,7 +128,7 @@ void elementDocZipElem(xsltTransformContextPtr ctxt, xmlNodePtr node, xmlNodePtr
   xmlChar *URI;
   xmlXPathObjectPtr cselobj=NULL;
   int iA;
-  
+
   if ( (!ctxt)||(!node)||(!inst)||(!comp)||
        (comp->comp.free!=(xsltElemPreCompDeallocator)deallocDocZip) ) { // no my data (hmm...)
     return;
@@ -147,7 +147,7 @@ void elementDocZipElem(xsltTransformContextPtr ctxt, xmlNodePtr node, xmlNodePtr
     int oldNsNr;
     xmlNodePtr test;
     xmlNodeSetPtr nlist;
-    
+
     oldNsList=ctxt->xpathCtxt->namespaces;
     oldNsNr=ctxt->xpathCtxt->nsNr;
     ctxt->xpathCtxt->namespaces=comp->nsList;
@@ -162,7 +162,7 @@ void elementDocZipElem(xsltTransformContextPtr ctxt, xmlNodePtr node, xmlNodePtr
     }
     if (  (cselobj->type==XPATH_STRING)&&( (!cselobj->stringval)||(!*cselobj->stringval) )  ) { // empty string, -> skip
       xmlXPathFreeObject(cselobj);
-      cselobj=NULL; 
+      cselobj=NULL;
       goto emptylist;
     }
     // check, that it is a RVT or NodeSet containing only <copy fromhref="" tohref=""/>
@@ -208,7 +208,7 @@ void elementDocZipElem(xsltTransformContextPtr ctxt, xmlNodePtr node, xmlNodePtr
     cselobj->nodesetval=nlist;
   }
 emptylist:
-  
+
   // Activate zip stream
   if (zipCur) {
     xsltTransformError(ctxt,NULL,inst,"doc-zip: zip Stream is already active!\n");
@@ -232,8 +232,8 @@ emptylist:
   if (cselobj) {
     xmlOutputBufferPtr obuf;
     xmlParserInputBufferPtr ibuf;
-    int len;
-    
+    size_t len;
+
     for (iA=0;iA<cselobj->nodesetval->nodeNr;iA++) { // everything is a ELEMENT, and no fake nodes, Yes!
       xmlNodePtr test=cselobj->nodesetval->nodeTab[iA];
       // it is a <copy> -element... as checked above
@@ -254,11 +254,17 @@ emptylist:
       }
       // copy contents verbatim
       while (xmlParserInputBufferRead(ibuf,2048)>0) {
+#ifdef LIBXML2_NEW_BUFFER
+        len=xmlBufUse(ibuf->buffer);
+        xmlOutputBufferWrite(obuf,len,(const char *)xmlBufContent(ibuf->buffer));
+        xmlBufShrink(ibuf->buffer,len);
+#else
         len=xmlBufferLength(ibuf->buffer);
         xmlOutputBufferWrite(obuf,len,(const char *)xmlBufferContent(ibuf->buffer));
         xmlBufferShrink(ibuf->buffer,len);
+#endif
       }
-      xmlFreeParserInputBuffer(ibuf); 
+      xmlFreeParserInputBuffer(ibuf);
       xmlOutputBufferClose(obuf);
     }
     xmlXPathFreeObject(cselobj);
@@ -314,7 +320,7 @@ xsltElemPreCompPtr elementDocZipComp(xsltStylesheetPtr style, xmlNodePtr inst, x
     for (iA=0;comp->nsList[iA];iA++);
     comp->nsNr=iA;
   }
-    
+
   return (xsltElemPreCompPtr)comp;
 }
 
@@ -325,7 +331,7 @@ int load_doczip()
 }
 
 #ifdef STANDALONE
-void thax_home_zip_ext_init() 
+void thax_home_zip_ext_init()
 {
   load_doczip();
 }

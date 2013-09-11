@@ -6,13 +6,19 @@
 #include "imagefun.h"
 #include <string.h>
 
+#ifdef LIBXML2_NEW_BUFFER
+  #define xmlBufferLength xmlBufUse
+  #define xmlBufferContent xmlBufContent
+  #define xmlBufferShrink xmlBufShrink
+#endif
+
 static int xmlPIensure(xmlParserInputBufferPtr ibuf,int len)
 {
   if (xmlBufferLength(ibuf->buffer)>=len) {
     return -1;
   }
   if ( (xmlParserInputBufferRead(ibuf,len)<=0)||(xmlBufferLength(ibuf->buffer)<len) ) {
-    xmlFreeParserInputBuffer(ibuf); 
+    xmlFreeParserInputBuffer(ibuf);
     return 0;
   }
   return -1;
@@ -42,7 +48,7 @@ static int get_png_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,int
   buf=(const unsigned char *)xmlBufferContent(ibuf->buffer);
   if (memcmp(buf,png_sig,8)!=0) {
     // Not a png
-    xmlFreeParserInputBuffer(ibuf); 
+    xmlFreeParserInputBuffer(ibuf);
     return 1;
   }
   len=buf[11]+(buf[10]<<8)+(buf[9]<<16)+(buf[8]<<24);
@@ -57,10 +63,10 @@ static int get_png_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,int
 #endif
     xmlStrPrintf(retwidth,retlen,(const xmlChar *)"%d",width);
     xmlStrPrintf(retheight,retlen,(const xmlChar *)"%d",height);
-    xmlFreeParserInputBuffer(ibuf); 
+    xmlFreeParserInputBuffer(ibuf);
     return 0;
   }
-  xmlFreeParserInputBuffer(ibuf); 
+  xmlFreeParserInputBuffer(ibuf);
   return 2;
 }
 
@@ -94,7 +100,7 @@ static int get_jpeg_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,in
   marker=(buf[0]<<8)+buf[1];
   if ( (marker!=jpeg_SOI)||(buf[2]!=0xff) ) {
     // Not a jpeg
-    xmlFreeParserInputBuffer(ibuf); 
+    xmlFreeParserInputBuffer(ibuf);
     return 1;
   }
   marker=(buf[2]<<8)+buf[3];
@@ -127,7 +133,7 @@ static int get_jpeg_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,in
       width=(buf[3]<<8)+buf[4];
       xmlStrPrintf(retwidth,retlen,(const xmlChar *)"%d",width);
       xmlStrPrintf(retheight,retlen,(const xmlChar *)"%d",height);
-      xmlFreeParserInputBuffer(ibuf); 
+      xmlFreeParserInputBuffer(ibuf);
       return 0;
     }
     if (!xmlPIensure(ibuf,len)) {
@@ -138,7 +144,7 @@ static int get_jpeg_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,in
     marker=(buf[0]<<8)+buf[1];
     xmlBufferShrink(ibuf->buffer,2);
   }
-  xmlFreeParserInputBuffer(ibuf); 
+  xmlFreeParserInputBuffer(ibuf);
   return 2;
 }
 
@@ -178,7 +184,7 @@ thobiImageSizeFunction(xmlXPathParserContextPtr ctxt, int nargs)
     xmlDocPtr container;
     xmlXPathObjectPtr ret;
     xmlNodePtr node;
-    
+
     tctxt=xsltXPathGetTransformContext(ctxt);
     if (!tctxt) {
       xsltTransformError(xsltXPathGetTransformContext(ctxt),NULL,NULL,"image-size: internal error tctxt == NULL\n");
