@@ -25,7 +25,7 @@
    <book short="EG">Evangelisches Gesangbuch</book>
    <book short="FL">Feiern &amp; Loben</book>
    <book short="IWDD">Ich will dir danken (grünes Liederbuch)</book> <!-- (grünes Liederbuch) -->
-   <book short="GmL">Gemeindelieder (rotes Liederbuch)</book> 
+   <book short="GmL">Gemeindelieder (rotes Liederbuch)</book>
    <book short="NGmL">Neue Gemeindelieder</book>
    <book short="Mneu">Neues Gesangbuch für die Evangelisch-methodistische Kirche</book>
    <book short="SMU">Singt mit uns</book>
@@ -40,8 +40,8 @@
    <book short="Wied17">Wiedenester Jugendliederbuch 17. Ausgabe</book>
 <!-- preliminary: -->
    <book short="CTW1+2">Come To Worship 1 + 2 (Melodie)</book>
-   <book short="UL">Unser Liederbuch</book> 
-   <book short="ML2">Meine Liederbuch 2: Ökumene heute</book> 
+   <book short="UL">Unser Liederbuch</book>
+   <book short="ML2">Meine Liederbuch 2: Ökumene heute</book>
    <book short="SGIDH">So groß ist der Herr</book>
    <!-- GL: Gemeindelieder[GmL], Gotteslob[GL], Glaubenslieder[GlL] -->
    <book short="LL">Lebenslieder</book>
@@ -51,7 +51,8 @@
    <book short="SVJ1">Singt von Jesus (1981)</book> <!-- 1981 -->
    <book short="SVJ2">Singt von Jesus, Band 2</book> <!-- 1990? -->
    <book short="SVJ3">Singt von Jesus, Band 3</book>
-   <book short="GL">Gotteslob (Katholisches Gesangbuch)</book>
+   <book short="GL">Gotteslob (Katholisches Gesangbuch 1975)</book>
+   <book short="GL13">Gotteslob (Katholisches Gesangbuch 2013)</book>
    <book short="LDL">Lied des Lebens</book>
    <book short="WT4">Worship Together Songbook 4.0</book>
    <book short="Gll">Glaubenslieder</book>
@@ -59,9 +60,9 @@
    <book short="KFJ">Kinder feiern Jesus</book>
    <book short="DGL">Das gute Land</book>
    <book short="KAA">Kommt, atmet auf</book>
-<!-- unassigned: 
-   <book short="ML1">Meine Liederbuch (1:) für heute und morgen</book> 
-   <book short=""></book> 
+<!-- unassigned:
+   <book short="ML1">Meine Liederbuch (1:) für heute und morgen</book>
+   <book short=""></book>
 -->
  </xsl:variable>
 
