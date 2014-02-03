@@ -491,9 +491,6 @@
    <xsl:param name="lang"/>
    <xsl:param name="num" select="1"/>
    <xsl:variable name="split" select="thobi:separate($lang,'+')"/>
-   <xsl:if test="count($split/split)>=1">
-     <xsl:message terminate="yes">Bad lang: <xsl:value-of select="$lang"/></xsl:message>
-   </xsl:if>
    <func:result select="$split[$num][self::text()]"/>
  </func:function>
  <!-- }}} -->
