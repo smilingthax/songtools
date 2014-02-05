@@ -62,7 +62,7 @@
 -->
  </xsl:template>
 
- <!-- NOTE: handle inline elements which are absolutely positioned in first pass, 
+ <!-- NOTE: handle inline elements which are absolutely positioned in first pass,
             those that are relativ to e.g. first lgroup-line (block,rep) in second pass (_sc_post) -->
 
  <!-- {{{ songcontent postprocessing: _sc_post -->
@@ -100,8 +100,10 @@
    <xsl:param name="ctxt"/>
    <xsl:param name="solrep" select="@solrep|exsl:node-set(0)[not(current()/@solrep)]"/> <!-- @solrep not always present; TRICK: variable not allowed here... -->
    <xsl:param name="repindent" select="sum(preceding-sibling::*/@rep) + $solrep"/>
+   <xsl:variable name="justxlang" select="not(../line[not(@xlang)])"/>
+
    <xsl:choose>
-     <xsl:when test="@firstpos">
+     <xsl:when test="@firstpos and (not(@xlang) or $justxlang)">
        <xsl:copy-of select="$ctxt/block/first/node()"/>
      </xsl:when>
      <xsl:otherwise>
@@ -158,7 +160,7 @@
      <xsl:with-param name="anz" select="@no *2"/>
    </xsl:call-template>
  </xsl:template>
- 
+
  <xsl:template match="line/hfill" mode="_sc_post">
    <!-- TODO? this is just damage containment -->
    <xsl:text>               </xsl:text>
@@ -166,7 +168,7 @@
  <!-- }}} -->
 
  <!-- lgroup/line/@* only informational (except @xlang)! -->
- <!-- {{{ TEMPLATE songcontent_block --> 
+ <!-- {{{ TEMPLATE songcontent_block -->
  <xsl:template name="songcontent_block">
    <xsl:param name="ctxt" select="/.."/>
    <xsl:variable name="lines" select="ec:enclose(*|text(),'$nodes[self::br]','line')"/>
@@ -217,13 +219,18 @@
                <lgroup>
                  <xsl:copy-of select="$br/@*"/>
                  <xsl:value-of select="'&#10;'"/><xsl:text>  </xsl:text>
-                 <line no="1">
-                   <xsl:copy-of select="$br/@solrep|$br/@firstpos"/> <!-- informational -->
-                   <xsl:copy-of select="node()[not(self::xlang)]"/>
-                 </line>
+                 <xsl:if test="node()[not(self::xlang)]">
+                   <line no="1">
+                     <xsl:copy-of select="$br/@solrep|$br/@firstpos"/> <!-- informational -->
+                     <xsl:copy-of select="node()[not(self::xlang)]"/>
+                   </line>
+                 </xsl:if>
                  <xsl:for-each select="xlang">
                    <xsl:value-of select="'&#10;'"/><xsl:text>  </xsl:text>
                    <line xlang="1">
+                     <xsl:if test="position()=1">
+                       <xsl:copy-of select="$br/@solrep|$br/@firstpos"/> <!-- informational -->
+                     </xsl:if>
                      <xsl:choose>
                        <xsl:when test="position()=last()">
                          <xsl:copy-of select="$br/@no|$br/@break"/> <!-- informational -->
@@ -248,7 +255,7 @@
      </xsl:choose>
    </xsl:for-each>
  </xsl:template>
- <!-- }}} --> 
+ <!-- }}} -->
 
  <!-- {{{ Error-catcher -->
  <xsl:template match="*" mode="_songcontent">
@@ -304,7 +311,7 @@
  -->
  <!-- }}} -->
 
-<!-- TODO? fast matching in _sc_post when <rep inline="start"> instead of <inline start="rep"> ? 
+<!-- TODO? fast matching in _sc_post when <rep inline="start"> instead of <inline start="rep"> ?
      TODO?  fix normalize in _sc_post  alternatively by using test="preceding_sibling::[is_element]" and then not killing leading ws ... trailing
         (e.g. use sentinel non-ws for normalize and remove afterwards) -->
  <!-- {{{ inline tags -->

@@ -14,10 +14,11 @@
 
  <xsl:template match="song">
    <xsl:copy>
+     <xsl:copy-of select="@*"/>
      <copyright>
        <xsl:call-template name="copyright"/>
      </copyright>
-     <xsl:apply-templates select="@*|node()|comment()"/>
+     <xsl:apply-templates select="node()|comment()"/>
    </xsl:copy>
  </xsl:template>
 

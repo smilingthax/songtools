@@ -36,7 +36,7 @@
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
- 
+
  <!-- the '<rights>123 text</rights>' case -->
  <xsl:template match="rights" mode="_do_rights">
    <xsl:param name="verbose"/>
@@ -460,11 +460,11 @@
    </xsl:variable>
    <rights><xsl:apply-templates select="exsl:node-set($tokens)" mode="_token_concat"/></rights>
  </xsl:template>
- 
+
  <xsl:template match="tokensep" mode="_token_concat"/>
  <xsl:template match="token" mode="_token_concat">
    <xsl:if test="preceding-sibling::token">
-     <xsl:value-of select="set:trailing(preceding-sibling::*,preceding-sibling::token[1])[self::tokensep][last()]"/>
+     <xsl:value-of select="set:trailing(preceding-sibling::*,preceding-sibling::token[1])/self::tokensep[last()]"/>
    </xsl:if>
    <xsl:value-of select="."/>
  </xsl:template>

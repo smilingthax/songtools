@@ -125,8 +125,10 @@
    <xsl:param name="ctxt"/>
    <xsl:param name="solrep" select="@solrep|exsl:node-set(0)[not(current()/@solrep)]"/> <!-- @solrep not always present; TRICK: variable not allowed here... -->
    <xsl:param name="repindent" select="sum(preceding-sibling::*/@rep) + $solrep"/>
+   <xsl:variable name="justxlang" select="not(../line[not(@xlang)])"/>
+
    <xsl:choose>
-     <xsl:when test="@firstpos">
+     <xsl:when test="@firstpos and (not(@xlang) or $justxlang)">
        <xsl:value-of select="$ctxt/block/first"/>
      </xsl:when>
      <xsl:otherwise>
