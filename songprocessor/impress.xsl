@@ -617,8 +617,10 @@
    <xsl:param name="ctxt"/>
    <xsl:param name="solrep" select="@solrep|exsl:node-set(0)[not(current()/@solrep)]"/> <!-- @solrep not always present; TRICK: variable not allowed here... -->
    <xsl:param name="repindent" select="sum(preceding-sibling::*/@rep) + $solrep"/>
+   <xsl:variable name="justxlang" select="not(../line[not(@xlang)])"/>
 
-   <xsl:variable name="blockfmt" select="$ctxt/block/first[current()/@firstpos]|$ctxt/block/indent[not(current()/@firstpos)]"/>
+   <xsl:variable name="isfirst" select="@firstpos and (not(@xlang) or $justxlang)"/>
+   <xsl:variable name="blockfmt" select="$ctxt/block/first[$isfirst]|$ctxt/block/indent[not($isfirst)]"/>
    <xsl:variable name="indent">
      <xsl:copy-of select="$blockfmt/node()"/>
      <xsl:call-template name="rep_it">
