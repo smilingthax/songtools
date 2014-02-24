@@ -60,6 +60,9 @@
    <book short="KFJ">Kinder feiern Jesus</book>
    <book short="DGL">Das gute Land</book>
    <book short="KAA">Kommt, atmet auf</book>
+   <book short="MLDL">Meine Lieder - Deine Lieder</book>
+   <book short="DBHK1">Du bist Herr Kids 1</book>
+   <book short="DBHK2">Du bist Herr Kids 2</book>
 <!-- unassigned:
    <book short="ML1">Meine Liederbuch (1:) für heute und morgen</book>
    <book short=""></book>
