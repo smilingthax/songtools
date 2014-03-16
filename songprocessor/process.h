@@ -24,11 +24,11 @@ typedef struct {
  extern std::vector<SongContainer *> songList;
  extern FlyTextTokens flyt;
 
- int do_process_hlp(char *inputFile,process_data_t &opts,const char *imgpath=NULL,const char *preset=NULL);
+ int do_process_hlp(char *inputFile,process_data_t &opts,const char *imgpath=NULL,const char *preset=NULL,const char *special=NULL);
 extern "C" {
 #endif
 
-int do_process(char *inputFile,process_data_t *opts,const char *imgpath,const char *preset);
+int do_process(char *inputFile,process_data_t *opts,const char *imgpath,const char *preset,const char *special);
 
 #ifdef __cplusplus
 };
