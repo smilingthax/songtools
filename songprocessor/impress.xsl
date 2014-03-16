@@ -6,6 +6,7 @@
                 xmlns:tools="thax.home/tools"
                 xmlns:func="http://exslt.org/functions"
                 xmlns:exsl="http://exslt.org/common"
+                xmlns:dyn="http://exslt.org/dynamic"
                 xmlns:mine="thax.home/mine-ext-speed"
                 xmlns:zip="thax.home/zip-ext"
                 xmlns:ec="thax.home/enclose"
@@ -36,7 +37,7 @@
             xmlns:smil="urn:oasis:names:tc:opendocument:xmlns:smil-compatible:1.0"
             xmlns:anim="urn:oasis:names:tc:opendocument:xmlns:animation:1.0"
             exclude-result-prefixes="office style text table draw fo xlink dc meta number presentation svg chart dr3d math form script ooo ooow oooc dom xforms xsd xsi smil anim"
-                extension-element-prefixes="exsl func set thobi mine ec zip tools">
+                extension-element-prefixes="exsl func dyn set thobi mine ec zip tools">
 <!-- TODO? Language for spellchecker -->
 <!-- TODO? want/need function to add something to an array :-)
   array=array.add bla fasel...
@@ -77,6 +78,9 @@
          <xsl:with-param name="add_files">
            <xsl:copy-of select="$preset/copy"/>
            <xsl:apply-templates select="$imgs" mode="get_add_images"/>
+         </xsl:with-param>
+         <xsl:with-param name="add_styles">
+           <xsl:apply-templates select="songs-out/song/special[@type='odp-style']" mode="_do_special"/>
          </xsl:with-param>
        </xsl:call-template>
      </xsl:otherwise>
@@ -145,6 +149,9 @@
      </xsl:with-param>
      <xsl:with-param name="black_back" select="count($preset/black)"/>
      <xsl:with-param name="add_files" select="exsl:node-set($imgs)/copy[not(@tohref=preceding-sibling::copy/@tohref)]"/>
+     <xsl:with-param name="add_styles">
+       <xsl:apply-templates select="special[@type='odp-style']" mode="_do_special"/>
+     </xsl:with-param>
    </xsl:call-template>
    <xsl:apply-templates select="title" mode="links">
      <xsl:with-param name="linkTo" select="$file"/>
@@ -236,6 +243,7 @@
    <xsl:param name="content_nodes" select="."/>
    <xsl:param name="black_back"/>
    <xsl:param name="add_files"/>
+   <xsl:param name="add_styles"/>
    <zip:doc-zip href="{$file}" copy-select="$add_files">
      <exsl:document href="zip:store/mimetype" method="text"><!-- has to be first, and uncompressed! -->
        <xsl:text>application/vnd.oasis.opendocument.presentation</xsl:text>
@@ -243,6 +251,7 @@
      <exsl:document href="content.xml" encoding="UTF-8" method="xml" indent="yes">
        <xsl:apply-templates select="document(func:default($preset/content,'oo-template/content.xml'))" mode="_output_odp_content">
          <xsl:with-param name="content_nodes" select="$content_nodes"/>
+         <xsl:with-param name="style_nodes" select="$add_styles"/>
        </xsl:apply-templates>
      </exsl:document>
      <exsl:document href="styles.xml" encoding="UTF-8" method="xml" indent="yes">
@@ -271,12 +280,22 @@
    <xsl:apply-templates select="exsl:node-set($content_nodes)/node()" mode="_output_odp_content"/>
  </xsl:template>
 
+ <xsl:template match="office:automatic-styles" mode="_output_odp_content">
+   <xsl:param name="style_nodes" select="."/>
+   <xsl:copy>
+     <xsl:copy-of select="@*|node()"/>
+     <xsl:copy-of select="$style_nodes"/>
+   </xsl:copy>
+ </xsl:template>
+
  <xsl:template match="@*|node()|comment()" mode="_output_odp_content">
    <xsl:param name="content_nodes" select="."/>
+   <xsl:param name="style_nodes" select="."/>
    <xsl:copy>
      <xsl:copy-of select="@*"/>
      <xsl:apply-templates select="node()|comment()" mode="_output_odp_content">
        <xsl:with-param name="content_nodes" select="$content_nodes"/>
+       <xsl:with-param name="style_nodes" select="$style_nodes"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
@@ -334,12 +353,15 @@
    <xsl:param name="lbfrom"/>
    <xsl:param name="position" select="position()"/>
    <!--  select="title[1]/text()" -->
-   <xsl:variable name="inHasImages">
+   <xsl:variable name="inHasImageOrSpecial">
      <xsl:apply-templates select="img" mode="file_single"/>
+     <xsl:apply-templates select="special[@type='odp-page']" mode="_do_special">
+       <xsl:with-param name="position" select="$position"/>
+     </xsl:apply-templates>
    </xsl:variable>
    <xsl:choose>
-     <xsl:when test="count(exsl:node-set($inHasImages)/node())"> <!-- if we have out-ouf-content images, discard all contents! -->
-       <xsl:copy-of select="$inHasImages"/>
+     <xsl:when test="count(exsl:node-set($inHasImageOrSpecial)/node())"> <!-- if we have out-ouf-content image/special, discard all contents! -->
+       <xsl:copy-of select="$inHasImageOrSpecial"/>
      </xsl:when>
      <xsl:otherwise>
        <xsl:variable name="inNodes">
@@ -730,6 +752,73 @@
 
  <!-- ignore certain known tags -->
  <xsl:template match="bible" mode="_songcontent_inline"/>
+ <!-- }}} -->
+
+ <!-- {{{ helpers for <special> interpolation -->
+ <xsl:template match="song/special" mode="_do_special">
+   <xsl:param name="position"/>
+   <xsl:variable name="ctxt">
+     <unique><xsl:value-of select="generate-id(..)"/>__</unique>
+     <position><xsl:value-of select="$position"/></position>
+   </xsl:variable>
+   <!-- only if <song special="odp"> is set -->
+   <xsl:if test="contains(concat(' ',../@special,' '),' odp ')">
+     <xsl:apply-templates select="node()" mode="_special_interpolate">
+       <xsl:with-param name="ctxt" select="exsl:node-set($ctxt)"/>
+       <xsl:with-param name="uniquifyAttrs" select="dyn:evaluate(@uniquify)"/>
+       <xsl:with-param name="interpolateNodes" select="dyn:evaluate(@interpolate)"/>
+     </xsl:apply-templates>
+   </xsl:if>
+ </xsl:template>
+
+ <xsl:template match="node()" mode="_special_interpolate">
+   <xsl:param name="ctxt"/>
+   <xsl:param name="uniquifyAttrs"/>
+   <xsl:param name="interpolateNodes"/><!-- attrs or nodes -->
+   <xsl:copy>
+     <xsl:apply-templates select="@*|node()" mode="_special_interpolate">
+       <xsl:with-param name="ctxt" select="$ctxt"/>
+       <xsl:with-param name="uniquifyAttrs" select="$uniquifyAttrs"/>
+       <xsl:with-param name="interpolateNodes" select="$interpolateNodes"/>
+     </xsl:apply-templates>
+   </xsl:copy>
+ </xsl:template>
+
+ <xsl:template match="@*" mode="_special_interpolate">
+   <xsl:param name="ctxt"/>
+   <xsl:param name="uniquifyAttrs"/>
+   <xsl:param name="interpolateNodes"/>
+   <xsl:choose>
+     <xsl:when test="set:has-same-node(.,$uniquifyAttrs)">
+       <xsl:attribute name="{name()}">
+         <xsl:value-of select="$ctxt/unique"/>
+         <xsl:value-of select="."/>
+       </xsl:attribute>
+     </xsl:when>
+     <xsl:when test="set:has-same-node(.,$interpolateNodes)">
+       <xsl:attribute name="{name()}">
+         <xsl:value-of select="dyn:evaluate(.)"/>
+       </xsl:attribute>
+     </xsl:when>
+     <xsl:otherwise>
+       <xsl:copy-of select="."/>
+     </xsl:otherwise>
+   </xsl:choose>
+ </xsl:template>
+
+ <xsl:template match="text()" mode="_special_interpolate">
+   <xsl:param name="ctxt"/>
+   <xsl:param name="uniquifyAttrs"/>
+   <xsl:param name="interpolateNodes"/>
+   <xsl:choose>
+     <xsl:when test="set:has-same-node(..,$interpolateNodes)">
+       <xsl:copy-of select="dyn:evaluate(.)"/>
+     </xsl:when>
+     <xsl:otherwise>
+       <xsl:copy-of select="."/>
+     </xsl:otherwise>
+   </xsl:choose>
+ </xsl:template>
  <!-- }}} -->
 
  <!-- {{{ TEMPLATE rep_it (inNodes, anz)  - repeates >inNodes >anz times -->
