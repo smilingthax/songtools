@@ -25,6 +25,7 @@ void usage(char *pn, int default_tex)
          "   -n: No chords\n"
          "   -N: No show*\n"
          "   -s: Split impress\n"
+         "   -A [special]: Allow special\n"
          "   -I [path]: Path for [img]... URIs (only impress)\n"
          "   -P [preset]: Use certain settings (if backend supports it)\n\n"
          "   -h: What you're seeing :-)\n"
@@ -37,7 +38,7 @@ int main(int argc,char **argv)
   char *inputFile="songs.xml";
   int raw=0, o, as_pasr=0;
   process_data_t opts = {};
-  const char *imgpath=NULL,*preset=NULL;
+  const char *imgpath=NULL,*preset=NULL,*special=NULL;
 
   if (strcmp(argv[0]+strlen(argv[0])-4,"pasr")==0) {
     as_pasr = 1;
@@ -45,7 +46,7 @@ int main(int argc,char **argv)
     as_pasr = 0;
   }
 
-  while ((o=getopt(argc,argv,"tlipxhrnNSsI:P:"))!=-1) {
+  while ((o=getopt(argc,argv,"tlipxhrnNSsI:P:A:"))!=-1) {
     switch (o) {
     case 't':
       opts.out_tex = 1;
@@ -86,6 +87,9 @@ int main(int argc,char **argv)
     case 'P':
       preset=optarg;
       break;
+    case 'A':
+      special=optarg;
+      break;
     }
   }
   if ( (!raw)&&
@@ -111,5 +115,5 @@ int main(int argc,char **argv)
       return 1;
     }
   }
-  return do_process(inputFile, &opts, imgpath, preset);
+  return do_process(inputFile, &opts, imgpath, preset, special);
 }

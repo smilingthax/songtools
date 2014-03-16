@@ -25,7 +25,7 @@ using namespace std;
 extern int xmlLoadExtDtdDefaultValue;
 void init_transformer()
 {
-  xmlSubstituteEntitiesDefault(1);
+  xmlSubstituteEntitiesDefault(0);
   xmlLoadExtDtdDefaultValue = 1;
 
 //  xsltSetGenericDebugFunc(stderr, NULL);
@@ -93,8 +93,15 @@ bool do_transform(const char *inputFile,const char *outputFile,const char **inte
       if (!doc) {
         return false;
       }
-//      theResult=xsltSaveResultToFilename(secOutput[iA], doc, cur,0);
       res.reset(doc.release()); // TODO!? swap
+
+      // HACK: sout.xml after transforms
+      if ( (outputFile)&&(!interSheets[iA+1]) ) {
+        const int tmp=xsltSaveResultToFilename(outputFile, res, cur,0);
+        if (tmp==-1) {
+          return false;
+        }
+      }
     }
   }
 
@@ -130,13 +137,22 @@ void end_transformer()
   xmlCleanupParser();
 }
 
-int do_process(char *inputFile,process_data_t *opts,const char *imgpath,const char *preset)
+int do_process(char *inputFile,process_data_t *opts,const char *imgpath,const char *preset,const char *special)
 {
   assert(opts);
-  return do_process_hlp(inputFile,*opts,imgpath,preset);
+  return do_process_hlp(inputFile,*opts,imgpath,preset,special);
 }
 
-int do_process_hlp(char *inputFile,process_data_t &opts,const char *imgpath,const char *preset)
+std::string param_quote(const char *str)
+{
+  std::string ret;
+  ret.assign("'");
+  ret.append(str); // TODO?! also quote \' ?
+  ret.append("'");
+  return ret;
+}
+
+int do_process_hlp(char *inputFile,process_data_t &opts,const char *imgpath,const char *preset,const char *special)
 {
   const char *interSheets[3],*secSheets[7],*secOutput[7];
   const char *params[16+1];
@@ -199,15 +215,20 @@ int do_process_hlp(char *inputFile,process_data_t &opts,const char *imgpath,cons
     params[iP]="'1'";
     iP++;
   }
-  string ptmp;
+  string ptmp,stmp; // must stay around ... bah
   if (preset) {
     params[iP]="presetname";
     iP++;
     // bah: we have to quote it
-    ptmp.assign("'");
-    ptmp.append(preset); // TODO?! also quote \' ?
-    ptmp.append("'");
+    ptmp=param_quote(preset);
     params[iP]=ptmp.c_str();
+    iP++;
+  }
+  if (special) {
+    params[iP]="allowSpecial";
+    iP++;
+    stmp=param_quote(special);
+    params[iP]=stmp.c_str();
     iP++;
   }
   params[iP]=0;
