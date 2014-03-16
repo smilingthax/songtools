@@ -15,6 +15,7 @@
 </xsl:text></xsl:variable>
 
  <xsl:param name="inNodes"/>
+ <xsl:param name="allowSpecial" select="''"/>
 
  <xsl:include href="split.xsl"/>
 
@@ -43,7 +44,7 @@
 
  <xsl:template match="song">
    <xsl:copy>
-     <xsl:apply-templates select="@*|node()|comment()"/>
+     <xsl:apply-templates select="@*[not(name()='special') or $allowSpecial=.]|node()|comment()"/>
    </xsl:copy>
    <xsl:if test="not(mine:checkAkks())">
      <xsl:message terminate="yes">Fehler[normal,vers,refr,ending,bridge,instrum] in den Akkorden, Lied: <xsl:value-of select="title[1]/text()"/></xsl:message>
@@ -447,7 +448,7 @@
      <xsl:with-param name="no" select="mine:get_no(ancestor::bridge/preceding-sibling::bridge|ancestor::bridge)"/>
    </xsl:call-template>
  </xsl:template>
- 
+
  <xsl:template match="akks/instrum//text()">
    <xsl:call-template name="grab-akks">
      <xsl:with-param name="inText" select="."/>
