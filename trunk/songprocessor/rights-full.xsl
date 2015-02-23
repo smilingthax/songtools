@@ -330,6 +330,9 @@
            <xsl:value-of select="text-by[not(@lang)]/text()"/>
          </token>
          <xsl:variable name="orig-lang-hlp">
+           <xsl:if test="title[not(@lang)] and text-by[@lang]">
+             <lang/>
+           </xsl:if>
            <xsl:for-each select="title/@lang">
              <xsl:if test="not($inSong/text-by[@lang=current()])">
                <lang><xsl:value-of select="."/></lang>
@@ -337,7 +340,7 @@
            </xsl:for-each>
          </xsl:variable>
          <xsl:variable name="orig-lang" select="exsl:node-set($orig-lang-hlp)/lang"/>
-         <xsl:if test="$orig-lang[text()!=$orig-lang[1]/text()]">
+         <xsl:if test="$orig-lang[1]='' or $orig-lang[text()!=$orig-lang[1]/text()]">
            <xsl:message terminate="yes">Song "<xsl:value-of select="title[1]"/>" does not uniquely define orignal language of song</xsl:message>
          </xsl:if>
          <xsl:if test="( (not($lang) and text-by[@lang]) or ($lang and text-by[@lang=$lang]) ) and $orig-lang">
