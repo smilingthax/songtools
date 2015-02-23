@@ -6,6 +6,7 @@
          xmlns:xlink="http://www.w3.org/1999/xlink">
   <preset>
     <black/>
+    <ccli/>
     <linesPerPage>13</linesPerPage>
     <set-text draw:style-name="gr1" svg:x="0.5cm" svg:y="0.0cm" svg:width="27.0cm" svg:height="19.13cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
     <set-rights svg:x="0.5cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>
@@ -29,6 +30,7 @@ xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
   </preset>
   <preset name="feg">
     <black/>
+    <ccli/>
     <linesPerPage>13</linesPerPage>
     <set-text draw:style-name="gr1" svg:x="0.5cm" svg:y="0.0cm" svg:width="27.0cm" svg:height="19.13cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
     <set-rights svg:x="0.5cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>
@@ -47,6 +49,7 @@ xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
   </preset>
   <preset name="nok"><!-- 16:9 (via PM3) -->
     <black/>
+    <ccli/>
     <linesPerPage>8.5</linesPerPage>
     <copy fromhref="nok-bg.jpg" tohref="Pictures/nok-bg.jpg" mime="image/jpeg"/>
     <set-text draw:style-name="gr2" svg:x="5.0cm" svg:y="0.5cm" svg:width="28.0cm" svg:height="15.13cm"/>
@@ -70,6 +73,7 @@ xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
   </preset>
   <preset name="nok-black"><!-- zwischenseiten ohne bild -->
     <black/>
+    <ccli/>
     <linesPerPage>9.5</linesPerPage>
     <copy fromhref="nok-bg.jpg" tohref="Pictures/nok-bg.jpg" mime="image/jpeg"/>
     <set-text draw:style-name="gr2" svg:x="5.0cm" svg:y="0.5cm" svg:width="30.0cm" svg:height="15.13cm"/>
@@ -112,6 +116,7 @@ xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
   </preset>
   <preset name="kleinfeg">
     <black/>
+    <ccli/>
     <content>oo-template/content-1.xml</content>
     <linesPerPage>13</linesPerPage>
     <set-text draw:style-name="gr2" svg:x="0.5cm" svg:y="0.0cm" svg:width="27.0cm" svg:height="19.13cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
@@ -131,6 +136,7 @@ xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
   </preset>
   <preset name="cg">
     <black/>
+<!--    <ccli/>-->
     <linesPerPage>13</linesPerPage>
     <set-text draw:style-name="gr2" svg:x="0.5cm" svg:y="0.0cm" svg:width="27.0cm" svg:height="19.13cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
     <set-rights svg:x="0.5cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>

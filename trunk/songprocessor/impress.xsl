@@ -91,19 +91,7 @@
  <xsl:template match="song" mode="file_single" name="filecontent">
    <xsl:param name="position" select="position()"/>
 <!--  <xsl:call-template name="output_blkp"/>-->
-   <xsl:variable name="copy">
-     <xsl:call-template name="copyright">
-       <xsl:with-param name="withArrangement" select="count(content/img)"/> <!-- TODO: if img -->
-     </xsl:call-template>
-   </xsl:variable>
    <xsl:call-template name="output_pages">
-     <xsl:with-param name="copyright">
-       <xsl:if test="$copy!=''">
-         <xsl:text>© </xsl:text>
-<!--       <xsl:text>Copyright: </xsl:text>-->
-         <xsl:value-of select="$copy"/>
-       </xsl:if>
-     </xsl:with-param>
      <xsl:with-param name="source">
        <xsl:text>Quelle: </xsl:text>
        <xsl:apply-templates select="from" mode="from_list"/>
@@ -348,7 +336,6 @@
  <!-- }}} -->
 
  <xsl:template name="output_pages">
-   <xsl:param name="copyright"/>
    <xsl:param name="source"/>
    <xsl:param name="lbfrom"/>
    <xsl:param name="position" select="position()"/>
@@ -364,26 +351,42 @@
        <xsl:copy-of select="$inHasImageOrSpecial"/>
      </xsl:when>
      <xsl:otherwise>
-       <xsl:variable name="inNodes">
-         <xsl:apply-templates select="content"/>
-       </xsl:variable>
-       <xsl:variable name="inPNodes">
-         <xsl:apply-templates select="exsl:node-set($inNodes)/node()" mode="_break_calc"/>
-       </xsl:variable>
-       <xsl:variable name="inPages">
-         <xsl:call-template name="page_fix">
-          <xsl:with-param name="inNodes" select="exsl:node-set($inPNodes)/node()"/>
-         </xsl:call-template>
-       </xsl:variable>
+       <xsl:for-each select="content">  <!-- or: content[not(exsl:node-set($...)/node())] -->
+         <xsl:variable name="copy">
+           <xsl:call-template name="copyright">
+             <xsl:with-param name="inSong" select=".."/>
+             <xsl:with-param name="lang" select="@lang"/>
+             <xsl:with-param name="withArrangement" select="count(img)"/>
+             <xsl:with-param name="withCcli" select="count($preset/ccli)"/>
+           </xsl:call-template>
+         </xsl:variable>
+         <xsl:variable name="inNodes">
+           <xsl:apply-templates select="."/>
+         </xsl:variable>
+         <xsl:variable name="inPNodes">
+           <xsl:apply-templates select="exsl:node-set($inNodes)/node()" mode="_break_calc"/>
+         </xsl:variable>
+         <xsl:variable name="inPages">
+           <xsl:call-template name="page_fix">
+            <xsl:with-param name="inNodes" select="exsl:node-set($inPNodes)/node()"/>
+           </xsl:call-template>
+         </xsl:variable>
 <!--
 <exsl:document href="/dev/stdout"><xsl:copy-of select="$inPNodes"/></exsl:document>
 -->
-       <xsl:apply-templates select="exsl:node-set($inPages)/node()" mode="_output_page">
-         <xsl:with-param name="inCopyright" select="$copyright"/>
-         <xsl:with-param name="inSource" select="$source"/>
-         <xsl:with-param name="inLBfrom" select="exsl:node-set($lbfrom)/*[1]"/>
-         <xsl:with-param name="position" select="$position"/>
-       </xsl:apply-templates>
+         <xsl:apply-templates select="exsl:node-set($inPages)/node()" mode="_output_page">
+           <xsl:with-param name="inCopyright">
+             <xsl:if test="$copy!=''">
+               <xsl:text>© </xsl:text>
+<!--              <xsl:text>Copyright: </xsl:text>-->
+               <xsl:value-of select="$copy"/>
+             </xsl:if>
+           </xsl:with-param>
+           <xsl:with-param name="inSource" select="$source"/>
+           <xsl:with-param name="inLBfrom" select="exsl:node-set($lbfrom)/*[1]"/>
+           <xsl:with-param name="position" select="$position"/>
+         </xsl:apply-templates>
+       </xsl:for-each>
      </xsl:otherwise>
    </xsl:choose>
  </xsl:template>

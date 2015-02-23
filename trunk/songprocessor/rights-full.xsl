@@ -204,6 +204,7 @@
    <xsl:param name="inSong" select="."/>
    <xsl:param name="lang"/>
    <xsl:param name="withArrangement"/>
+   <xsl:param name="withCcli"/>
    <xsl:for-each select="$inSong"><!-- ensure context -->
      <xsl:variable name="check_lang"><!-- just to look up if language exists -->
        <xsl:if test="not(content/@lang)">
@@ -298,6 +299,26 @@
          </xsl:for-each>
        </xsl:when>
      </xsl:choose>
+     <xsl:if test="$withCcli">
+       <xsl:choose>
+         <xsl:when test="$lang and ccli[@lang=$lang]">
+           <xsl:text>; CCLI: </xsl:text><xsl:value-of select="ccli[@lang=$lang]"/>
+         </xsl:when>
+         <xsl:when test="$lang and ccli[not(@lang)]"><!-- catches both unknown lang and original lang -->
+           <xsl:text>; CCLI: </xsl:text><xsl:value-of select="ccli[not(@lang)]"/>
+         </xsl:when>
+         <xsl:when test="not($lang) and ccli">
+           <xsl:text>; CCLI: </xsl:text>
+           <!-- or just first:?  <xsl:value-of select="ccli[not(@lang)] | ccli[not(../ccli[not(@lang))]"/> -->
+           <xsl:for-each select="ccli">
+             <xsl:value-of select="."/>
+             <xsl:if test="following-sibling::ccli">
+               <xsl:text>, </xsl:text>
+             </xsl:if>
+           </xsl:for-each>
+         </xsl:when>
+       </xsl:choose>
+     </xsl:if>
    </xsl:for-each>
  </xsl:template>
 
