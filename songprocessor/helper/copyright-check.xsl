@@ -16,7 +16,10 @@
    <xsl:copy>
      <xsl:copy-of select="@*"/>
      <copyright>
-       <xsl:call-template name="copyright"/>
+       <xsl:call-template name="copyright">
+         <xsl:with-param name="withArrangement" select="true()"/>
+         <xsl:with-param name="withCcli" select="true()"/>
+       </xsl:call-template>
      </copyright>
      <xsl:apply-templates select="node()|comment()"/>
    </xsl:copy>
