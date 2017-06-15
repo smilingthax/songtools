@@ -182,7 +182,7 @@
      <xsl:variable name="isfirstpos" select="position()=1"/>
      <xsl:choose>
        <xsl:when test="not(@no) and not(normalize-space(.))"/>
-       <xsl:when test="not($innerLines/*)"> <!-- speed up special case -->
+       <xsl:when test="not($innerLines/*)"> <!-- speed up common case -->
          <line>
            <xsl:copy-of select="@no|@break"/>
            <xsl:if test="$isfirstpos">

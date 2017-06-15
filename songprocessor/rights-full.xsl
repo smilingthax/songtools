@@ -362,7 +362,7 @@
          </xsl:variable>
          <xsl:variable name="orig-lang" select="exsl:node-set($orig-lang-hlp)/lang"/>
          <xsl:if test="$orig-lang[1]='' or $orig-lang[text()!=$orig-lang[1]/text()]">
-           <xsl:message terminate="yes">Song "<xsl:value-of select="title[1]"/>" does not uniquely define orignal language of song</xsl:message>
+           <xsl:message terminate="yes">Song "<xsl:value-of select="title[1]"/>" does not uniquely define original language of song</xsl:message>
          </xsl:if>
          <xsl:if test="( (not($lang) and text-by[@lang]) or ($lang and text-by[@lang=$lang]) ) and $orig-lang">
 <!--           <xsl:text>, Originaltitel(</xsl:text><xsl:value-of select="$orig-lang[1]/text()"/><xsl:text>): '</xsl:text>-->

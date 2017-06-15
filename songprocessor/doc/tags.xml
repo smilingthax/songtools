@@ -473,9 +473,9 @@ Refr: Refrain Zeile 1
   <tag>bridge</tag>
   Gehört zur <ref to="blocktags">Gruppe der Blocktags</ref> und erzeugt einen Bridge-Block.
   <code>
-  <refr>
+  <bridge>
   Bridge Zeile 1
-  Zeile 2</refr>
+  Zeile 2</bridge>
   </code>
   Wird zu:
   <code>
@@ -486,9 +486,9 @@ Bridge: Bridge Zeile 1
   <tag>ending</tag>
   Gehört zur <ref to="blocktags">Gruppe der Blocktags</ref> und erzeugt einen Ending-Block.
   <code>
-  <refr>
+  <ending>
   Ending Zeile 1
-  Zeile 2</refr>
+  Zeile 2</ending>
   </code>
   Wird zu:
   <code>
