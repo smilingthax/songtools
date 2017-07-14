@@ -171,17 +171,10 @@
 
  <!-- override: print [akk] -->
  <xsl:template match="akk" mode="_songcontent_inline">
-   <xsl:if test="not(text()='-')">
+   <xsl:if test="@note">
      <xsl:text>[</xsl:text><xsl:value-of select="@note"/><xsl:text>]</xsl:text>
    </xsl:if>
    <xsl:value-of select="text()"/>
-   <xsl:choose>
-     <xsl:when test="not(text())">
-       <xsl:text> </xsl:text>
-     </xsl:when>
-     <xsl:when test="text()='_'"/>
-     <xsl:otherwise/>
-   </xsl:choose>
  </xsl:template>
 
  <!-- {{{ block tags -->

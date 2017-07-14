@@ -266,17 +266,17 @@ void substAkkTool::closeItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item
 void substAkkTool::textItem(ProcNodeBufferItem *&item,ProcNodeBufferItem *last)
 {
   if (check_for) {
-    // standard thing: move very next char into <akk></akk> // TODO: fancy stuff
-    xmlChar akk[9];
+    // look at very next char, possibly eating it
     if (*item->value) {
-      int clen=xmlUTF8Size(item->value);
-      assert((clen>0)&&(clen<8));
-      if ( (!iswhite(*item->value))||(clen>1) ) {
-        memcpy(akk,item->value,clen);
-        akk[clen]=0;
+      if ( (*item->value=='_')||(*item->value=='-') ) {
+        xmlChar akk[2]={*item->value, 0};
         check_for->set_value(akk);
+        item->set_value(item->value+1);
+      } else if (iswhite(*item->value)) { // TODO? (we can also just output it: include in case above...)
+        item->set_value(item->value+1);
+      } else {
+        check_for->set_value((const xmlChar *)"."); // "non-whitespace"
       }
-      item->set_value(item->value+clen);
     }
     check_for=NULL;
   }

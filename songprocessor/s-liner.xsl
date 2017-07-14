@@ -287,9 +287,6 @@
  <!-- default: remove, you can override -->
  <xsl:template match="akk" mode="_songcontent_inline">
    <xsl:choose>
-     <xsl:when test="not(text())">
-       <xsl:text> </xsl:text>
-     </xsl:when>
      <xsl:when test="text()='_'"/>
      <xsl:when test="text()='-'"/>
      <xsl:otherwise>

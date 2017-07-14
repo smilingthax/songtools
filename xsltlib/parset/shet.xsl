@@ -273,7 +273,13 @@
      <xsl:if test="not(text()='-')">
        <xsl:attribute name="note"><xsl:value-of select="mine:getAkk($level,$no)"/></xsl:attribute>
      </xsl:if>
-     <xsl:copy-of select="@*|node()"/>
+     <!-- minex:parset has a hard time to detect chords without following text() to set them to <akk> </akk>, so instead
+          it detects the case where it is followed by a "non-whitespace" character, and we do the fixup here ... -->
+     <xsl:choose>
+       <xsl:when test="not(text())"><xsl:text> </xsl:text></xsl:when>
+       <xsl:when test="text()='.'"/>
+       <xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+     </xsl:choose>
    </xsl:copy>
  </xsl:template>
 
