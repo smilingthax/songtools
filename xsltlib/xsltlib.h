@@ -8,4 +8,5 @@
 #include "enclose/enclose.h"
 #include "imagetools/imagefun.h"
 #include "path/path.h"
+#include "regexp/regexp.h"
 
