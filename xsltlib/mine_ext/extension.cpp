@@ -15,6 +15,7 @@
 #include <libxslt/extensions.h>
 #include <libexslt/exslt.h>
 #include "textItem.h"
+#include "chord.h"
 
 using namespace std;
 
@@ -47,7 +48,7 @@ assert(false);
   bool is_good() {
     return (curpos==0);
   }
-  
+
   int curpos;
 private:
   vector<AkkordItem *> akkVec;
@@ -99,13 +100,13 @@ public:
   bool is_good() {
     for(map<int,AkkordQueue *>::iterator it=akkMap.begin(); it!=akkMap.end(); it++) {
       if (!it->second->is_good()) {
-printf("(%d,%d) %d\n",(it->first>>8),(it->first)&0xff,it->second->curpos);
+fprintf(stderr,"(%d,%d) %d\n",(it->first>>8),(it->first)&0xff,it->second->curpos);
         return false;
       }
     }
     return true;
   }
-  
+
 private:
   map<int,AkkordQueue *> akkMap;
 };
@@ -128,15 +129,15 @@ static void functionAkkify(xmlXPathParserContextPtr ctxt, int nargs)
     return;
   }
   // Argumente holen
-  xmlXPathObjectPtr obj2 = valuePop(ctxt); 
-  xmlXPathObjectPtr obj1 = valuePop(ctxt); 
+  xmlXPathObjectPtr obj2 = valuePop(ctxt);
+  xmlXPathObjectPtr obj1 = valuePop(ctxt);
   int level = int(floor(xmlXPathCastToNumber(obj1) + .5));
   int no = int(floor(xmlXPathCastToNumber(obj2) + .5));
-  assert((level>=0)&&(level<=0xff)&&(no>=0)&&(no<=0xff));
 
   xmlXPathFreeObject(obj1);
   xmlXPathFreeObject(obj2);
 
+  assert((level>=0)&&(level<=0xff)&&(no>=0)&&(no<=0xff));
   valuePush(ctxt, xmlXPathNewString((xmlChar *)akkCont.pos(level*0x100+no).get_next().get_text()));
 }
 
@@ -148,33 +149,34 @@ static void functionGrabAkk(xmlXPathParserContextPtr ctxt, int nargs)
     return;
   }
   // Argumente holen
-  xmlXPathObjectPtr obj3 = valuePop(ctxt); 
-  xmlXPathObjectPtr obj2 = valuePop(ctxt); 
-  xmlXPathObjectPtr obj1 = valuePop(ctxt); 
+  xmlXPathObjectPtr obj3 = valuePop(ctxt);
+  xmlXPathObjectPtr obj2 = valuePop(ctxt);
+  xmlXPathObjectPtr obj1 = valuePop(ctxt);
   int level = int(floor(xmlXPathCastToNumber(obj1) + .5));
   int no = int(floor(xmlXPathCastToNumber(obj2) + .5));
   xmlChar *str=xmlXPathCastToString(obj3);
 
   assert((level>=0)&&(level<=0xff)&&(no>=0)&&(no<=0xff));
-  // add Akk to AkkList
   AkkordItem *aki=new AkkordItem();
   aki->set_text((char *)str);
   akkCont[level*0x100+no].append(aki);
-  
+
   xmlXPathFreeObject(obj1);
   xmlXPathFreeObject(obj2);
   xmlXPathFreeObject(obj3);
   xmlFree(str);
   valuePush(ctxt, xmlXPathNewNodeSet(NULL));
 }
- 
+
 static void functionNotifyAkks(xmlXPathParserContextPtr ctxt, int nargs)
 {
   if (nargs==1) {
-    xmlXPathObjectPtr obj1 = valuePop(ctxt); 
+    xmlXPathObjectPtr obj1 = valuePop(ctxt);
     doTranspose=int(floor(xmlXPathCastToNumber(obj1) + .5));
     xmlXPathFreeObject(obj1);
-  } else if (nargs!=0) {
+  } else if (nargs==0) {
+    doTranspose=0;
+  } else {
     xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,"need 0 or 1 arguments\n");
     ctxt->error = XPATH_INVALID_ARITY;
     return;
@@ -193,12 +195,44 @@ static void functionCheckAkks(xmlXPathParserContextPtr ctxt, int nargs)
   valuePush(ctxt, xmlXPathNewBoolean((int)akkCont.is_good()));
 }
 
+static void functionTranspose(xmlXPathParserContextPtr ctxt, int nargs)
+{
+  if (nargs!=2) {
+    xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,"need two arguments\n");
+    ctxt->error = XPATH_INVALID_ARITY;
+    return;
+  }
+
+  xmlXPathObjectPtr obj2 = valuePop(ctxt);
+  int transpose=int(floor(xmlXPathCastToNumber(obj2) + .5));
+  xmlXPathFreeObject(obj2);
+
+  xmlXPathObjectPtr obj1 = valuePop(ctxt);
+  xmlChar *str=xmlXPathCastToString(obj1);
+  xmlXPathFreeObject(obj1);
+
+  try {
+    std::string res = transpose_chord((const char *)str,transpose);
+    xmlFree(str);
+    valuePush(ctxt, xmlXPathNewString((const xmlChar *)res.c_str()));
+    return;
+  } catch (std::exception &ex) {
+fprintf(stderr,"%s - in \"%s\"\n",ex.what(),(const char *)str);
+    // TODO...?
+  }
+  xmlFree(str);
+
+  valuePush(ctxt, xmlXPathNewNodeSet(NULL));
+}
+
 void *initMineExt(xsltTransformContextPtr ctxt, const xmlChar *URI)
 {
   xsltRegisterExtFunction(ctxt,(xmlChar *)"getAkk",URI,functionAkkify);
   xsltRegisterExtFunction(ctxt,(xmlChar *)"grabAkk",URI,functionGrabAkk);
   xsltRegisterExtFunction(ctxt,(xmlChar *)"noteAkks",URI,functionNotifyAkks);
   xsltRegisterExtFunction(ctxt,(xmlChar *)"checkAkks",URI,functionCheckAkks);
+
+  xsltRegisterExtFunction(ctxt,(xmlChar *)"transpose",URI,functionTranspose);
   return NULL;
 }
 
