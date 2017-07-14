@@ -2,7 +2,7 @@
 #CXX=g++-4.4
 #CXX=g++-4.7
 #CFLAGS+=-O3 -funroll-all-loops -finline-functions -Wall -g
-CFLAGS+=-Wall -g
+FLAGS+=-Wall -g
 CXXFLAGS+=
 LDFLAGS+=-g
 CPPFLAGS=$(CFLAGS) $(FLAGS)
