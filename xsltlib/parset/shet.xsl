@@ -350,6 +350,11 @@
    </xsl:copy>
  </xsl:template>
 
+ <xsl:template match="/*[last()]/br[last()]" mode="_add_akks"> <!-- set final @no=1 -->
+   <!-- NOTE: /[block]/br is enough: we pulled ending <br>s out of inline tags (but always inside block); also: every block ends with a br -->
+   <br no="1" break="-3"/> <!-- this also removes a <pagebreak> here -->
+ </xsl:template>
+
  <xsl:template match="quot[ancestor::xlang]" mode="_add_akks">
    <!-- We're not as strict as we could:  we could get the Start-of-Line context and only consider <xlang>s in the same context -->
    <xsl:variable name="prec" select="preceding::node()[ancestor::xlang]"/>

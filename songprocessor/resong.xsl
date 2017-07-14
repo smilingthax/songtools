@@ -117,6 +117,7 @@
          <xsl:value-of select="$nl"/>
          <xsl:text>    </xsl:text><pagebreak/>
        </xsl:when>
+       <xsl:when test="@break=-3"></xsl:when>
        <xsl:otherwise>
          <xsl:message terminate="yes">Unknown break <xsl:value-of select="@break"/></xsl:message>
        </xsl:otherwise>

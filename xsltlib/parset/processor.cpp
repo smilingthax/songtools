@@ -465,6 +465,14 @@ void ProcTraverse::pop() // {{{
 }
 // }}}
 
+static void extra_br(TreeBuilder &tb) // {{{
+{
+  ProcNodeBufferItem br((const xmlChar *)"br");
+  br.type=ProcNodeBufferItem::NODE_BR;
+  br.build(tb);
+}
+// }}}
+
 void ProcTraverse::flush() // {{{
 {
   if (tb.has_error()) {
@@ -473,9 +481,13 @@ void ProcTraverse::flush() // {{{
   ProcNodeBufferItem *save;
   // state machine to encapsulate everything not in a block tag into <base></base>
   enum { Yes, Doing, No } base=Yes;
+  bool hasBr=true; // (value only used when base==Doing)
   while (queue) {
     if ( (queue->is_element_open())&&(is_blocktag(queue->name)) ) {
       if (base==Doing) {
+        if (!hasBr) {
+          extra_br(tb);
+        }
         tb.closeNode((const xmlChar*)"base");
       }
       base=No;
@@ -486,15 +498,26 @@ void ProcTraverse::flush() // {{{
       base=Doing;
     }
     queue->build(tb);
-    if ( (base==Doing)&&(queue->is_br())&&(queue->no>1) ) {
-      tb.closeNode((const xmlChar*)"base");
-      base=Yes;
+    if (base==Doing) {
+      if (queue->is_br()) {
+        if (queue->no>1) {
+          tb.closeNode((const xmlChar*)"base");
+          base=Yes;
+        } else {
+          hasBr=true;
+        }
+      } else if (!queue->is_whitespace(true)) {
+        hasBr=false;
+      }
     }
     save=queue;
     queue=queue->next;
     delete save;
   }
   if (base==Doing) {
+    if (!hasBr) {
+      extra_br(tb);
+    }
     tb.closeNode((const xmlChar*)"base");
   }
   last=NULL;
@@ -566,6 +589,8 @@ bool ProcTraverse::is_blocktag(const xmlChar *name)
   } else if (strcmp(nam,"refr")==0) {
     return true;
   } else if (strcmp(nam,"ending")==0) {
+    return true;
+  } else if (strcmp(nam,"base")==0) { // -> allow them in input? (TODO?)
     return true;
 /*  } else if (strcmp(nam,"showrefr")==0) {
     return true;*/ // TODO: should not happen

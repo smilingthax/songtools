@@ -66,6 +66,9 @@ ProcNodeBufferItem *normalizeBrTool::kill_last_whitespace()
 void normalizeBrTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item)
 {
   if (tag==ProcTraverse::BLOCK_TAG) {
+    if ( (last_br)&&(last_br->no==0) ) {
+      increment_br(last_br,1,-1);
+    }
     may_ignore_nl=1;
     last_br=NULL;
   } else if (tag==ProcTraverse::BR_TAG) {
