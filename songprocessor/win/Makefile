@@ -1,8 +1,8 @@
 SOURCES1=main.c
-SOURCES2=process.cpp parseakk.cpp
+SOURCES2=process.cpp
 EXEC1=songprocessor.exe
-LINK1=main.c process.cpp parseakk.cpp \
-             process.h parseakk.h 
+LINK1=main.c process.cpp \
+             process.h
 LINK2=$(EXEC1) ../shet.xsl ../split.xsl ../hateemel.xsl ../puretext.xsl ../tex.xsl ../rights-full.xsl ../lang-db.xsl ../songs.xml \
                ../songbook-db.xsl ../verlage.xml \
                ../helper/no-akk.xsl ../helper/sort.xsl ../helper/split-lang.xsl ../helper/copyright-check.xsl ../helper/addrights.xsl \

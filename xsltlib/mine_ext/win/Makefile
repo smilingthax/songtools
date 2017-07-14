@@ -1,4 +1,4 @@
-SOURCES=extension.cpp textItem.cpp speed.cpp
+SOURCES=extension.cpp speed.cpp chord.cpp
 MODULE=thax_home_mine_ext.dll
 
 MINGW=i586-mingw32msvc-

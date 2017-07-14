@@ -1,6 +1,5 @@
 // combined include file
 
-#include "mine_ext/textItem.h"
 #include "mine_ext/extension.h"
 #include "split/split.h"
 #include "parset/parset.h"

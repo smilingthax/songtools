@@ -1,4 +1,4 @@
-SOURCES=extension.cpp textItem.cpp speed.cpp chord.cpp
+SOURCES=extension.cpp speed.cpp chord.cpp
 MODULE=thax_home_mine_ext.so
 
 CPPFLAGS=-O3 -funroll-all-loops -finline-functions -Wall -DSTANDALONE

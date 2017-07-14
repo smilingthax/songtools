@@ -14,101 +14,65 @@
 #include <libxslt/xsltutils.h>
 #include <libxslt/extensions.h>
 #include <libexslt/exslt.h>
-#include "textItem.h"
 #include "chord.h"
-
-using namespace std;
-
-class AkkordQueue {
-public:
-  AkkordQueue() : curpos(0) {}
-  virtual ~AkkordQueue() {
-    for(vector<AkkordItem *>::iterator it=akkVec.begin(); it!=akkVec.end(); it++) {
-      delete (*it);
-    }
-  }
-  void append(AkkordItem *akkIt) {
-    assert(akkIt);
-    assert(!curpos);
-    akkVec.push_back(akkIt);
-  }
-  const AkkordItem& operator[](unsigned int pos) const {
-assert(false);
-    assert(akkVec.size());
-    pos%=akkVec.size();
-    assert(akkVec[pos]);
-    return *(akkVec[pos]);
-  }
-  const AkkordItem &get_next() {
-    int pos=curpos;
-    curpos=(curpos+1)%akkVec.size();
-    assert(akkVec[pos]);
-    return *(akkVec[pos]);
-  }
-  bool is_good() {
-    return (curpos==0);
-  }
-
-  int curpos;
-private:
-  vector<AkkordItem *> akkVec;
-};
 
 class AkkordContainer {
 public:
-  virtual ~AkkordContainer() {
-    for(map<int,AkkordQueue *>::iterator it=akkMap.begin(); it!=akkMap.end(); it++) {
-      delete (it->second);
-    }
+  AkkordContainer() : transpose(0) {}
+
+  void reset(int _transpose) {
+    transpose=_transpose;
+    data.clear();
+    lookup.clear();
+    chords.clear();
   }
-  void reset() {
-    for(map<int,AkkordQueue *>::iterator it=akkMap.begin(); it!=akkMap.end(); it++) {
-      delete (it->second);
+
+  void add(int level,int no,const char *str) {
+    std::pair<std::map<std::string,int>::iterator,bool> it_b=lookup.insert(std::make_pair(str,chords.size()));
+    if (it_b.second) { // not yet known
+      chords.push_back(str);
     }
-    akkMap.clear();
-    assert(!akkMap.size());
-  }
-  void append(int no,AkkordQueue *akkQu) {
-    assert(akkQu);
-    assert(!akkMap.count(no));
-    akkMap[no]=akkQu;
-  }
-  AkkordQueue& pos(int no) { // nur get
-    assert(akkMap.size());
-    if (akkMap.count(no)) {
-      assert(akkMap[no]);
-      return *(akkMap[no]);
+
+    std::map<std::pair<int,int>,std::pair<int,std::vector<int> > >::iterator it=data.lower_bound(std::make_pair(level,no));
+    if ( (it==data.end())||(it->first.first!=level)||(it->first.second!=no) ) {
+      it=data.insert(it,std::make_pair(std::make_pair(level,no),std::make_pair(0,std::vector<int>())));
     }
-    map<int,AkkordQueue *>::iterator it=--(akkMap.upper_bound(no));
-//    assert((it!=akkMap.begin())&&(it->first>=(no&0xff00)));
-//    assert(it!=akkMap.begin()); // häh?
-    if (it->first<(no&0xff00)) {
-      assert(akkMap.count(0));
-      assert(akkMap[0]);
-      return *(akkMap[0]);
-    }
-    assert(it->second);
-    return *(it->second);
+    it->second.second.push_back(it_b.first->second);
   }
-  AkkordQueue& operator[](int no) { // get and create
-    if (!akkMap.count(no)) {
-      akkMap[no]=new AkkordQueue();
+
+  const std::string *get(int level,int no) {
+    // for the given level, use the biggest matching entry <= no  - e.g. verse chords are given once, we want to use them for all verses
+    std::map<std::pair<int,int>,std::pair<int,std::vector<int> > >::iterator it=--data.upper_bound(std::make_pair(level,no));
+    if ( (it==data.end())||(it->first.first!=level) ) {
+      return NULL; // nullptr;
     }
-    assert(akkMap[no]);
-    return *(akkMap[no]);
+    const int pos=it->second.first;
+    it->second.first=(pos+1)%it->second.second.size();
+    return &chords[it->second.second[pos]];
   }
-  bool is_good() {
-    for(map<int,AkkordQueue *>::iterator it=akkMap.begin(); it!=akkMap.end(); it++) {
-      if (!it->second->is_good()) {
-fprintf(stderr,"(%d,%d) %d\n",(it->first>>8),(it->first)&0xff,it->second->curpos);
-        return false;
+
+  bool is_good() const {
+    bool ret=true;
+    std::map<std::pair<int,int>,std::pair<int,std::vector<int> > >::const_iterator it;
+    for (it=data.begin(); it!=data.end(); ++it) {
+      if (it->second.first!=0) {
+        if (2*it->second.first<(int)it->second.second.size()) { // TODO? better reporting?
+          fprintf(stderr,"(%d,%d) %d | too much\n",it->first.first,it->first.second,it->second.first);
+        } else {
+          fprintf(stderr,"(%d,%d) %d | missing\n",it->first.first,it->first.second,it->second.second.size()-it->second.first);
+        }
+        ret=false;
+//        break;    // more than one error ...
       }
     }
-    return true;
+    return ret;
   }
 
 private:
-  map<int,AkkordQueue *> akkMap;
+  int transpose;
+  std::map<std::pair<int,int>,std::pair<int,std::vector<int> > > data; // (level,pos) -> (curpos,chord_id[])
+  std::map<std::string,int> lookup; // orig_string -> chord_id
+  std::vector<std::string> chords; // chord_id -> string
 };
 
 AkkordContainer akkCont;
@@ -138,8 +102,13 @@ static void functionAkkify(xmlXPathParserContextPtr ctxt, int nargs)
   xmlXPathFreeObject(obj1);
   xmlXPathFreeObject(obj2);
 
-  assert((level>=0)&&(level<=0xff)&&(no>=0)&&(no<=0xff));
-  valuePush(ctxt, xmlXPathNewString((xmlChar *)akkCont.pos(level*0x100+no).get_next().get_text()));
+  const std::string *res=akkCont.get(level,no);
+  if (!res) {
+    fprintf(stderr,"No chords for (%d,%d)\n",level,no);  // TODO?
+    valuePush(ctxt, xmlXPathNewNodeSet(NULL));
+  } else {
+    valuePush(ctxt, xmlXPathNewString((const xmlChar *)res->c_str()));
+  }
 }
 
 static void functionGrabAkk(xmlXPathParserContextPtr ctxt, int nargs)
@@ -157,10 +126,8 @@ static void functionGrabAkk(xmlXPathParserContextPtr ctxt, int nargs)
   int no = int(floor(xmlXPathCastToNumber(obj2) + .5));
   xmlChar *str=xmlXPathCastToString(obj3);
 
-  assert((level>=0)&&(level<=0xff)&&(no>=0)&&(no<=0xff));
-  AkkordItem *aki=new AkkordItem();
-  aki->set_text((char *)str);
-  akkCont[level*0x100+no].append(aki);
+  // add Akk to AkkCont
+  akkCont.add(level,no,(const char *)str);
 
   xmlXPathFreeObject(obj1);
   xmlXPathFreeObject(obj2);
@@ -182,7 +149,8 @@ static void functionNotifyAkks(xmlXPathParserContextPtr ctxt, int nargs)
     ctxt->error = XPATH_INVALID_ARITY;
     return;
   }
-  akkCont.reset();
+
+  akkCont.reset(doTranspose);
   valuePush(ctxt, xmlXPathNewNodeSet(NULL));
 }
 
@@ -217,8 +185,9 @@ static void functionTranspose(xmlXPathParserContextPtr ctxt, int nargs)
     xmlFree(str);
     valuePush(ctxt, xmlXPathNewString((const xmlChar *)res.c_str()));
     return;
+
   } catch (std::exception &ex) {
-fprintf(stderr,"%s - in \"%s\"\n",ex.what(),(const char *)str);
+    fprintf(stderr,"%s - in \"%s\"\n",ex.what(),(const char *)str);
     // TODO...?
   }
   xmlFree(str);

@@ -1,5 +1,5 @@
 SOURCES1=main.c
-SOURCES2=process.cpp parseakk.cpp
+SOURCES2=process.cpp
 EXEC1=pasr
 XML=1
 
