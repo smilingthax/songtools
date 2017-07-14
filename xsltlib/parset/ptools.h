@@ -42,6 +42,8 @@ public:
   void closeItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item,ProcNodeBufferItem *last);
   void textItem(ProcNodeBufferItem *&item,ProcNodeBufferItem *last);
   void commentItem(ProcNodeBufferItem *&item);
+protected:
+  void end_check();
 private:
   ProcNodeBufferItem *check_for;
 };

@@ -246,9 +246,17 @@ substAkkTool::substAkkTool(ProcTraverse &parent) : procTool(parent),check_for(NU
 {
 }
 
+void substAkkTool::end_check()
+{
+  if (check_for) {
+    check_for->set_value((const xmlChar *)" ");
+    check_for=NULL;
+  }
+}
+
 void substAkkTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item)
 {
-  check_for=NULL;
+  end_check();
   if (tag==ProcTraverse::AKK_TAG) {
     item->type=ProcNodeBufferItem::NODE_AKK;
     item->unclosed_empty=true;
@@ -257,7 +265,7 @@ void substAkkTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item)
 
 void substAkkTool::closeItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item,ProcNodeBufferItem *last)
 {
-  check_for=NULL;
+  end_check();
   if (tag==ProcTraverse::AKK_TAG) {
     check_for=item;
   }
@@ -267,24 +275,21 @@ void substAkkTool::textItem(ProcNodeBufferItem *&item,ProcNodeBufferItem *last)
 {
   if (check_for) {
     // look at very next char, possibly eating it
-    if (*item->value) {
-      if ( (*item->value=='_')||(*item->value=='-') ) {
-        xmlChar akk[2]={*item->value, 0};
-        check_for->set_value(akk);
-        item->set_value(item->value+1);
-      } else if (iswhite(*item->value)) { // TODO? (we can also just output it: include in case above...)
-        item->set_value(item->value+1);
-      } else {
-        check_for->set_value((const xmlChar *)"."); // "non-whitespace"
-      }
-    }
+    if (!*item->value) {
+      return; // wait for next text/item...
+      // alt: check_for->set_value((const xmlChar *)" ");
+    } else if ( (*item->value=='_')||(*item->value=='-')||iswhite(*item->value) ) {
+      xmlChar akk[2]={*item->value, 0};
+      check_for->set_value(akk);
+      item->set_value(item->value+1);
+    } // else: non-whitespace -> empty <akk/>
     check_for=NULL;
   }
 }
 
 void substAkkTool::commentItem(ProcNodeBufferItem *&item)
 {
-  check_for=NULL;
+  end_check();
 }
 // }}}
 
