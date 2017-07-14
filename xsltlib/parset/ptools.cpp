@@ -249,14 +249,16 @@ substAkkTool::substAkkTool(ProcTraverse &parent) : procTool(parent),check_for(NU
 void substAkkTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item)
 {
   check_for=NULL;
+  if (tag==ProcTraverse::AKK_TAG) {
+    item->type=ProcNodeBufferItem::NODE_AKK;
+    item->unclosed_empty=true;
+  }
 }
 
 void substAkkTool::closeItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item,ProcNodeBufferItem *last)
 {
   check_for=NULL;
   if (tag==ProcTraverse::AKK_TAG) {
-    // akktag is empty (-> no akk-in-akk)
-    assert((last)&&(last->is_element_open())&&(strcmp((const char *)last->name,"akk")==0)); // so much for now, more features not yet implemented
     check_for=item;
   }
 }
@@ -272,22 +274,12 @@ void substAkkTool::textItem(ProcNodeBufferItem *&item,ProcNodeBufferItem *last)
       if ( (!iswhite(*item->value))||(clen>1) ) {
         memcpy(akk,item->value,clen);
         akk[clen]=0;
-        ProcNodeBufferItem *txtitem=new ProcNodeBufferItem(NULL,akk);
-        txtitem->type=ProcNodeBufferItem::NODE_TEXT;
-        parent.move(check_for->prev,txtitem,txtitem);
+        check_for->set_value(akk);
       }
       item->set_value(item->value+clen);
     }
     check_for=NULL;
   }
-}
-
-int substAkkTool::attribItem(ProcNodeBufferItem *item,const xmlChar *name,const xmlChar *value)
-{
-  if (strcmp((const char *)item->name,"akk")==0) {
-    return -1;
-  }
-  return 0;
 }
 
 void substAkkTool::commentItem(ProcNodeBufferItem *&item)

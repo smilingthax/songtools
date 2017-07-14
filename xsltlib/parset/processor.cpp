@@ -335,7 +335,9 @@ void ProcNodeBufferItem::build(TreeBuilder &tb) const
     break;
   case NODE_AKK:
     tb.openNode(name);
-    tb.text(value);
+    if (value) {
+      tb.text(value);
+    }
     tb.closeNode(name);
     break;
   case NODE_NONE:
@@ -539,7 +541,7 @@ ProcTraverse::~ProcTraverse()
   }
   
   flush();
-  // only not flushed items
+  // only not flushed items (e.g. tb.has_error())
   ProcNodeBufferItem *item;
   while (queue) {
     item=queue;
