@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<songs-out>
+<song>
+  <title>Test</title>
+  <!-- NOTE:
+    Y1 is probably not terminated correctly w/o <br/> (?)
+  -->
+  <content lang="en">Start<akk note="B">_</akk>
+
+    <vers>
+    Das <akk note="Fmaj7"/>ist<tick/>n<akk>-</akk> <akk note="G"/><akk note="A"/>gan<akk note="F"/><akk note="G"/>zer
+    lan<akk note="X">_</akk>ger<akk note="G#m">_</akk><akk note="Hdim">_</akk><akk note="C7"> </akk>Test
+    Da<akk>-</akk>ten<akk note="E">_</akk><akk note="Eb"/>satz.
+
+    Ohne br hier:<akk note="Y1">_</akk>
+    Mit br hier:<akk note="Y2">_</akk><br/>
+    Leere Zeile
+
+    </vers>
+
+    <line>Your<akk note="F#m7">_</akk> love never chang<akk note="A">_</akk>es.<br break="1"/></line>
+  </content>
+</song>
+</songs-out>

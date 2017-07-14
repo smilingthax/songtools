@@ -9,4 +9,5 @@
 #include "imagetools/imagefun.h"
 #include "path/path.h"
 #include "regexp/regexp.h"
+#include "akker/akker.h"
 
