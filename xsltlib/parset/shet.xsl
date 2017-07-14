@@ -283,7 +283,6 @@
      <xsl:with-param name="debug" select="$debug"/>
    </xsl:call-template>
    <xsl:copy>
-     <xsl:copy-of select="@*"/>
      <xsl:attribute name="no"><xsl:value-of select="mine:get_no(preceding-sibling::base|.)"/></xsl:attribute>
      <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="0"/>
@@ -298,7 +297,6 @@
      <xsl:with-param name="debug" select="$debug"/>
    </xsl:call-template>
    <xsl:copy>
-     <xsl:copy-of select="@*"/>
      <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="1"/>
        <xsl:with-param name="no" select="@no"/>
@@ -402,11 +400,11 @@
      <xsl:when test="@transpose"><xsl:value-of select="mine:noteAkks(@transpose)"/></xsl:when>
      <xsl:otherwise><xsl:value-of select="mine:noteAkks()"/></xsl:otherwise>
    </xsl:choose>
-   <xsl:apply-templates select="node()"/>
+   <xsl:apply-templates select="*|text()"/>
  </xsl:template>
 
  <xsl:template match="akks/*"><!-- don't copy -->
-   <xsl:apply-templates select="node()"/>
+   <xsl:apply-templates select="*|text()"/>
  </xsl:template>
 
  <xsl:template match="akks//text()|akks/base//text()">
