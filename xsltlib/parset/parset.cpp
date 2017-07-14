@@ -66,7 +66,7 @@ bool traverse(ProcTraverse &proctrav,xmlNodePtr node,xmlXPathParserContextPtr ct
     while ( (node->parent!=root)&&(!node->next) ) {
       proctrav.closeNode(node->parent->name);
       node=node->parent;
-    } 
+    }
     node=node->next;
   }
   return true;
@@ -92,11 +92,11 @@ void functionParset(xmlXPathParserContextPtr ctxt, int nargs)
     xmlXPathFreeObject(obj2);
     if ( (obj1->type==XPATH_STRING)&&(obj1->stringval)&&(*obj1->stringval) ) {
       valuePush(ctxt, obj1);
-      return;  
+      return;
     }
     valuePush(ctxt, obj1);
     return;
-  } 
+  }
 
   xsltTransformContextPtr tctxt;
   tctxt=xsltXPathGetTransformContext(ctxt);
@@ -138,7 +138,7 @@ void functionParset(xmlXPathParserContextPtr ctxt, int nargs)
             proctrav.text(nodelist->nodeTab[iA]->content);
           } else if (nodelist->nodeTab[iA]->type==XML_COMMENT_NODE) {
           } else {
-            xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL, 
+            xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,
                                "not supported node type %d\n",nodelist->nodeTab[iA]->type);
             break;
           }

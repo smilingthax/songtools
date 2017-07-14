@@ -1,4 +1,4 @@
-/* Copyright by Tobias Hoffmann, Licence: LGPL/MIT, see COPYING 
+/* Copyright by Tobias Hoffmann, Licence: LGPL/MIT, see COPYING
  * This file may, by your choice, be licensed under LGPL or by the MIT license.*/
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
@@ -65,20 +65,20 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
       xmlXPathSetTypeError(ctxt);
       return;
     }
- 
+
     if ( (!str)||(!str[0])||(!(comp=xmlXPathCompile(str))) ) {
       xmlXPathFreeNodeSet(inNodes);
       xmlFree(str);
       xmlFree(node_name);
       xsltTransformError(xsltXPathGetTransformContext(ctxt),NULL,NULL,
-	                 "thax:enclose : xpath expression failed\n");
+                         "thax:enclose : xpath expression failed\n");
       return;
     }
 
     xp=(xsltStackElemPtr)xmlMalloc(sizeof(xsltStackElem));
     if (!xp) {
       xsltTransformError(xsltXPathGetTransformContext(ctxt),NULL,NULL,
-	                 "thax:enclose : malloc failed\n");
+                         "thax:enclose : malloc failed\n");
       goto fail;
     }
     memset(xp,0,sizeof(xsltStackElem));
@@ -88,7 +88,7 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
     if ( (!inNodes)||(!inNodes->nodeNr) ) {
       goto fail;
     }
-    
+
     container=xsltCreateRVT(tctxt);
     if (!container) {
       goto fail;
@@ -101,12 +101,12 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
     ret->boolval = 0; /* Freeing is not handled there anymore */
 
     xmlXPathNodeSetSort(inNodes);
-    
+
     last=0;
 
     while (last<inNodes->nodeNr) {
       xmlXPathObjectPtr nodes;
-      
+
       // generate a new current <...>-node
       current=xmlNewDocRawNode(container,NULL,node_name,NULL);
       if (!current) {
@@ -114,7 +114,7 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
       }
       xmlAddChild((xmlNodePtr)container,current);
       xmlXPathNodeSetAddUnique(ret->nodesetval,current);
-    
+
       nodes=xmlXPathNewNodeSet(NULL);
       if (!nodes) {
         goto fail;
@@ -122,7 +122,7 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
       for (iA=last; iA<inNodes->nodeNr; ++iA) {
         xmlXPathNodeSetAddUnique(nodes->nodesetval,inNodes->nodeTab[iA]);
       }
-      
+
       // set/update variable $nodes in xpath context // alternative: set context accordingly!
       xp->name=xmlDictLookup(tctxt->dict,(const xmlChar *)"nodes",-1);
       xp->value=nodes;
@@ -135,7 +135,7 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
         if ( (res->type!=XPATH_NODESET)||(!res->nodesetval) ) {
           xmlXPathFreeObject(res);
           xsltTransformError(xsltXPathGetTransformContext(ctxt),NULL,NULL,
-	                     "thax:enclose : xpath expression did not return a node-set\n");
+                             "thax:enclose : xpath expression did not return a node-set\n");
           goto fail;
         }
         if (res->nodesetval->nodeNr>0) {
@@ -156,7 +156,7 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
           xmlAttrPtr tmp=xmlCopyPropList(current,inNodes->nodeTab[iA]->properties);
           if (current->properties) {
             xsltTransformError(xsltXPathGetTransformContext(ctxt),NULL,NULL,
-	                       "thax:enclose : bug\n");
+                               "thax:enclose : bug\n");
             goto fail;
           }
           current->properties=tmp;
@@ -176,7 +176,7 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
           //xsltCopyProp(tctxt,current,(xmlAttrPtr)inNodes->nodeTab[iA]);
         } else {
           xsltCopyTree(tctxt,inNodes->nodeTab[iA],current,0);
-        } 
+        }
 #else
         xmlNodePtr tmp=xmlCopyNode(inNodes->nodeTab[iA],1);
         xmlAddChild(current, tmp);
@@ -189,7 +189,7 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
       if (iA==inNodes->nodeNr) {
         // huh, splitPt not found
         xsltTransformError(xsltXPathGetTransformContext(ctxt),NULL,NULL,
-	                   "thax:enclose : returned splitpoint not found\n");
+                           "thax:enclose : returned splitpoint not found\n");
         goto fail;
       }
     }

@@ -1,4 +1,4 @@
-/* Copyright by Tobias Hoffmann, Licence: LGPL/MIT, see COPYING 
+/* Copyright by Tobias Hoffmann, Licence: LGPL/MIT, see COPYING
  * This file may, by your choice, be licensed under LGPL or by the MIT license */
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
@@ -60,8 +60,8 @@ thobiStrSeparateFunction(xmlXPathParserContextPtr ctxt, int nargs)
     tctxt = xsltXPathGetTransformContext(ctxt);
     if (tctxt == NULL) {
         xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,
-	      "exslt:tokenize : internal error tctxt == NULL\n");
-	goto fail;
+                           "thobi:separate : internal error tctxt == NULL\n");
+        goto fail;
     }
 
     container = xsltCreateRVT(tctxt);
@@ -74,7 +74,7 @@ thobiStrSeparateFunction(xmlXPathParserContextPtr ctxt, int nargs)
 //            for (int iA=0;iA<nodes->nodeNr;iA++) {
 //            }
             for (cur = str, token = str; *cur != 0; cur += clen) {
-	        clen = xmlUTF8Size(cur);
+                clen = xmlUTF8Size(cur);
                 for (delimiter = delimiters; *delimiter != 0; delimiter+=xmlUTF8Size(delimiter)) {
                     if (!xmlUTF8Charcmp(cur, delimiter)) {
                         // create pre text
@@ -93,8 +93,8 @@ thobiStrSeparateFunction(xmlXPathParserContextPtr ctxt, int nargs)
                         strncpy((char *)tmp,(const char*)delimiter,clen);
                         tmp[clen]=0;
                         xmlNewProp(node,(const xmlChar *)"char",tmp);
-			xmlAddChild((xmlNodePtr) container, node);
-			xmlXPathNodeSetAddUnique(ret->nodesetval, node);
+                        xmlAddChild((xmlNodePtr) container, node);
+                        xmlXPathNodeSetAddUnique(ret->nodesetval, node);
                         break;
                     }
                 }

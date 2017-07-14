@@ -14,13 +14,13 @@ ZLIBPATH=/export/wingcc/zlib-1.2.3.win32
 CFLAGS=-O3 -funroll-all-loops -finline-functions -Wall -g
 #CFLAGS=-Wall -g
 #LDFLAGS=-g
-CPPFLAGS=$(CFLAGS) $(FLAGS) -I$(ZLIBPATH)/include 
+CPPFLAGS=$(CFLAGS) $(FLAGS) -I$(ZLIBPATH)/include
 
 OBJECTS1=$(SOURCES:.c=.o)
 all: $(LIB1)
 ifneq "$(MAKECMDGOALS)" "clean"
   -include $(SOURCES:.c=.d)
-endif 
+endif
 
 clean:
 	rm -f $(LIB1) $(OBJECTS1) $(SOURCES:.c=.d)

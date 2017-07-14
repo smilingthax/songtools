@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-int load_doczip(); 
+int load_doczip();
 
 #ifdef __cplusplus
 };

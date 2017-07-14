@@ -1,4 +1,4 @@
-/* Copyright by Tobias Hoffmann, Licence: LGPL/MIT, see COPYING 
+/* Copyright by Tobias Hoffmann, Licence: LGPL/MIT, see COPYING
  * This file may, by your choice, be licensed under LGPL or by the MIT license */
 #include <libxml/xpathInternals.h>
 #include <libxslt/xsltutils.h>

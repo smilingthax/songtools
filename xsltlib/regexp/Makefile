@@ -16,7 +16,7 @@ $(SOURCES))))
 all: $(MODULE)
 ifneq "$(MAKECMDGOALS)" "clean"
   -include $(DEPENDS)
-endif 
+endif
 
 clean:
 	rm -f $(MODULE) $(OBJECTS) $(DEPENDS)

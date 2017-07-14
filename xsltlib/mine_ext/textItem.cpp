@@ -10,7 +10,7 @@ using namespace std;
 
 void AkkordItem::parse(char *akk,bool b_as_h)
 {
-  is_dur=true; 
+  is_dur=true;
 #if 0
   akkParse(this,akk);
 #endif
@@ -40,13 +40,13 @@ const char *AkkordItem::get_text(int transpose) const
   switch (typ1) {
   case -2: pos=strcat(ret+pos,"sus2")-ret; break;
   case -4: pos=strcat(ret+pos,"4")-ret; break;
-  case -5: 
+  case -5:
     if (typ2==1) pos=strcat(ret+pos,"dim")-ret;
     else pos=strcat(ret+pos,"no3")-ret; break;
   case 2: pos=strcat(ret+pos,"add2")-ret; break;
   case 4: pos=strcat(ret+pos,"add4")-ret; break;
   case 6: pos=strcat(ret+pos,"6")-ret; break;
-  case 7: 
+  case 7:
     if (typ2==1) pos=strcat(ret+pos,"maj7")-ret;
     else if (typ2==4) pos=strcat(ret+pos,"7/4")-ret;
     else pos=strcat(ret+pos,"7")-ret; break;

@@ -17,7 +17,7 @@
 using namespace std;
 
 // {{{ TreeBuilder
-TreeBuilder::TreeBuilder(xmlDocPtr doc,xmlXPathObjectPtr nodeset,xmlChar *_debug,xmlXPathParserContextPtr ctxt) 
+TreeBuilder::TreeBuilder(xmlDocPtr doc,xmlXPathObjectPtr nodeset,xmlChar *_debug,xmlXPathParserContextPtr ctxt)
                       : doc(doc),nodeset(nodeset),ctxt(ctxt)
 {
   assert(doc);
@@ -279,7 +279,7 @@ bool ProcNodeBufferItem::is_whitespace(bool nl_as_WS) const
     }
     return iswhitespace(value,nl_as_WS);
   }
-  
+
   return false;
 }
 
@@ -428,7 +428,7 @@ void ProcTraverse::move(ProcNodeBufferItem *after,ProcNodeBufferItem *start,Proc
   } else {
     last=end;
   }
-} 
+}
 // }}}
 
 void ProcTraverse::push(ProcNodeBufferItem *item) // {{{
@@ -539,7 +539,7 @@ ProcTraverse::~ProcTraverse()
   if (ns.size()) {
     tb.error("Strange problem\n");
   }
-  
+
   flush();
   // only not flushed items (e.g. tb.has_error())
   ProcNodeBufferItem *item;
@@ -548,7 +548,7 @@ ProcTraverse::~ProcTraverse()
     queue=queue->next;
     delete item;
   }
-  
+
   const int len=tools.size();
   for (int iA=0;iA<len;iA++) {
     delete tools[iA];
@@ -594,17 +594,17 @@ ProcTraverse::Tagname ProcTraverse::tag(const xmlChar *name)
   return UNKNOWN_TAG;
 }
 
-void ProcTraverse::openNode(const xmlChar *name) 
+void ProcTraverse::openNode(const xmlChar *name)
 {
   ProcNodeBufferItem *item=NULL;
 
   if ( (last)&&(last->unclosed_empty) ) {
     tb.error("<%s> tag must be empty (no subnode)\n",name);
-    return; 
+    return;
   }
   item=new ProcNodeBufferItem(name);
   item->type=ProcNodeBufferItem::NODE_ELEM;
-  
+
   Tagname tn=tag(name);
   const int len=tools.size();
   for (int iA=0;iA<len;iA++) {
@@ -622,7 +622,7 @@ void ProcTraverse::openNode(const xmlChar *name)
   }
 }
 
-void ProcTraverse::closeNode(const xmlChar *name) 
+void ProcTraverse::closeNode(const xmlChar *name)
 {
   ProcNodeBufferItem *item=NULL;
 
@@ -630,7 +630,7 @@ void ProcTraverse::closeNode(const xmlChar *name)
     ns.pop_back();
     return;
   }
-  
+
   if ( (last)&&(last->unclosed_empty) ) {
     last->unclosed_empty=false;
     item=last;
@@ -638,7 +638,7 @@ void ProcTraverse::closeNode(const xmlChar *name)
     item=new ProcNodeBufferItem(name);
     item->type=ProcNodeBufferItem::NODE_ELEM_END;
   }
-  
+
   Tagname tn=tag(name);
   const int len=tools.size();
   for (int iA=0;iA<len;iA++) {
@@ -647,7 +647,7 @@ void ProcTraverse::closeNode(const xmlChar *name)
       return;
     }
   }
-  
+
   if (item!=last) {
     // link it in
     push(item);
@@ -655,12 +655,12 @@ void ProcTraverse::closeNode(const xmlChar *name)
   ns.pop_back();
 }
 
-void ProcTraverse::text(const xmlChar *text) 
+void ProcTraverse::text(const xmlChar *text)
 {
   ProcNodeBufferItem *item;
   if ( (last)&&(last->unclosed_empty) ) {
     tb.error("<%s> tag must be empty (no text!)\n",last->name);
-    return; 
+    return;
   }
   if (!*text) {
     return;
@@ -678,10 +678,10 @@ void ProcTraverse::text(const xmlChar *text)
   push(item);
 }
 
-void ProcTraverse::attrib(const xmlChar *name,const xmlChar *value) 
+void ProcTraverse::attrib(const xmlChar *name,const xmlChar *value)
 {
   assert(  (last)&&( (last->is_element_open())||(last->unclosed_empty) )  );
-  
+
   const int len=tools.size();
   for (int iA=0;iA<len;iA++) {
     int ret=tools[iA]->attribItem(last,name,value);

@@ -33,13 +33,13 @@ ProcNodeBufferItem *normalizeBrTool::insert_br(ProcNodeBufferItem *after,int no,
   ProcNodeBufferItem *item;
   item=new ProcNodeBufferItem((const xmlChar *)"br");
   item->type=ProcNodeBufferItem::NODE_BR;
-  if (no>-1) { 
+  if (no>-1) {
     item->no=no;
   }
   if (brk!=-1) {
     item->brk=brk;
   }
-  parent.move(after,item,item);  // TODO? check for validity of br tag at the insert position 
+  parent.move(after,item,item);  // TODO? check for validity of br tag at the insert position
   return item;
 }
 
@@ -178,7 +178,7 @@ void normalizeBrTool::commentItem(ProcNodeBufferItem *&item)
 // }}}
 
 // {{{ substSpacerTool
-substSpacerTool::substSpacerTool(ProcTraverse &parent) : procTool(parent), check_for(NULL) 
+substSpacerTool::substSpacerTool(ProcTraverse &parent) : procTool(parent), check_for(NULL)
 {
 }
 
@@ -186,7 +186,7 @@ void substSpacerTool::count_spacer(const xmlChar *text,int &no,int &skipchars)
 {
   assert(text);
   const xmlChar *tmp=text;
-  for (;*tmp;tmp++) {  
+  for (;*tmp;tmp++) {
     if (!iswhite(*tmp)) {
       break;
     }
@@ -242,7 +242,7 @@ void substSpacerTool::commentItem(ProcNodeBufferItem *&item)
 // }}}
 
 // {{{ substAkkTool
-substAkkTool::substAkkTool(ProcTraverse &parent) : procTool(parent),check_for(NULL) 
+substAkkTool::substAkkTool(ProcTraverse &parent) : procTool(parent),check_for(NULL)
 {
 }
 
@@ -304,7 +304,7 @@ void substXlangTool::openItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&ite
     active=true;
   } else if ( (active)&&(tag==ProcTraverse::BR_TAG) ) {
     assert( (parent.ns.back()->type==ProcNodeBufferItem::NODE_ELEM)&&(parent.tag(parent.ns.back()->name)==ProcTraverse::XLANG_TAG) );
-#if 0 
+#if 0
     if ( (parent.last)&&(parent.last->is_element_open())&&(parent.tag(parent.last->name)==ProcTraverse::XLANG_TAG) ) { // empty tag: count as simple br
       // TODO:  problem:   normalizeBr will have seen the openItem  and stopped eating whitespace (see HACK in normalizeBrTool::openItem)
       parent.pop();

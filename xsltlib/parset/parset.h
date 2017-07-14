@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-int load_parset(); 
+int load_parset();
 
 #ifdef __cplusplus
 };

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!-- Copyright by Tobias Hoffmann, Licence: LGPL/MIT, see COPYING 
+<!-- Copyright by Tobias Hoffmann, Licence: LGPL/MIT, see COPYING
      This file may, by your choice, be licensed under LGPL or by the MIT license -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                 xmlns:func="http://exslt.org/functions"
@@ -26,11 +26,11 @@
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
- 
+
  <xsl:template mode="_sep_tree" match="@*|comment()">
    <xsl:copy-of select="."/>
  </xsl:template>
- 
+
  <xsl:template mode="_sep_tree" match="text()" name="_sep_tree">
    <xsl:param name="seps"/>
    <xsl:copy-of select="thobi:separate(.,$seps)"/>

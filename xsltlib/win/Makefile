@@ -16,7 +16,7 @@ AR=$(MINGW)ar
 # CFLAGS=-O3 -funroll-all-loops -finline-functions -Wall -g
 CFLAGS=-Wall -g
 LDFLAGS=-g -L$(ZLIBPATH)/bin -lzlib1
-CPPFLAGS=$(CFLAGS) $(FLAGS) -I$(LIBBASE)/include 
+CPPFLAGS=$(CFLAGS) $(FLAGS) -I$(LIBBASE)/include
 #-DZLIB_WINAPI
 
 ifeq "$(XML)" "1"
@@ -25,7 +25,7 @@ endif
 
 OBJECTS1=$(SOURCES1:.c=.o) $(SOURCES2:.cpp=.o)
 all: $(LIB1)
-subdirs: 
+subdirs:
 	@$(SHELL) -ec 'for i in $(patsubst %,../%,$(DIRS)); do \
                          $(MAKE) -C $$i/win; \
                        done'
@@ -36,7 +36,7 @@ subdirs-%:
 
 ifneq "$(MAKECMDGOALS)" "clean"
   -include $(SOURCES1:.c=.d) $(SOURCES2:.cpp=.d)
-endif 
+endif
 
 clean:
 	rm -f $(LIB1) $(OBJECTS1) $(SOURCES1:.c=.d) $(SOURCES2:.cpp=.d)
@@ -45,7 +45,7 @@ clean:
 	@$(SHELL) -ec '$(CC) -MM $(CPPFLAGS) $< \
                       | sed '\''s§\($*\)\.o[ :]*§\1.o $@ : §g'\'' > $@;\
                       [ -s $@ ] || rm -f $@'
-		      
+
 %.d: ../*/%.cpp
 	@$(SHELL) -ec '$(CXX) -MM $(CPPFLAGS) $< \
                       | sed '\''s§\($*\)\.o[ :]*§\1.o $@ : §g'\'' > $@;\
@@ -55,7 +55,7 @@ clean:
 	@$(SHELL) -ec '$(CC) -MM $(CPPFLAGS) $< \
                       | sed '\''s§\($*\)\.o[ :]*§\1.o $@ : §g'\'' > $@;\
                       [ -s $@ ] || rm -f $@'
-     
+
 %.o: ../*/%.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 

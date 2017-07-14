@@ -110,6 +110,7 @@ fprintf(stderr,"(%d,%d) %d\n",(it->first>>8),(it->first)&0xff,it->second->curpos
 private:
   map<int,AkkordQueue *> akkMap;
 };
+
 AkkordContainer akkCont;
 int doTranspose=0;
 

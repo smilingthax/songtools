@@ -14,7 +14,7 @@ OBJECTS1=$(SOURCES:.c=.o)
 all: $(LIB1)
 ifneq "$(MAKECMDGOALS)" "clean"
   -include $(SOURCES:.c=.d)
-endif 
+endif
 
 clean:
 	rm -f $(LIB1) $(OBJECTS1) $(SOURCES:.c=.d)

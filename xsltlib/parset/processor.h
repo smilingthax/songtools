@@ -60,7 +60,7 @@ public:
   int no,brk;
   bool unclosed_empty;  // if a tag should be empty, this is flagged until it is closed (ATTENTION: only for single-item tags)
   ProcNodeBufferItem *attrqueue,*attrlast;
- 
+
   // "have to be public..."
   ProcNodeBufferItem();
   ProcNodeBufferItem(const xmlChar *name,const xmlChar *value=NULL); // does strdup, does not: type
@@ -120,7 +120,7 @@ public:
   virtual void closeItem(ProcTraverse::Tagname tag,ProcNodeBufferItem *&item,ProcNodeBufferItem *last) {}
   virtual void textItem(ProcNodeBufferItem *&item,ProcNodeBufferItem *last) {}
   // return <0 if invalid, >0 if consumed, 0 if untouched
-  virtual int attribItem(ProcNodeBufferItem *item,const xmlChar *name,const xmlChar *value) { return 0; } 
+  virtual int attribItem(ProcNodeBufferItem *item,const xmlChar *name,const xmlChar *value) { return 0; }
   virtual void commentItem(ProcNodeBufferItem *&item) {}
 protected:
   ProcTraverse &parent;

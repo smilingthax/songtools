@@ -24,7 +24,7 @@ static void functionSubstKill(xmlXPathParserContextPtr ctxt, int nargs)
     return;
   }
   // Argumente holen
-  xmlXPathObjectPtr obj1 = valuePop(ctxt); 
+  xmlXPathObjectPtr obj1 = valuePop(ctxt);
   xmlChar *str=xmlXPathCastToString(obj1);
 
   // transform
@@ -81,8 +81,8 @@ static void functionSubstAkkTex(xmlXPathParserContextPtr ctxt, int nargs)
     return;
   }
   // Argumente holen
-  xmlXPathObjectPtr obj2 = valuePop(ctxt); 
-  xmlXPathObjectPtr obj1 = valuePop(ctxt); 
+  xmlXPathObjectPtr obj2 = valuePop(ctxt);
+  xmlXPathObjectPtr obj1 = valuePop(ctxt);
   xmlChar *note=xmlXPathCastToString(obj1);
   xmlChar *txt=xmlXPathCastToString(obj2);
 
@@ -124,7 +124,7 @@ static void functionSubstAkkTex(xmlXPathParserContextPtr ctxt, int nargs)
         out[iB++]=txt[iA];
       }
     }
-  } 
+  }
   out[iB]=0;
 
   xmlXPathFreeObject(obj1);
@@ -143,7 +143,7 @@ static void functionHlpNLtxt(xmlXPathParserContextPtr ctxt, int nargs)
     return;
   }
   // Argumente holen
-  xmlXPathObjectPtr obj1 = valuePop(ctxt); 
+  xmlXPathObjectPtr obj1 = valuePop(ctxt);
   xmlChar *str=xmlXPathCastToString(obj1);
 
   // transform (in-place)
@@ -201,11 +201,11 @@ static void functionRepIt(xmlXPathParserContextPtr ctxt, int nargs)
       xmlXPathFreeObject(obj1);
       valuePush(ctxt, xmlXPathNewString((xmlChar *)ret));
       free(ret);
-      return;  
+      return;
     }
     valuePush(ctxt, obj1);
     return;
-  } 
+  }
 
   xsltTransformContextPtr tctxt;
   tctxt=xsltXPathGetTransformContext(ctxt);

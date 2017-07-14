@@ -1,4 +1,4 @@
-/* Copyright by Tobias Hoffmann, Licence: LGPL/MIT, see COPYING 
+/* Copyright by Tobias Hoffmann, Licence: LGPL/MIT, see COPYING
  * This file may, by your choice, be licensed under LGPL or by the MIT license */
 #include <libxslt/extensions.h>
 #include <libxml/xmlIO.h>
@@ -8,7 +8,7 @@
 //#define DEBUG
 
 #ifdef DEBUG
-static int mymatch(const char *filename) 
+static int mymatch(const char *filename)
 {
   printf("OP: %s\n",filename);
   return 0;
