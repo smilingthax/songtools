@@ -111,15 +111,15 @@
    <xsl:param name="indent"><xsl:text>    </xsl:text></xsl:param>
    <xsl:if test="string-length($has_next)">
      <xsl:choose>
-     <xsl:when test="not(@break)"/>
-     <xsl:when test="@break=1"></xsl:when>
-     <xsl:when test="@break=-2">
-       <xsl:value-of select="$nl"/>
-       <xsl:text>    </xsl:text><pagebreak/>
-     </xsl:when>
-     <xsl:otherwise>
-       <xsl:message terminate="yes">Unknown break <xsl:value-of select="@break"/></xsl:message>
-     </xsl:otherwise>
+       <xsl:when test="not(@break)"/>
+       <xsl:when test="@break=1"></xsl:when>
+       <xsl:when test="@break=-2">
+         <xsl:value-of select="$nl"/>
+         <xsl:text>    </xsl:text><pagebreak/>
+       </xsl:when>
+       <xsl:otherwise>
+         <xsl:message terminate="yes">Unknown break <xsl:value-of select="@break"/></xsl:message>
+       </xsl:otherwise>
      </xsl:choose>
      <xsl:call-template name="rep_it">
        <xsl:with-param name="inNodes" select="$nl"/>
@@ -149,7 +149,7 @@
  </xsl:template>
  <!-- }}} -->
 
-<!-- {{{ FUNCTION func:drop-nl (inText)  - kill leading whitespace -->
+<!-- {{{ FUNCTION func:drop_nl (inText)  - kill leading whitespace -->
  <func:function name="func:drop_nl"><!-- speedup (included into nl_hlp) -->
    <xsl:param name="inText"/>
    <xsl:variable name="first" select="substring(normalize-space($inText),1,1)"/>

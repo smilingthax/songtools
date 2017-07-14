@@ -378,7 +378,7 @@
            <xsl:with-param name="inCopyright">
              <xsl:if test="$copy!=''">
                <xsl:text>© </xsl:text>
-<!--              <xsl:text>Copyright: </xsl:text>-->
+<!--               <xsl:text>Copyright: </xsl:text>-->
                <xsl:value-of select="$copy"/>
              </xsl:if>
            </xsl:with-param>
@@ -839,38 +839,6 @@
        </xsl:call-template>
        <xsl:copy-of select="$inNodes"/>
      </xsl:when>
-   </xsl:choose>
- </xsl:template>
- <!-- }}} -->
-
- <!-- {{{ FUNCTION func:drop-nl (inText)  - kill leading whitespace -->
- <func:function name="func:drop_nl"><!-- speedup (included into nl_hlp) -->
-   <xsl:param name="inText"/>
-   <xsl:variable name="first" select="substring(normalize-space($inText),1,1)"/>
-   <func:result>
-     <xsl:if test="string-length($first)!=0">
-       <xsl:value-of select="$first"/><xsl:value-of select="substring-after($inText,$first)"/>
-     </xsl:if>
-   </func:result>
- </func:function>
- <!-- }}} -->
-
- <!-- {{{ TEMPLATE nl_hlp (inText)  - kill all \n's including following whitespaces -->
- <xsl:template name="nl_hlp"><!-- speedup -->
-   <xsl:param name="inText" select="."/>
-   <xsl:choose>
-     <xsl:when test="function-available('mine:nl_hlp')">
-       <xsl:value-of select="mine:nl_hlp($inText)"/>
-     </xsl:when>
-     <xsl:when test="contains($inText,'&#010;')">
-       <xsl:value-of select="substring-before($inText,'&#010;')"/>
-       <xsl:call-template name="nl_hlp">
-         <xsl:with-param name="inText" select="func:drop_nl(substring-after($inText,'&#010;'))"/>
-       </xsl:call-template>
-     </xsl:when>
-     <xsl:otherwise>
-       <xsl:value-of select="$inText"/>
-     </xsl:otherwise>
    </xsl:choose>
  </xsl:template>
  <!-- }}} -->

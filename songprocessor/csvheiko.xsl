@@ -187,7 +187,7 @@
  </xsl:template>
  <!-- }}} -->
 
- <!-- {{{ FUNCTION func:drop-nl (inText)  - kill leading whitespace -->
+ <!-- {{{ FUNCTION func:drop_nl (inText)  - kill leading whitespace -->
  <func:function name="func:drop_nl"><!-- speedup (included into nl_hlp) -->
    <xsl:param name="inText"/>
    <xsl:variable name="first" select="substring(normalize-space($inText),1,1)"/>

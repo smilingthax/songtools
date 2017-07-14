@@ -11,6 +11,7 @@
 
  <!-- customize by overriding the templates.
       requires a template called "error_trap".
+<xsl:template name="error_trap"/>
  -->
 
  <xsl:variable name="nl"><xsl:text>
@@ -98,6 +99,7 @@
 
  <xsl:template match="line" mode="_sc_post">
    <xsl:param name="ctxt"/>
+<!-- or, e.g.:   select="number(func:default(@solrep,0))"  -->
    <xsl:param name="solrep" select="@solrep|exsl:node-set(0)[not(current()/@solrep)]"/> <!-- @solrep not always present; TRICK: variable not allowed here... -->
    <xsl:param name="repindent" select="sum(preceding-sibling::*/@rep) + $solrep"/>
    <xsl:variable name="justxlang" select="not(../line[not(@xlang)])"/>
@@ -112,6 +114,7 @@
    </xsl:choose>
    <xsl:call-template name="rep_it">
      <xsl:with-param name="inNodes" select="$ctxt/rep/indent/node()"/>
+<!-- NOTE: depends on @solrep being ("informationally") copied into lgroup/line -->
      <xsl:with-param name="anz" select="$repindent - $solrep"/>
    </xsl:call-template>
 
@@ -429,7 +432,7 @@
  </xsl:template>
  <!-- }}} -->
 
- <!-- {{{ FUNCTION func:drop-nl (inText)  - kill leading whitespace -->
+ <!-- {{{ FUNCTION func:drop_nl (inText)  - kill leading whitespace -->
  <func:function name="func:drop_nl"><!-- speedup (included into nl_hlp) -->
    <xsl:param name="inText"/>
    <xsl:variable name="first" select="substring(normalize-space($inText),1,1)"/>
