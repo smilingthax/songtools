@@ -10,4 +10,9 @@
 
  <xsl:template match="refr[@repeated]|bridge[@repeated]|vers[@repeated]"/>
 
+ <!-- @break="-3" can get lost -->
+ <xsl:template match="content/*[not(@repeated) and not(following-sibling::*[not(@repeated)])][position()=last()]/br[last()]">
+   <br no="1" break="-3"/>
+ </xsl:template>
+
 </xsl:stylesheet>

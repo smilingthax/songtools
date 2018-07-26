@@ -269,9 +269,16 @@
  <xsl:template match="akk" mode="_add_akks">
    <xsl:param name="level"/>
    <xsl:param name="no"/>
+   <xsl:param name="debug"/>
    <xsl:copy>
      <xsl:if test="not(text()='-')">
-       <xsl:attribute name="note"><xsl:value-of select="mine:getAkk($level,$no)"/></xsl:attribute>
+       <xsl:attribute name="note">
+         <xsl:variable name="note" select="mine:getAkk($level,$no)"/>
+         <xsl:if test="not($note)">
+           <xsl:message terminate="yes">Fehler[normal,vers,refr,ending,bridge,instrum] in den Akkorden, Lied: <xsl:value-of select="$debug"/></xsl:message>
+         </xsl:if>
+         <xsl:value-of select="$note"/>
+       </xsl:attribute>
      </xsl:if>
      <xsl:value-of select="."/>
    </xsl:copy>
@@ -287,6 +294,7 @@
      <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="0"/>
        <xsl:with-param name="no" select="0"/>
+       <xsl:with-param name="debug" select="$debug"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
@@ -300,6 +308,7 @@
      <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="1"/>
        <xsl:with-param name="no" select="@no"/>
+       <xsl:with-param name="debug" select="$debug"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
@@ -313,6 +322,7 @@
      <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="2"/>
        <xsl:with-param name="no" select="@no"/>
+       <xsl:with-param name="debug" select="$debug"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
@@ -326,6 +336,7 @@
      <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="3"/>
        <xsl:with-param name="no" select="@no"/>
+       <xsl:with-param name="debug" select="$debug"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
@@ -339,6 +350,7 @@
      <xsl:apply-templates select="@*|node()" mode="_add_akks">
        <xsl:with-param name="level" select="4"/>
        <xsl:with-param name="no" select="@no"/>
+       <xsl:with-param name="debug" select="$debug"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
@@ -374,11 +386,13 @@
  <xsl:template match="*" mode="_add_akks">
    <xsl:param name="level"/>
    <xsl:param name="no"/>
+   <xsl:param name="debug"/>
    <xsl:copy>
      <xsl:copy-of select="@*"/>
      <xsl:apply-templates select="node()" mode="_add_akks">
        <xsl:with-param name="level" select="$level"/>
        <xsl:with-param name="no" select="$no"/>
+       <xsl:with-param name="debug" select="$debug"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
@@ -402,6 +416,7 @@
 
  <xsl:template match="akks"> <!-- {{{ grab chords -->
    <xsl:choose>
+     <xsl:when test="contains(@transpose,',')"><xsl:value-of select="mine:noteAkks(substring-before(@transpose,','))"/></xsl:when>
      <xsl:when test="@transpose"><xsl:value-of select="mine:noteAkks(@transpose)"/></xsl:when>
      <xsl:otherwise><xsl:value-of select="mine:noteAkks()"/></xsl:otherwise>
    </xsl:choose>

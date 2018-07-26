@@ -13,6 +13,7 @@ ifneq "$(STATIC)" "1"
   #LDFLAGS+=-g
 endif
 CPPFLAGS=$(CFLAGS) $(FLAGS)
+CXXFLAGS+=-std=c++11
 
 ifeq "$(XML)" "1"
 #  CPPFLAGS+=-DWITH_XML -I/usr/include/libxml2

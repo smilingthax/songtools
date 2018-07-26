@@ -37,6 +37,8 @@ void init_transformer()
   load_enclose();
   load_tools();
   load_path();
+//  load_regexp();
+  load_akker();
 #ifndef WIN32
   setenv("LIBXSLT_PLUGINS_PATH","",0); // avoid external plugins
 #endif
@@ -50,7 +52,7 @@ bool do_transform(const char *inputFile,const char *outputFile,const char **inte
   }
 
   // Load input
-  auto_xmlDoc doc, res;
+  unique_xmlDoc doc, res;
   if (inputFile) {
 //    doc.reset(xmlReadFile(inputFile,"iso-8859-1",0));
     doc.reset(xmlParseFile(inputFile));
@@ -64,8 +66,8 @@ bool do_transform(const char *inputFile,const char *outputFile,const char **inte
   // Do the transform.
   printf("Processing shet.xsl\n");
   {
-    auto_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)"shet.xsl"));
-    auto_xsltTransform ctxt(xsltNewTransformContext(cur, doc));
+    unique_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)"shet.xsl"));
+    unique_xsltTransform ctxt(xsltNewTransformContext(cur, doc));
     if (!ctxt) {
       return false;
     }
@@ -87,7 +89,7 @@ bool do_transform(const char *inputFile,const char *outputFile,const char **inte
 
   if (interSheets) {
     for (int iA=0; interSheets[iA]; iA++) {
-      auto_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)interSheets[iA]));
+      unique_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)interSheets[iA]));
       doc.reset(xsltApplyStylesheet(cur, res, params));
 // TODO?! check  ctxt->state
       if (!doc) {
@@ -110,8 +112,8 @@ bool do_transform(const char *inputFile,const char *outputFile,const char **inte
   }
   for (int iA=0; secSheets[iA] && secOutput[iA]; iA++) {
     printf("Processing %s\n",secSheets[iA]);
-    auto_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)secSheets[iA]));
-    auto_xsltTransform ctxt(xsltNewTransformContext(cur, res));
+    unique_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)secSheets[iA]));
+    unique_xsltTransform ctxt(xsltNewTransformContext(cur, res));
     if (!ctxt) {
       return false;
     }

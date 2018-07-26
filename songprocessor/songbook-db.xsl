@@ -13,6 +13,7 @@
    <book short="FJ2">Feiert Jesus! 2</book>
    <book short="FJ3">Feiert Jesus! 3</book>
    <book short="FJ4">Feiert Jesus! 4</book>
+   <book short="FJ5">Feiert Jesus! 5</book>
    <book short="FJTOGO">Feiert Jesus! to go</book>
    <book short="FJCon">Feiert Jesus! Connect</book>
    <book short="ILJ1">In love with Jesus</book>
@@ -39,6 +40,7 @@
    <book short="Wied15">Wiedenester Jugendliederbuch 15. Ausgabe</book>
    <book short="Wied16">Wiedenester Jugendliederbuch 16. Ausgabe</book>
    <book short="Wied17">Wiedenester Jugendliederbuch 17. Ausgabe</book>
+   <book short="Wied18">Wiedenester Jugendliederbuch 18. Ausgabe</book>
 <!-- preliminary: -->
    <book short="CTW1+2">Come To Worship 1 + 2 (Melodie)</book>
    <book short="UL">Unser Liederbuch</book>
