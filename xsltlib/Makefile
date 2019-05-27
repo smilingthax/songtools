@@ -1,9 +1,9 @@
-SOURCES1=split.c zipext.c  zip.c unzip.c ioapi.c  enclose.c imagefun.c  path.c  regexp.c  akker.c
+SOURCES1=split.c zipext.c  enclose.c imagefun.c  path.c  regexp.c  akker.c
 SOURCES2=extension.cpp chord.cpp speed.cpp processor.cpp parset.cpp ptools.cpp
 LIB1=libxsltext.a
 DIRS=enclose imagetools mine_ext parset split path zip_ext regexp akker
 
-PACKAGES=libxslt libexslt  # libxml-2.0
+PACKAGES=libxslt libexslt minizip  # libxml-2.0
 PACKAGES+=libpcre2-8
 
 include config.mk
@@ -27,19 +27,10 @@ clean:
 	rm -f $(LIB1) $(OBJECTS1) $(SOURCES1:.c=.d) $(SOURCES2:.cpp=.d) xsltlib.tgz
 
 %.d: */%.c
-	@$(SHELL) -ec '$(CC) -MM $(CPPFLAGS) $< \
-                      | sed '\''s§\($*\)\.o[ :]*§\1.o $@ : §g'\'' > $@;\
-                      [ -s $@ ] || rm -f $@'
+	@$(CC) $(CPPFLAGS) -MM -MT"$@" -MT"$*.o" -o $@ $<  2> /dev/null
 
 %.d: */%.cpp
-	@$(SHELL) -ec '$(CXX) -MM $(CPPFLAGS) $< \
-                      | sed '\''s§\($*\)\.o[ :]*§\1.o $@ : §g'\'' > $@;\
-                      [ -s $@ ] || rm -f $@'
-
-%.d: zip_ext/zip/%.c
-	@$(SHELL) -ec '$(CC) -MM $(CPPFLAGS) $< \
-                      | sed '\''s§\($*\)\.o[ :]*§\1.o $@ : §g'\'' > $@;\
-                      [ -s $@ ] || rm -f $@'
+	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MM -MT"$@" -MT"$*.o" -o $@ $<  2> /dev/null
 
 %.o: */%.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
@@ -47,8 +38,6 @@ clean:
 %.o: */%.cpp
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ -c $<
 
-%.o: zip_ext/zip/%.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 
 $(LIB1): $(OBJECTS1)
-	$(AR) rscu $@ $^
+	$(AR) rsc $@ $^

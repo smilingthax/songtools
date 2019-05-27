@@ -61,8 +61,8 @@ static int get_png_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,int
     fprintf(stderr,"\nWidth: %d, Height: %d, Bitdepth: %d, Colortype: %d, Compression: %d, Filter: %d, Interlace: %d\n",
             width,height,buf[8],buf[9],buf[10],buf[11],buf[12]);
 #endif
-    xmlStrPrintf(retwidth,retlen,(const xmlChar *)"%d",width);
-    xmlStrPrintf(retheight,retlen,(const xmlChar *)"%d",height);
+    xmlStrPrintf(retwidth,retlen,"%d",width);
+    xmlStrPrintf(retheight,retlen,"%d",height);
     xmlFreeParserInputBuffer(ibuf);
     return 0;
   }
@@ -131,8 +131,8 @@ static int get_jpeg_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,in
       buf=(const unsigned char *)xmlBufferContent(ibuf->buffer);
       height=(buf[1]<<8)+buf[2];
       width=(buf[3]<<8)+buf[4];
-      xmlStrPrintf(retwidth,retlen,(const xmlChar *)"%d",width);
-      xmlStrPrintf(retheight,retlen,(const xmlChar *)"%d",height);
+      xmlStrPrintf(retwidth,retlen,"%d",width);
+      xmlStrPrintf(retheight,retlen,"%d",height);
       xmlFreeParserInputBuffer(ibuf);
       return 0;
     }

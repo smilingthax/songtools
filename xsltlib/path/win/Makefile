@@ -1,5 +1,5 @@
-SOURCES=split.c
-MODULE=thax_home_split.dll
+SOURCES=path.c
+MODULE=thax_home_path.dll
 
 MINGW=/export/wingcc/suse/usr/bin/i686-w64-mingw32-
 LIBBASE=/export/wingcc/suse/usr/i686-w64-mingw32/sys-root/mingw

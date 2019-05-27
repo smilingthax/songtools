@@ -1,6 +1,4 @@
 #CXX=/home/thobi/dls/gstlfilt/gfilt
-#CXX=g++-4.4
-#CXX=g++-4.7
 #CFLAGS+=-O3 -funroll-all-loops -finline-functions -Wall -g
 FLAGS+=-Wall -g
 CXXFLAGS+=

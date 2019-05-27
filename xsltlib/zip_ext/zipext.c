@@ -12,7 +12,7 @@
 #include <libxslt/xsltutils.h>
 #include <libxslt/extensions.h>
 #include <libexslt/exslt.h>
-#include "zip/zip.h"
+#include <zip.h>
 #include <time.h>
 #include "zipext.h"
 

@@ -21,13 +21,10 @@ clean:
 	rm -f $(MODULE) $(OBJECTS) $(DEPENDS)
 
 %.d: %.c
-	@$(SHELL) -ec '$(CC) -MM $(CPPFLAGS) $< \
-                      | sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@;\
-                      [ -s $@ ] || rm -f $@'
+	@$(CC) $(CPPFLAGS) -MM -MT"$@" -MT"$*.o" -o $@ $<  2> /dev/null
+
 %.d: %.cpp
-	@$(SHELL) -ec '$(CXX) -MM $(CPPFLAGS) $< \
-                      | sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@;\
-                      [ -s $@ ] || rm -f $@'
+	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MM -MT"$@" -MT"$*.o" -o $@ $<  2> /dev/null
 
 $(MODULE): $(OBJECTS)
 	$(CXX) -o $@ $^ -shared -rdynamic
