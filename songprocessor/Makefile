@@ -21,14 +21,14 @@ ifeq "$(XML)" "1"
 #  LDFLAGS+=-lxslt -lexslt -lxml2 -lz -lgcrypt -lgpg-error
 #  LDFLAGS+=-lxslt -lexslt
   #/usr/local/lib/libxml2.a
-  PACKAGES+=libxml-2.0 libxslt libexslt
+  PACKAGES+=libxml-2.0 libxslt libexslt minizip
 endif
 
 CPPFLAGS+=$(shell pkg-config --cflags $(PACKAGES))
 LDFLAGS+=$(shell pkg-config --libs $(PACKAGES))
 
 ifeq "$(STATIC)" "1"
-  LDFLAGS+=-static -pthread -ldl -lgcrypt -lgpg-error
+  LDFLAGS+=-static -pthread -ldl -lgcrypt -lgpg-error -llzma -licuuc -licudata
 #  LDFLAGS+=-static -pthread -ldl
 endif
 
