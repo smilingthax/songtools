@@ -3,6 +3,7 @@ MODULE=thax_home_zip_ext.so
 
 CPPFLAGS=-O3 -funroll-all-loops -finline-functions -Wall $(FLAGS) -g -DSTANDALONE
 CPPFLAGS+=`pkg-config --cflags libxml-2.0 minizip`
+LDFLAGS+=`pkg-config --libs minizip`
 
 OBJECTS=$(patsubst %.c,$(PREFIX)%$(SUFFIX).o,\
         $(patsubst %.cpp,$(PREFIX)%$(SUFFIX).o,\
@@ -27,7 +28,7 @@ clean:
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MM -MT"$@" -MT"$*.o" -o $@ $<  2> /dev/null
 
 $(MODULE): $(OBJECTS)
-	$(CXX) -o $@ $^ -shared -rdynamic
+	$(CXX) -o $@ $^ -shared -rdynamic $(LDFLAGS)
 
 test: force
 	xsltproc outzip.xsl in.xml
