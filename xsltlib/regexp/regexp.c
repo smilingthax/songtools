@@ -87,7 +87,7 @@ static pcre2_code *do_compile(xmlXPathParserContextPtr ctxt, const xmlChar *rege
     char buf[250];
     int len = pcre2_get_error_message(err, (unsigned char *)buf, sizeof(buf)-20);
     if (len > 0) {
-      snprintf(buf+len, sizeof(buf)-len, " at %d", erroffset);
+      snprintf(buf+len, sizeof(buf)-len, " at %zd", erroffset);
     }
     xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,
                        "regexp : pcre2 compile failed: %s\n", buf);

@@ -59,7 +59,7 @@ public:
         if (2*it->second.first<(int)it->second.second.size()) { // TODO? better reporting?
           fprintf(stderr,"(%d,%d) %d | too much\n",it->first.first,it->first.second,it->second.first);
         } else {
-          fprintf(stderr,"(%d,%d) %d | missing\n",it->first.first,it->first.second,it->second.second.size()-it->second.first);
+          fprintf(stderr,"(%d,%d) %zd | missing\n",it->first.first,it->first.second,it->second.second.size()-it->second.first);
         }
         ret=false;
 //        break;    // more than one error ...
