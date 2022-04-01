@@ -1,7 +1,7 @@
-SOURCES1=split.c zipext.c  enclose.c imagefun.c  path.c  regexp.c  akker.c
+SOURCES1=split.c zipext.c  enclose.c imagefun.c  path.c  regexp.c  akker.c  json.c
 SOURCES2=extension.cpp chord.cpp speed.cpp processor.cpp parset.cpp ptools.cpp
 LIB1=libxsltext.a
-DIRS=enclose imagetools mine_ext parset split path zip_ext regexp akker
+DIRS=enclose imagetools mine_ext parset split path zip_ext regexp akker json
 XML=1
 
 PACKAGES=minizip
