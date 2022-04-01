@@ -4,6 +4,7 @@
 #include <libxml/xpathInternals.h>
 #include <libxslt/xsltutils.h>
 #include <libxslt/extensions.h>
+#include <string.h>  // memcpy
 #include "json.h"
 #include <assert.h>
 
@@ -187,7 +188,7 @@ static int _parse_string_hlp(const xmlChar *str, int *ret_ulen) // returns lengt
       }
       return tmp - str;
 
-    default:
+    default:  // NOTE: includes utf8 parts
       if (ch <= 0x1f) {
         return -1;  // raw ctrl char not allowed
       }
@@ -202,7 +203,7 @@ static int _parse_string_hlp(const xmlChar *str, int *ret_ulen) // returns lengt
 // CAVE: expects ulen to be big enough, does not validate escape sequences (can even crash!)
 static xmlChar *_unescape_string(const xmlChar *str, const xmlChar *end, int ulen) // {{{
 {
-  xmlChar *ret = xmlMalloc(ulen);
+  xmlChar *ret = xmlMalloc(ulen + 1);
   if (!ret) {
     return NULL;
   }
@@ -230,6 +231,7 @@ static xmlChar *_unescape_string(const xmlChar *str, const xmlChar *end, int ule
       *tmp++ = *str;
     }
   }
+  *tmp = 0;
 
   return ret;
 }
@@ -517,7 +519,7 @@ static int parse_json(const xmlChar *str, xmlNodePtr (*build_fn)(enum json_type,
   }
 
   struct json_parse_ctx ctx = {
-    .cur = str, // .end = str + xmlStrlen(str),
+    .cur = str,
     .build_fn = build_fn,
   };
 
@@ -601,6 +603,8 @@ static xmlNodePtr json_build_xml(enum json_type type, const xmlChar *key, const 
  * @ctxt: an XPath parser context
  * @nargs: the number of arguments
  *
+ * node-set json:json-to-xml(string json)
+ *
  * Parses json string into a xmlns http://www.w3.org/2005/xpath-functions
  * representation: <map> / <array> / <number> / <string> / <boolean> / <null>
  * potentially having @key.
@@ -624,7 +628,6 @@ thobiJsonToXmlFunction(xmlXPathParserContextPtr ctxt, int nargs)
 
     str = xmlXPathPopString(ctxt);
     if (xmlXPathCheckError(ctxt) || (str == NULL)) {
-      xmlXPathSetTypeError(ctxt);
       return;
     }
 
@@ -665,9 +668,209 @@ fail:
         valuePush(ctxt, xmlXPathNewNodeSet(NULL));
 }
 
+//#define ESCAPE_HIGHCTRL
+#define ESCAPE_NONBMP
+
+static int _escaped_length(const xmlChar *str) // {{{  -1 on invalid utf8
+{
+  int len = 0;
+  while (1) {
+    const unsigned char ch = *str;
+    switch (ch) {
+    case 0:
+      return len;
+
+    case 8: case 9:
+    case 10: case 12: case 13:
+    case '"': case '\\':
+      str++;
+      len += 2;
+      break;
+
+    default:
+      if (ch > 0x80) {
+#if defined(ESCAPE_HIGHCTRL) || defined(ESCAPE_NONBMP)
+        int clen = 4;
+        const int cp = xmlGetUTF8Char(str, &clen);
+        if (cp < 0) {
+          return -1;
+        }
+
+        str += clen;
+#ifdef ESCAPE_HIGHCTRL
+        if (cp >= 0x7f && cp < 0xa0) {
+          len += 6;
+        } else
+#endif
+#ifdef ESCAPE_NONBMP
+        if (cp > 0xffff) {
+          len += 12;
+        } else
+#endif
+        {
+          len += clen;
+        }
+
+#else
+        const int clen = xmlUTF8Size(str);
+        if (clen < 0) {
+          return -1;
+        }
+        str += clen;
+        len += clen;
+#endif
+
+      } else {
+        str++;
+        len++;
+      }
+      break;
+    }
+  }
+}
+// }}}
+
+#if defined(ESCAPE_HIGHCTRL) || defined(ESCAPE_NONBMP)
+static xmlChar *_hexesc(xmlChar *dst, unsigned int cp) // {{{ only for cp <= 0xffff
+{
+  // assert(cp <= 0xffff);
+  static const unsigned char hex[] = "0123456789abcdef";
+  *dst++ = '\\';
+  *dst++ = 'u';
+  *dst++ = hex[(cp >> 12) & 0x0f];
+  *dst++ = hex[(cp >> 8) & 0x0f];
+  *dst++ = hex[(cp >> 4) & 0x0f];
+  *dst++ = hex[cp & 0x0f];
+  return dst;
+}
+// }}}
+#endif
+
+// CAVE: expects elen to be big enough, does not validate utf8
+static xmlChar *_escape_string(const xmlChar *str, int elen) // {{{
+{
+  xmlChar *ret = xmlMalloc(elen + 1);
+  if (!ret) {
+    return NULL;
+  }
+
+  xmlChar *tmp = ret;
+  while (1) {
+    const unsigned char ch = *str;
+    switch (ch) {
+    case 0:
+      *tmp = 0;
+      return ret;
+
+    case 8: str++; *tmp++ = '\\'; *tmp++ = 'b'; break;
+    case 9: str++; *tmp++ = '\\'; *tmp++ = 't'; break;
+    case 10: str++; *tmp++ = '\\'; *tmp++ = 'n'; break;
+    case 12: str++; *tmp++ = '\\'; *tmp++ = 'f'; break;
+    case 13: str++; *tmp++ = '\\'; *tmp++ = 'r'; break;
+    case '"': case '\\':
+      str++;
+      *tmp++ = '\\';
+      *tmp++ = ch;
+      break;
+
+    default:
+      if (ch > 0x80) {
+#if defined(ESCAPE_HIGHCTRL) || defined(ESCAPE_NONBMP)
+        int clen = 4;
+        int cp = xmlGetUTF8Char(str, &clen);
+        if (cp < 0) {
+          return NULL;
+        }
+
+#ifdef ESCAPE_HIGHCTRL
+        if (cp >= 0x7f && cp < 0xa0) {
+          tmp = _hexesc(tmp, cp);
+        } else
+#endif
+#ifdef ESCAPE_NONBMP
+        if (cp > 0xffff) { // convert to escaped surrogate pair
+          cp -= 0x10000;
+          tmp = _hexesc(tmp, 0xd800 | (cp >> 10));
+          tmp = _hexesc(tmp, 0xdc00 | (cp & 0x03ff));
+        } else
+#endif
+        {
+          memcpy(tmp, str, clen);
+          tmp += clen;
+        }
+        str += clen;
+
+#else
+        const int clen = xmlUTF8Size(str);
+        if (clen < 0) {
+          return NULL;
+        }
+        memcpy(tmp, str, clen);
+        str += clen;
+        tmp += clen;
+#endif
+
+      } else {
+        str++;
+        *tmp++ = ch;
+      }
+      break;
+    }
+  }
+}
+// }}}
+
+/**
+ * thobiEscapeFunction:
+ * @ctxt: an XPath parser context
+ * @nargs: the number of arguments
+ *
+ * string json:escape(string str)
+ *
+ * Returns the string as JSON-escaped string (just the inner part).
+ */
+static void
+thobiEscapeFunction(xmlXPathParserContextPtr ctxt, int nargs) // {{{
+{
+    xmlChar *str;
+
+    if (nargs != 1) {
+      xmlXPathSetArityError(ctxt);
+      return;
+    }
+
+    str = xmlXPathPopString(ctxt);
+    if (xmlXPathCheckError(ctxt) || (str == NULL)) {
+      return;
+    }
+
+    const int len = _escaped_length(str);
+    if (len <= 0) {
+      if (len < 0) {
+        xsltGenericError(xsltGenericErrorContext,
+                         "json:escape : invalid UTF-8\n");
+      }
+      xmlXPathReturnEmptyString(ctxt);
+      xmlFree(str);
+      return;
+    }
+
+    xmlChar *ret = _escape_string(str, len);
+    if (!ret) { // (esp. malloc failed)
+      xmlFree(str);
+      return;
+    }
+
+    xmlFree(str);
+    xmlXPathReturnString(ctxt, ret);  // eats
+}
+// }}}
+
 int load_json()
 {
    xsltRegisterExtModuleFunction((const xmlChar *)"json-to-xml",(const xmlChar *)"thax.home/json",thobiJsonToXmlFunction);
+//   xsltRegisterExtModuleFunction((const xmlChar *)"xml-to-json",(const xmlChar *)"thax.home/json",thobiXmlToJsonFunction);
+   xsltRegisterExtModuleFunction((const xmlChar *)"escape",(const xmlChar *)"thax.home/json",thobiEscapeFunction);
 
    return 1;
 }
