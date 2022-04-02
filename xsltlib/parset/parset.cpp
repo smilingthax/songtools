@@ -113,10 +113,9 @@ void functionParset(xmlXPathParserContextPtr ctxt, int nargs)
 //  xmlNodePtr node;
   container = xsltCreateRVT(tctxt);
   if (container != NULL) {
-    xsltRegisterTmpRVT(tctxt, container);
+    xsltRegisterLocalRVT(tctxt, container);
     ret = xmlXPathNewNodeSet(NULL);
     if (ret != NULL) {
-      ret->boolval = 0; /* Freeing is not handled there anymore */
       TreeBuilder tb(container,ret,debug,ctxt);
       ProcTraverse proctrav(tb);
 

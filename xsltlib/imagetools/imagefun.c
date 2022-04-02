@@ -195,13 +195,12 @@ thobiImageSizeFunction(xmlXPathParserContextPtr ctxt, int nargs)
       xsltTransformError(xsltXPathGetTransformContext(ctxt),NULL,NULL,"image-size: container==NULL\n");
       return;
     }
-    xsltRegisterTmpRVT(tctxt,container);
+    xsltRegisterLocalRVT(tctxt, container);
     ret=xmlXPathNewNodeSet(NULL);
     if (!ret) {
       xsltTransformError(xsltXPathGetTransformContext(ctxt),NULL,NULL,"image-size: ret==NULL\n");
       return;
     }
-    ret->boolval = 0; /* Freeing is not handled there anymore */
 
     // generate a new <image/>-node
     node=xmlNewDocRawNode(container,NULL,(const xmlChar *)"image",NULL);

@@ -221,10 +221,9 @@ static void functionRepIt(xmlXPathParserContextPtr ctxt, int nargs)
   xmlNodePtr node;
   container = xsltCreateRVT(tctxt);
   if (container != NULL) {
-    xsltRegisterTmpRVT(tctxt, container);
+    xsltRegisterLocalRVT(tctxt, container);
     ret = xmlXPathNewNodeSet(NULL);
     if (ret != NULL) {
-      ret->boolval = 0; /* Freeing is not handled there anymore */
       for (;no>0;no--) {
         for (iA=0;iA<nodelist->nodeNr;iA++) {
           node=xmlCopyNode(nodelist->nodeTab[iA],1);
