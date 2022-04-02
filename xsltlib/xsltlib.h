@@ -9,4 +9,5 @@
 #include "path/path.h"
 #include "regexp/regexp.h"
 #include "akker/akker.h"
+#include "json/json.h"
 
