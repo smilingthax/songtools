@@ -27,8 +27,10 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
     xmlNodeSetPtr inNodes;
     xmlXPathCompExprPtr comp;
     xmlNodePtr current=NULL,splitPt=NULL;
-    xmlChar *str,*node_name;
+    xmlChar *str;
+    const xmlChar *node_name;
     xsltStackElemPtr xp;
+    xmlNsPtr ns=NULL;
     int last,iA;
 
     if (nargs!=3) {
@@ -45,15 +47,33 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
 
     // TODO? do we want to suppress empty <...>?
 
-    node_name=xmlXPathPopString(ctxt);
-    if (xmlXPathCheckError(ctxt)) {
-      xmlXPathSetTypeError(ctxt);
-      return;
+    {
+      xmlChar *tmp=xmlXPathPopString(ctxt);
+      if (xmlXPathCheckError(ctxt)) {
+        return;
+      }
+      if (xmlValidateQName(tmp,0)) {
+        xsltTransformError(tctxt,NULL,NULL,
+                           "thax:enclose : %s not a QName\n",tmp);
+        xmlFree(tmp);
+        return;
+      }
+
+      const xmlChar *prefix;
+      node_name=xsltSplitQName(tctxt->dict,tmp,&prefix);
+      xmlFree(tmp);
+      if (prefix) {
+        ns=xmlSearchNs(tctxt->style->doc,xmlDocGetRootElement(tctxt->style->doc),prefix);
+        if (!ns) {
+          xsltTransformError(tctxt,NULL,NULL,
+                             "thax:enclose : prefix %s is not bound\n",prefix);
+          return;
+        }
+      }
     }
 
     str=xmlXPathPopString(ctxt);
     if (xmlXPathCheckError(ctxt)) {
-      xmlFree(node_name);
       xmlXPathSetTypeError(ctxt);
       return;
     }
@@ -61,7 +81,6 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
     inNodes=xmlXPathPopNodeSet(ctxt);
     if (xmlXPathCheckError(ctxt)) {
       xmlFree(str);
-      xmlFree(node_name);
       xmlXPathSetTypeError(ctxt);
       return;
     }
@@ -69,7 +88,6 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
     if ( (!str)||(!str[0])||(!(comp=xmlXPathCompile(str))) ) {
       xmlXPathFreeNodeSet(inNodes);
       xmlFree(str);
-      xmlFree(node_name);
       xsltTransformError(xsltXPathGetTransformContext(ctxt),NULL,NULL,
                          "thax:enclose : xpath expression failed\n");
       return;
@@ -93,12 +111,11 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
     if (!container) {
       goto fail;
     }
-    xsltRegisterTmpRVT(tctxt,container);
+    xsltRegisterLocalRVT(tctxt, container);
     ret=xmlXPathNewNodeSet(NULL);
     if (!ret) {
       goto fail;
     }
-    ret->boolval = 0; /* Freeing is not handled there anymore */
 
     xmlXPathNodeSetSort(inNodes);
 
@@ -108,7 +125,7 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
       xmlXPathObjectPtr nodes;
 
       // generate a new current <...>-node
-      current=xmlNewDocRawNode(container,NULL,node_name,NULL);
+      current=xmlNewDocRawNode(container,ns,node_name,NULL);
       if (!current) {
         goto fail;
       }
@@ -130,6 +147,7 @@ thobiEncloseFunction(xmlXPathParserContextPtr ctxt, int nargs)
       xmlXPathFreeObject(nodes);
       xp->value=NULL;
       xp->name=NULL;
+
       // find next splitpoint
       if (res) {
         if ( (res->type!=XPATH_NODESET)||(!res->nodesetval) ) {
@@ -198,7 +216,6 @@ fail:
     xmlXPathFreeCompExpr(comp);
     xmlXPathFreeNodeSet(inNodes);
     xmlFree(str);
-    xmlFree(node_name);
     if (ret != NULL)
         valuePush(ctxt, ret);
     else
