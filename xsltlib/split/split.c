@@ -66,10 +66,9 @@ thobiStrSeparateFunction(xmlXPathParserContextPtr ctxt, int nargs)
 
     container = xsltCreateRVT(tctxt);
     if (container != NULL) {
-        xsltRegisterTmpRVT(tctxt, container);
+        xsltRegisterLocalRVT(tctxt, container);
         ret = xmlXPathNewNodeSet(NULL);
         if (ret != NULL) {
-            ret->boolval = 0; /* Freeing is not handled there anymore */
 // TODO: traverse tree
 //            for (int iA=0;iA<nodes->nodeNr;iA++) {
 //            }
@@ -79,17 +78,15 @@ thobiStrSeparateFunction(xmlXPathParserContextPtr ctxt, int nargs)
                     if (!xmlUTF8Charcmp(cur, delimiter)) {
                         // create pre text
                         if (cur != token) {
-                            *cur = 0;
-                            node = xmlNewDocText(container,token);
+                            node = xmlNewDocTextLen(container,token,cur-token);
                             if (xmlAddChild((xmlNodePtr) container, node)==node) { // not merged
                                 xmlXPathNodeSetAddUnique(ret->nodesetval, node);
                             }
-                            *cur = *delimiter;
                         }
                         token = cur + clen;
                         // create <split>
                         node = xmlNewDocRawNode(container, NULL,
-                                           (const xmlChar *) "split", NULL);
+                                                (const xmlChar *) "split", NULL);
                         strncpy((char *)tmp,(const char*)delimiter,clen);
                         tmp[clen]=0;
                         xmlNewProp(node,(const xmlChar *)"char",tmp);
