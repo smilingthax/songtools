@@ -1,7 +1,7 @@
 SOURCES=parset.cpp processor.cpp ptools.cpp
 MODULE=thax_home_parset.so
 
-CPPFLAGS=-O3 -funroll-all-loops -finline-functions -Wall $(FLAGS) -g -DSTANDALONE
+CPPFLAGS=-O3 -Wall $(FLAGS) -g -DSTANDALONE
 CPPFLAGS+=`pkg-config --cflags libxml-2.0`
 
 OBJECTS=$(patsubst %.c,$(PREFIX)%$(SUFFIX).o,\

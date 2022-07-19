@@ -1,7 +1,7 @@
 SOURCES=extension.cpp speed.cpp chord.cpp
 MODULE=thax_home_mine_ext.so
 
-CPPFLAGS=-O3 -funroll-all-loops -finline-functions -Wall -DSTANDALONE
+CPPFLAGS=-O3 -Wall -DSTANDALONE
 CPPFLAGS+=`pkg-config --cflags libxml-2.0`
 
 OBJECTS=$(patsubst %.c,$(PREFIX)%$(SUFFIX).o,\

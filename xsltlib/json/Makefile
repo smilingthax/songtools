@@ -1,7 +1,7 @@
 SOURCES=json.c
 MODULE=thax_home_json.so
 
-CPPFLAGS=-O3 -funroll-all-loops -finline-functions -Wall -DSTANDALONE -Wextra
+CPPFLAGS=-O3 -Wall -DSTANDALONE
 CPPFLAGS+=`pkg-config --cflags libxml-2.0`
 
 OBJECTS=$(patsubst %.c,$(PREFIX)%$(SUFFIX).o,\

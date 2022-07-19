@@ -1,7 +1,7 @@
 SOURCES=regexp.c
 MODULE=exslt_org_regexp.so
 
-CPPFLAGS=-O3 -funroll-all-loops -finline-functions -Wall -DSTANDALONE
+CPPFLAGS=-O3 -Wall -DSTANDALONE
 CPPFLAGS+=`pkg-config --cflags libxml-2.0 libpcre2-8`
 LDFLAGS+=`pkg-config --libs libpcre2-8`
 
