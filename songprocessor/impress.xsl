@@ -393,7 +393,7 @@
            </xsl:with-param>
            <xsl:with-param name="inSource" select="$source"/>
            <xsl:with-param name="inLBfrom" select="exsl:node-set($lbfrom)/*[1]"/>
-           <xsl:with-param name="position" select="$position"/>
+           <xsl:with-param name="position" select="concat($position,'_',@lang,position())"/>
          </xsl:apply-templates>
        </xsl:for-each>
      </xsl:otherwise>
@@ -485,7 +485,7 @@
  <xsl:template name="page_fix">
    <xsl:param name="inNodes"/>
    <xsl:param name="lastSplit" select="'0'"/>
-   <xsl:variable name="nextEnd" select="set:leading($inNodes[self::page-cand],$inNodes[self::page-cand][@endpage or @break &lt;0])|
+   <xsl:variable name="nextEnd" select="set:leading($inNodes[self::page-cand],$inNodes[self::page-cand][@endpage or @break &lt; 0])|
                                         $inNodes[self::page-cand][@endpage or @break &lt; 0][1]"/>
    <xsl:variable name="splitpt_set" select="$nextEnd[position()=1 or @no &lt;= 2*$preset/linesPerPage + $lastSplit]"/>
    <xsl:variable name="no_block" select="count($splitpt_set/@block)=0"/><!-- is there no block-start ? -->
