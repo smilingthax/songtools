@@ -4,31 +4,49 @@
          xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
          xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0"
          xmlns:xlink="http://www.w3.org/1999/xlink">
-  <preset>
+  <preset name="feg" fwd="feg.16_10"/>
+  <preset name="feg.16_10">
     <black/>
     <ccli/>
     <linesPerPage>13</linesPerPage>
-    <set-text draw:style-name="gr1" svg:x="0.5cm" svg:y="0.0cm" svg:width="27.0cm" svg:height="19.13cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
-    <set-rights svg:x="0.5cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>
-    <set-from svg:x="19.5cm" svg:y="21.1cm" svg:width="7.5cm" svg:height="0cm"/>
-    <set-lb svg:x="24.1cm" svg:y="1.7cm" svg:width="3.0cm" svg:height="2.0cm"/>
-    <set-lb-img svg:x="24.6cm" svg:y="0cm" svg:width="3.0cm" svg:height="2.0cm"/>
-<!--
-xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
-<style:paragraph-properties fo:text-align="end"/>
--->
-    <set-pgof svg:x="26.5cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
-    <set-fullimg x="0" y="0" width="28" height="21"/> <!-- no units, no svg: namespace! -->
-    <set-partimg x="0" y="0.1" width="28" height="19.23"/> <!-- y: trial and error; height: only top part used -->
+    <set-text draw:style-name="gr1" svg:x="0.6cm" svg:y="-0.15cm" svg:width="30.8cm" svg:height="19.05cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
+    <set-rights svg:x="0.6cm" svg:y="19.66cm" svg:width="18.5cm" svg:height="0cm"/>
+    <set-from svg:x="21.7cm" svg:y="20.1cm" svg:width="8cm" svg:height="0cm"/>
+    <set-lb svg:x="28cm" svg:y="1.2cm" svg:width="3.0cm" svg:height="2.0cm"/>
+<!-- <set-lb-img svg:x="24.6cm" svg:y="0cm" svg:width="3.0cm" svg:height="2.0cm"/> -->
+    <set-pgof svg:x="30.4cm" svg:y="20.1cm" svg:width="1.6cm" svg:height="0cm"/>
+    <set-fullimg x="0" y="0" width="32" height="20"/> <!-- no units, no svg: namespace! -->
+    <set-partimg x="0.85" y="0.1" width="31.3" height="18.7" xpos="0" aspectHack="0.25"/> <!-- y: trial and error; height: only top part used;  note: usually @border=1 => 0.5 padding everywhere [except: Celtic Alleluja] ; note: our text-boxes have 0.25 padding left; xpos=0: border is also redistributed! -->
+    <premaster style:page-layout-name="PM4"/> <!-- 16:10 with 32cm x 20cm -->
     <poststatic>
-      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="10.5cm" svg:height="0cm" svg:x="0.6cm" svg:y="20.1cm">
         <draw:text-box>
           <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p>
         </draw:text-box>
       </draw:frame>
     </poststatic>
   </preset>
-  <preset name="feg">
+  <preset name="feg.16_9">
+    <black/>
+    <ccli/>
+    <linesPerPage>13</linesPerPage>
+    <set-text draw:style-name="gr1" svg:x="0.7cm" svg:y="-0.15cm" svg:width="34.15cm" svg:height="19.05cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
+    <set-rights svg:x="0.7cm" svg:y="19.66cm" svg:width="19.0cm" svg:height="0cm"/>
+    <set-from svg:x="23cm" svg:y="20.1cm" svg:width="8cm" svg:height="0cm"/>
+    <set-lb svg:x="31.4cm" svg:y="1.2cm" svg:width="3.0cm" svg:height="2.0cm"/>
+    <set-pgof svg:x="33.85cm" svg:y="20.1cm" svg:width="1.7cm" svg:height="0cm"/>
+    <set-fullimg x="0" y="0" width="35.556" height="20"/> <!-- no units, no svg: namespace! -->
+    <set-partimg x="0.95" y="0.1" width="xxx" height="18.7" xpos="0" aspectHack="0.25"/> <!-- xxx: unused because of aspectHack! -->
+    <premaster style:page-layout-name="PM5"/> <!-- 16:9 with 35.556cm x 20cm -->
+    <poststatic>
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="10.5cm" svg:height="0cm" svg:x="0.7cm" svg:y="20.1cm">
+        <draw:text-box>
+          <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p>
+        </draw:text-box>
+      </draw:frame>
+    </poststatic>
+  </preset>
+  <preset name="feg.4_3">
     <black/>
     <ccli/>
     <linesPerPage>13</linesPerPage>
@@ -81,7 +99,7 @@ xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
     <set-pgof svg:x="30.77cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
     <set-fullimg x="0" y="0" width="37.33" height="21"/>
     <set-partimg x="4.5" y="0.6" width="28" height="19.23" ypos="0"/>
-    <premaster style:page-layout-name="PM3"/>
+    <premaster style:page-layout-name="PM3"/> <!-- 16:9 with 37.33cm x 21cm -->
     <prestatic>
       <draw:frame draw:style-name="gr2" draw:text-style-name="P2" draw:layer="layout" svg:width="21.0cm" svg:height="4.5cm" draw:transform="rotate (1.5707963267946) translate (0cm 21.0cm)">
         <draw:image xlink:href="Pictures/nok-bg.jpg" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
@@ -114,7 +132,8 @@ xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
       </draw:frame>
     </prestatic>
   </preset>
-  <preset name="kleinfeg">
+  <preset name="kleinfeg" fwd="kleinfeg.4_3"/>
+  <preset name="kleinfeg.4_3">
     <black/>
     <ccli/>
     <content>oo-template/content-1.xml</content>
@@ -134,9 +153,54 @@ xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
       </draw:frame>
     </poststatic>
   </preset>
-  <preset name="cg">
+  <preset name="cg" fwd="cg.16_10"/>
+  <preset name="cg.16_10">
     <black/>
-<!--    <ccli/>-->
+    <ccli/>
+    <linesPerPage>13</linesPerPage>
+    <set-text draw:style-name="gr2" svg:x="0.6cm" svg:y="-0.05cm" svg:width="30.8cm" svg:height="19.05cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
+    <set-rights svg:x="0.6cm" svg:y="19.66cm" svg:width="18.5cm" svg:height="0cm"/>
+    <set-from svg:x="21.7cm" svg:y="20.1cm" svg:width="8cm" svg:height="0cm"/>
+    <!--
+    <set-lb svg:x="28cm" svg:y="1.2cm" svg:width="3.0cm" svg:height="2.0cm"/>
+    -->
+    <set-pgof svg:x="30.4cm" svg:y="20.1cm" svg:width="1.6cm" svg:height="0cm"/>
+    <set-fullimg x="0" y="0" width="32" height="20"/>
+    <set-partimg x="0.85" y="0.2" width="xxx" height="18.7" xpos="0" ypos="0" aspectHack="0.25"/>
+    <premaster style:page-layout-name="PM4"/> <!-- 16:10 with 32cm x 20cm -->
+    <poststatic>
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="10.5cm" svg:height="0cm" svg:x="0.6cm" svg:y="20.1cm">
+        <draw:text-box>
+          <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der CGA</text:p>
+        </draw:text-box>
+      </draw:frame>
+    </poststatic>
+  </preset>
+  <preset name="cg.16_9">
+    <black/>
+    <ccli/>
+    <linesPerPage>13</linesPerPage>
+    <set-text draw:style-name="gr2" svg:x="0.7cm" svg:y="-0.05cm" svg:width="34.15cm" svg:height="19.05cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
+    <set-rights svg:x="0.7cm" svg:y="19.66cm" svg:width="19.0cm" svg:height="0cm"/>
+    <set-from svg:x="23cm" svg:y="20.1cm" svg:width="8cm" svg:height="0cm"/>
+    <!--
+    <set-lb svg:x="...30cm" svg:y="1.2cm" svg:width="3.0cm" svg:height="2.0cm"/>
+    -->
+    <set-pgof svg:x="33.85cm" svg:y="20.1cm" svg:width="1.7cm" svg:height="0cm"/>
+    <set-fullimg x="0" y="0" width="35.556" height="20"/>
+    <set-partimg x="0.95" y="0.2" width="xxx" height="18.7" xpos="0" ypos="0" aspectHack="0.25"/>
+    <premaster style:page-layout-name="PM5"/> <!-- 16:9 with 35.556cm x 20cm -->
+    <poststatic>
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="10.5cm" svg:height="0cm" svg:x="0.7cm" svg:y="20.1cm">
+        <draw:text-box>
+          <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der CGA</text:p>
+        </draw:text-box>
+      </draw:frame>
+    </poststatic>
+  </preset>
+  <preset name="cg.4_3">
+    <black/>
+    <ccli/>
     <linesPerPage>13</linesPerPage>
     <set-text draw:style-name="gr2" svg:x="0.5cm" svg:y="0.0cm" svg:width="27.0cm" svg:height="19.13cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
     <set-rights svg:x="0.5cm" svg:y="20.66cm" svg:width="15.0cm" svg:height="0cm"/>
@@ -155,4 +219,5 @@ xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
       </draw:frame>
     </poststatic>
   </preset>
+  <preset name="cli" fwd="feg.16_10"/>
 </presets>

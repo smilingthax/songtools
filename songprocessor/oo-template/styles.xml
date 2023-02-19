@@ -453,14 +453,20 @@
     <style:page-layout style:name="PM0">
       <style:page-layout-properties fo:margin-top="0cm" fo:margin-bottom="0cm" fo:margin-left="0cm" fo:margin-right="0cm" fo:page-width="29.701cm" fo:page-height="20.989cm" style:print-orientation="landscape"/>
     </style:page-layout>
-    <style:page-layout style:name="PM1">
+    <style:page-layout style:name="PM1"> <!-- default -->
       <style:page-layout-properties fo:margin-top="0cm" fo:margin-bottom="0cm" fo:margin-left="0cm" fo:margin-right="0cm" fo:page-width="28cm" fo:page-height="21cm" style:print-orientation="landscape"/>
     </style:page-layout>
     <style:page-layout style:name="PM2">
       <style:page-layout-properties fo:margin-top="0cm" fo:margin-bottom="0cm" fo:margin-left="0cm" fo:margin-right="0cm" fo:page-width="20.989cm" fo:page-height="29.701cm" style:print-orientation="portrait"/>
     </style:page-layout>
-    <style:page-layout style:name="PM3"> <!-- 16:9 -->
+    <style:page-layout style:name="PM3"> <!-- 16:9 NoK -->
       <style:page-layout-properties fo:margin-top="0cm" fo:margin-bottom="0cm" fo:margin-left="0cm" fo:margin-right="0cm" fo:page-width="37.33cm" fo:page-height="21.0cm" style:print-orientation="landscape"/>
+    </style:page-layout>
+    <style:page-layout style:name="PM4"> <!-- 16:10 (reduced height) -->
+      <style:page-layout-properties fo:margin-top="0cm" fo:margin-bottom="0cm" fo:margin-left="0cm" fo:margin-right="0cm" fo:page-width="32cm" fo:page-height="20.0cm" style:print-orientation="landscape"/>
+    </style:page-layout>
+    <style:page-layout style:name="PM5"> <!-- 16:9 (reduced height) -->
+      <style:page-layout-properties fo:margin-top="0cm" fo:margin-bottom="0cm" fo:margin-left="0cm" fo:margin-right="0cm" fo:page-width="35.556cm" fo:page-height="20.0cm" style:print-orientation="landscape"/>
     </style:page-layout>
     <style:style style:name="Mdp1" style:family="drawing-page">
       <style:drawing-page-properties draw:background-size="border" draw:fill-color="#000000" draw:fill-image-width="0cm" draw:fill-image-height="0cm"/>

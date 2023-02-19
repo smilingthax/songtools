@@ -53,8 +53,11 @@
  <xsl:param name="out_split" select="'0'"/>
  <xsl:param name="presetname" select="''"/>
  <xsl:variable name="ps_doc" select="document('oopreset.xml')"/>
- <xsl:variable name="preset" select="func:default($ps_doc/presets/preset[@name=$presetname],
-                                                  $ps_doc/presets/preset[not(@name)])"/>
+ <xsl:variable name="preset_hlp" select="func:default($ps_doc/presets/preset[@name=$presetname],
+                                                      $ps_doc/presets/preset[not(@name)])"/>
+ <xsl:variable name="preset" select="exsl:node-set(func:if($preset_hlp/@fwd,
+                                                           $ps_doc/presets/preset[@name=$preset_hlp/@fwd],
+                                                           $preset_hlp))/node()"/>  <!-- @fwd not found: empty preset. -->
 
  <xsl:include href="rights-full.xsl"/>
  <xsl:include href="lang-db.xsl"/>
@@ -180,7 +183,8 @@
    <xsl:param name="odpName" select="func:get_image_name(.)"/>
    <xsl:param name="position" select="concat(position(),'_I')"/><!-- only relevant for standalone, TODO? -->
    <xsl:param name="xpos" select="func:default($preset/set-fullimg/@xpos,0.5)"/> <!-- 0 left, 0.5 center, 1 right -->
-   <xsl:param name="ypos" select="func:default($preset/set-fullimg/@ypos,0.5)"/>
+   <xsl:param name="ypos" select="func:default($preset/set-fullimg/@ypos,0.5)"/> <!-- also determines border distribution! -->
+   <xsl:param name="legacy43" select="1"/> <!-- 1 is non-legacy -->
    <xsl:variable name="impress_page_ratio" select="$impress_page_w div $impress_page_h"/>
    <xsl:variable name="bgstyle">
      <xsl:choose>
@@ -189,15 +193,16 @@
        <xsl:otherwise>dp1</xsl:otherwise><!-- default: use bgcolor from master -->
      </xsl:choose>
    </xsl:variable>
-   <xsl:variable name="img_border" select="func:default(@border,0)"/>
+   <xsl:variable name="img_border_x" select="func:default(@border,0)"/>
+   <xsl:variable name="img_border_y" select="func:default(@border,0)*$legacy43"/>
    <xsl:variable name="img_info" select="tools:image-size(@href)"/>
    <xsl:variable name="img_ratio" select="$img_info/@width div $img_info/@height"/>
    <xsl:variable name="impress_w" select="func:if($img_ratio > $impress_page_ratio,
-                                                  $impress_page_w - $img_border,
-                                                  ($impress_page_h - $img_border)*$img_ratio)"/>
+                                                  $impress_page_w - $img_border_x,
+                                                  ($impress_page_h - $img_border_x)*$img_ratio)"/>
    <xsl:variable name="impress_h" select="func:if($img_ratio > $impress_page_ratio,
-                                                  ($impress_page_w - $img_border) div $img_ratio,
-                                                  $impress_page_h - $img_border)"/>
+                                                  ($impress_page_w - $img_border_y) div $img_ratio,
+                                                  $impress_page_h - $img_border_y)"/>
    <xsl:variable name="impress_x" select="$impress_page_x + $xpos*($impress_page_w - $impress_w)"/>
    <xsl:variable name="impress_y" select="$impress_page_y + $ypos*($impress_page_h - $impress_h)"/>
    <draw:page draw:name="{$position}" draw:style-name="{$bgstyle}" draw:master-page-name="Default">
@@ -217,11 +222,15 @@
    <xsl:call-template name="output_img">
      <xsl:with-param name="impress_page_x" select="func:default($preset/set-partimg/@x,func:default($preset/set-fullimg/@x,0))"/>
      <xsl:with-param name="impress_page_y" select="func:default($preset/set-partimg/@y,func:default($preset/set-fullimg/@y,0)+0.1)"/>
-     <xsl:with-param name="impress_page_w" select="func:default($preset/set-partimg/@width,func:default($preset/set-fullimg/@width,28))"/>
+     <xsl:with-param name="impress_page_w" select="
+       func:if($preset/set-partimg/@aspectHack,28,
+         string(func:default($preset/set-partimg/@width,func:default($preset/set-fullimg/@width,28)))
+       )"/>
      <xsl:with-param name="impress_page_h" select="func:default($preset/set-partimg/@height,19.23)"/>
      <xsl:with-param name="xpos" select="func:default($preset/set-partimg/@xpos,func:default($preset/set-fullimg/@ypos,0.5))"/>
      <xsl:with-param name="ypos" select="func:default($preset/set-partimg/@ypos,func:default($preset/set-fullimg/@ypos,0.5))"/>
      <xsl:with-param name="odpName" select="@odpName"/>
+     <xsl:with-param name="legacy43" select="func:default($preset/set-partimg/@aspectHack,1)"/>
    </xsl:call-template>
  </xsl:template>
 
