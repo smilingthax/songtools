@@ -67,7 +67,7 @@
 
  <xsl:template match="/">
    <xsl:choose>
-     <xsl:when test="$out_split >0">
+     <xsl:when test="$out_split > 0">
        <xsl:apply-templates select="songs-out/*" mode="file_multi"/>
      </xsl:when>
      <xsl:otherwise>
@@ -300,7 +300,7 @@
  <xsl:template match="style:style[@style:name='Default-background']/style:graphic-properties" mode="_output_odp_style">
    <xsl:param name="black_back"/>
    <xsl:choose>
-     <xsl:when test="$black_back >0">
+     <xsl:when test="$black_back > 0">
        <xsl:copy>
          <xsl:attribute name="draw:stroke">solid</xsl:attribute>
          <xsl:attribute name="draw:fill-color">#000000</xsl:attribute>
@@ -495,8 +495,8 @@
    <xsl:choose>
      <xsl:when test="$tree2/@endpage">
        <page>
-       <xsl:if test="$splitpt[1]/@endpage"><xsl:attribute name="endpage">1</xsl:attribute></xsl:if>
-       <xsl:apply-templates select="$tree1" mode="_page_fix"/>
+         <xsl:if test="$splitpt[1]/@endpage"><xsl:attribute name="endpage">1</xsl:attribute></xsl:if>
+         <xsl:apply-templates select="$tree1" mode="_page_fix"/>
        </page><xsl:value-of select="$nl"/>
        <xsl:call-template name="page_fix">
          <xsl:with-param name="inNodes" select="$tree2"/>
@@ -505,7 +505,7 @@
      </xsl:when>
      <xsl:otherwise>
        <page>
-       <xsl:apply-templates select="$tree1" mode="_page_fix"/>
+         <xsl:apply-templates select="$tree1" mode="_page_fix"/>
        </page><xsl:value-of select="$nl"/>
      </xsl:otherwise>
    </xsl:choose>
