@@ -20,7 +20,7 @@
 
 zipFile zipCur=0;
 
-int XmlZipWrite(void *context, const char *buffer, int len)
+static int XmlZipWrite(void *context, const char *buffer, int len)
 {
   if (zipWriteInFileInZip((zipFile)context,&buffer[0],len)!=ZIP_OK) {
     return -1;
@@ -28,7 +28,7 @@ int XmlZipWrite(void *context, const char *buffer, int len)
   return len;
 }
 
-int XmlZipClose(void *context)
+static int XmlZipClose(void *context)
 {
   if (zipCloseFileInZip((zipFile)context)!=ZIP_OK) {
     return -1;
@@ -36,7 +36,7 @@ int XmlZipClose(void *context)
   return 0;
 }
 
-xmlOutputBufferPtr XmlZipCreate(const char *URI,xmlCharEncodingHandlerPtr encoder,int compression ATTRIBUTE_UNUSED)
+static xmlOutputBufferPtr XmlZipCreate(const char *URI,xmlCharEncodingHandlerPtr encoder,int compression ATTRIBUTE_UNUSED)
 {
   xmlOutputBufferPtr out;
 
@@ -93,7 +93,7 @@ struct _docZipPreComp {
   int nsNr;
 };
 
-void deallocDocZip(docZipPreComp *comp)
+static void deallocDocZip(docZipPreComp *comp)
 {
   if (!comp) {
     return;
@@ -122,7 +122,7 @@ static int validate_get_only_copy(xmlNodePtr node,xmlNodeSetPtr nset)
   return 0;
 }
 
-void elementDocZipElem(xsltTransformContextPtr ctxt, xmlNodePtr node, xmlNodePtr inst, docZipPreComp *comp)
+static void elementDocZipElem(xsltTransformContextPtr ctxt, xmlNodePtr node, xmlNodePtr inst, docZipPreComp *comp)
 {
   xmlOutputBufferCreateFilenameFunc old=NULL;
   xmlChar *URI;
@@ -168,16 +168,16 @@ void elementDocZipElem(xsltTransformContextPtr ctxt, xmlNodePtr node, xmlNodePtr
     // check, that it is a RVT or NodeSet containing only <copy fromhref="" tohref=""/>
     if ( (cselobj->type!=XPATH_NODESET)&&(cselobj->type!=XPATH_XSLT_TREE) ) {
       xsltTransformError(ctxt,NULL,inst,"doc-zip: @copy-select is not a Tree or NodeSet\n");
-      xmlFree(URI);
       xmlXPathFreeObject(cselobj);
+      xmlFree(URI);
       return;
     }
     // ok get the files into a temporary list
     nlist=xmlXPathNodeSetCreate(NULL);
     if (!nlist) {
       xsltTransformError(ctxt,NULL,inst,"doc-zip: nlist == NULL\n");
-      xmlFree(URI);
       xmlXPathFreeObject(cselobj);
+      xmlFree(URI);
       return;
     }
     for (iA=0;iA<cselobj->nodesetval->nodeNr;iA++) {
@@ -198,9 +198,9 @@ void elementDocZipElem(xsltTransformContextPtr ctxt, xmlNodePtr node, xmlNodePtr
         }
       }
       xsltTransformError(ctxt,NULL,inst,"doc-zip: only copy-elements allowed in @copy-select, having @fromhref and @tohref \n");
-      xmlFree(URI);
-      xmlXPathFreeObject(cselobj);
       xmlXPathFreeNodeSet(nlist);
+      xmlXPathFreeObject(cselobj);
+      xmlFree(URI);
       return;
     }
     // hack... exchange the node-set!
@@ -212,18 +212,18 @@ emptylist:
   // Activate zip stream
   if (zipCur) {
     xsltTransformError(ctxt,NULL,inst,"doc-zip: zip Stream is already active!\n");
-    xmlFree(URI);
     if (cselobj) {
       xmlXPathFreeObject(cselobj);
     }
+    xmlFree(URI);
     return;
   }
   if ((zipCur=zipOpen((const char *)URI,APPEND_STATUS_CREATE))==NULL) {
     xsltTransformError(ctxt,NULL,inst,"doc-zip: Error opening \"%s\"\n",URI);
-    xmlFree(URI);
     if (cselobj) {
       xmlXPathFreeObject(cselobj);
     }
+    xmlFree(URI);
     return;
   }
   old=xmlOutputBufferCreateFilenameDefault(XmlZipCreate);
@@ -234,22 +234,22 @@ emptylist:
     xmlParserInputBufferPtr ibuf;
     size_t len;
 
-    for (iA=0;iA<cselobj->nodesetval->nodeNr;iA++) { // everything is a ELEMENT, and no fake nodes, Yes!
+    for (iA=0;iA<cselobj->nodesetval->nodeNr;iA++) { // everything is an ELEMENT, and no fake nodes, Yes!
       xmlNodePtr test=cselobj->nodesetval->nodeTab[iA];
       // it is a <copy> -element... as checked above
       obuf=xmlOutputBufferCreateFilename((const char *)xmlGetProp(test,(const xmlChar *)"tohref"),NULL,0);// TODO? xmlCanonicPath(URL)
       if (!obuf) {
         xsltTransformError(ctxt,NULL,inst,"doc-zip: @copy-select: Error opening \"%s\" for writing\n",xmlGetProp(test,(const xmlChar *)"tohref"));
-        xmlFree(URI);
         xmlXPathFreeObject(cselobj);
+        xmlFree(URI);
         return;
       }
       ibuf=xmlParserInputBufferCreateFilename((const char *)xmlGetProp(test,(const xmlChar *)"fromhref"),XML_CHAR_ENCODING_NONE);
       if (!ibuf) {
         xsltTransformError(ctxt,NULL,inst,"doc-zip: @copy-select: Error opening \"%s\" for reading\n",xmlGetProp(test,(const xmlChar *)"fromhref"));
-        xmlFree(URI);
-        xmlXPathFreeObject(cselobj);
         xmlOutputBufferClose(obuf);
+        xmlXPathFreeObject(cselobj);
+        xmlFree(URI);
         return;
       }
       // copy contents verbatim
@@ -275,7 +275,7 @@ emptylist:
   xmlFree(URI);
 }
 
-xsltElemPreCompPtr elementDocZipComp(xsltStylesheetPtr style, xmlNodePtr inst, xsltTransformFunction function)
+static xsltElemPreCompPtr elementDocZipComp(xsltStylesheetPtr style, xmlNodePtr inst, xsltTransformFunction function)
 {
   int iA;
   xmlNodePtr test;
@@ -291,7 +291,7 @@ xsltElemPreCompPtr elementDocZipComp(xsltStylesheetPtr style, xmlNodePtr inst, x
         (xmlStrEqual(test->name, (const xmlChar *) "document")) ) {
       continue;
     }
-    xsltTransformError(NULL,style,inst,"doc-zip: only xsl:document allowed\n");
+    xsltTransformError(NULL,style,inst,"doc-zip: only exsl:document allowed\n");
     return NULL;
   }
 
