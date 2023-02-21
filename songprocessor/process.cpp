@@ -113,6 +113,9 @@ bool do_transform(const char *inputFile,const char *outputFile,const char **inte
   for (int iA=0; secSheets[iA] && secOutput[iA]; iA++) {
     printf("Processing %s\n",secSheets[iA]);
     unique_xsltStylesheet cur(xsltParseStylesheetFile((const xmlChar *)secSheets[iA]));
+    if (!cur) {
+      return false;
+    }
     unique_xsltTransform ctxt(xsltNewTransformContext(cur, res));
     if (!ctxt) {
       return false;
