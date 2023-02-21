@@ -163,7 +163,13 @@ std::string transpose_chord(const char *str, int transpose) // {{{
 
 //printf("%s %s\n",str,ret.c_str());
 #ifndef NORMALIZE_MINOR
-assert( (transpose!=0)||(strcmp(ret.c_str(),str)==0)||(ret=="H")||(ret=="Hm") );
+assert( (transpose!=0)||(strcmp(ret.c_str(),str)==0)||(
+#ifdef USE_B
+  ret.c_str()[0]=='B' && str[0] == 'H' && strcmp(ret.c_str()+1,str+1)==0
+#else
+  ret.c_str()[0]=='H' && str[0] == 'B' && strcmp(ret.c_str()+1,str+1)==0
+#endif
+));
 #endif
   return ret;
 }

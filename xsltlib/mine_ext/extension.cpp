@@ -79,9 +79,20 @@ private:
   std::vector<std::string> chords; // chord_id -> string
 };
 
+// can't use xmlXPathString*Number: we allow a leading '+'
+static bool parse_transpose(const xmlChar *str, int &ret)
+{
+  char *end;
+  long int val = strtol((const char *)str, &end, 10);
+  if (!*str || *end || val < INT_MIN || val > INT_MAX) {
+    return false;
+  }
+  ret = val;
+  return true;
+}
+
 AkkordContainer akkCont;
 int doTranspose=0;
-
 
 extern "C" {
   static void functionAkkify(xmlXPathParserContextPtr ctxt, int nargs);
@@ -97,21 +108,25 @@ static void functionAkkify(xmlXPathParserContextPtr ctxt, int nargs)
     ctxt->error = XPATH_INVALID_ARITY;
     return;
   }
-  // Argumente holen
-  xmlXPathObjectPtr obj2 = valuePop(ctxt);
-  xmlXPathObjectPtr obj1 = valuePop(ctxt);
-  int level = int(floor(xmlXPathCastToNumber(obj1) + .5));
-  int no = int(floor(xmlXPathCastToNumber(obj2) + .5));
 
-  xmlXPathFreeObject(obj1);
-  xmlXPathFreeObject(obj2);
+  // Argumente holen
+  float fno = xmlXPathPopNumber(ctxt);
+  float flevel = xmlXPathPopNumber(ctxt);
+  if (xmlXPathCheckError(ctxt) || isnan(flevel) || isnan(fno)) {
+    xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,"bad level / no\n");
+    ctxt->error = XPATH_INVALID_OPERAND;
+    return;
+  }
+
+  int level = int(floor(flevel + .5));
+  int no = int(floor(fno + .5));
 
   const std::string *res=akkCont.get(level,no);
   if (!res) {
     fprintf(stderr,"No chords for (%d,%d)\n",level,no);  // TODO?
-    valuePush(ctxt, xmlXPathNewNodeSet(NULL));
+    xmlXPathReturnEmptyNodeSet(ctxt);
   } else {
-    valuePush(ctxt, xmlXPathNewString((const xmlChar *)res->c_str()));
+    valuePush(ctxt, xmlXPathNewCString(res->c_str()));
   }
 }
 
@@ -122,30 +137,44 @@ static void functionGrabAkk(xmlXPathParserContextPtr ctxt, int nargs)
     ctxt->error = XPATH_INVALID_ARITY;
     return;
   }
+
   // Argumente holen
-  xmlXPathObjectPtr obj3 = valuePop(ctxt);
-  xmlXPathObjectPtr obj2 = valuePop(ctxt);
-  xmlXPathObjectPtr obj1 = valuePop(ctxt);
-  int level = int(floor(xmlXPathCastToNumber(obj1) + .5));
-  int no = int(floor(xmlXPathCastToNumber(obj2) + .5));
-  xmlChar *str=xmlXPathCastToString(obj3);
+  xmlChar *str = xmlXPathPopString(ctxt);
+  float fno = xmlXPathPopNumber(ctxt);
+  float flevel = xmlXPathPopNumber(ctxt);
+  if (xmlXPathCheckError(ctxt) || isnan(flevel) || isnan(fno) || !str) {
+    if (str) {
+      xmlFree(str);
+    }
+    xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,"bad level / no / chord string\n");
+    ctxt->error = XPATH_INVALID_OPERAND;
+    return;
+  }
+
+  int level = int(floor(flevel + .5));
+  int no = int(floor(fno + .5));
 
   // add Akk to AkkCont
   akkCont.add(level,no,(const char *)str);
 
-  xmlXPathFreeObject(obj1);
-  xmlXPathFreeObject(obj2);
-  xmlXPathFreeObject(obj3);
   xmlFree(str);
-  valuePush(ctxt, xmlXPathNewNodeSet(NULL));
+  xmlXPathReturnEmptyNodeSet(ctxt);
 }
 
 static void functionNotifyAkks(xmlXPathParserContextPtr ctxt, int nargs)
 {
   if (nargs==1) {
-    xmlXPathObjectPtr obj1 = valuePop(ctxt);
-    doTranspose=int(floor(xmlXPathCastToNumber(obj1) + .5));
-    xmlXPathFreeObject(obj1);
+    xmlChar *stranspose = xmlXPathPopString(ctxt);
+    if (xmlXPathCheckError(ctxt) || !stranspose || !parse_transpose(stranspose, doTranspose)) {
+      doTranspose=0;
+      if (stranspose) {
+        xmlFree(stranspose);
+      }
+      xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,"bad transpose\n");
+      ctxt->error = XPATH_INVALID_OPERAND;
+      return;
+    }
+    xmlFree(stranspose);
   } else if (nargs==0) {
     doTranspose=0;
   } else {
@@ -155,7 +184,7 @@ static void functionNotifyAkks(xmlXPathParserContextPtr ctxt, int nargs)
   }
 
   akkCont.reset(doTranspose);
-  valuePush(ctxt, xmlXPathNewNodeSet(NULL));
+  xmlXPathReturnEmptyNodeSet(ctxt);
 }
 
 static void functionCheckAkks(xmlXPathParserContextPtr ctxt, int nargs)
@@ -165,7 +194,7 @@ static void functionCheckAkks(xmlXPathParserContextPtr ctxt, int nargs)
     ctxt->error = XPATH_INVALID_ARITY;
     return;
   }
-  valuePush(ctxt, xmlXPathNewBoolean((int)akkCont.is_good()));
+  xmlXPathReturnBoolean(ctxt,(int)akkCont.is_good());
 }
 
 static void functionTranspose(xmlXPathParserContextPtr ctxt, int nargs)
@@ -176,27 +205,35 @@ static void functionTranspose(xmlXPathParserContextPtr ctxt, int nargs)
     return;
   }
 
-  xmlXPathObjectPtr obj2 = valuePop(ctxt);
-  int transpose=int(floor(xmlXPathCastToNumber(obj2) + .5));
-  xmlXPathFreeObject(obj2);
-
-  xmlXPathObjectPtr obj1 = valuePop(ctxt);
-  xmlChar *str=xmlXPathCastToString(obj1);
-  xmlXPathFreeObject(obj1);
+  // Argumente holen
+  xmlChar *stranspose = xmlXPathPopString(ctxt);
+  xmlChar *str = xmlXPathPopString(ctxt);
+  int transpose;
+  if (xmlXPathCheckError(ctxt) || !str || !stranspose || !parse_transpose(stranspose, transpose)) {
+    if (str) {
+      xmlFree(str);
+    }
+    if (stranspose) {
+      xmlFree(stranspose);
+    }
+    xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,"bad chord string / transpose\n");
+    ctxt->error = XPATH_INVALID_OPERAND;
+    return;
+  }
+  xmlFree(stranspose);
 
   try {
     std::string res = transpose_chord((const char *)str,transpose);
     xmlFree(str);
-    valuePush(ctxt, xmlXPathNewString((const xmlChar *)res.c_str()));
-    return;
+    valuePush(ctxt, xmlXPathNewCString(res.c_str()));
 
   } catch (std::exception &ex) {
     fprintf(stderr,"%s - in \"%s\"\n",ex.what(),(const char *)str);
     // TODO...?
-  }
-  xmlFree(str);
+    xmlFree(str);
 
-  valuePush(ctxt, xmlXPathNewNodeSet(NULL));
+    xmlXPathReturnEmptyNodeSet(ctxt);
+  }
 }
 
 void *initMineExt(xsltTransformContextPtr ctxt, const xmlChar *URI)
