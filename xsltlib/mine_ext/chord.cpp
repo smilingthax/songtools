@@ -7,6 +7,7 @@
 // TODO/IDEA: allow spec of #/b  (problem? out-of-key chords?)
 
 //#define NORMALIZE_MINOR    // (to uppercase; - also normalizes base to uppercase)
+//#define USE_B
 
 struct note_info {
   const char *name;
@@ -34,7 +35,11 @@ static const note_info *is_note(const char *str) // {{{
   int iA;
   for (iA=0; note_names[iA].name;iA++) {
     if (strncasecmp(note_names[iA].name,str,note_names[iA].name[1] ? 2:1)==0) {
+#ifdef USE_B
+if (iA==22) fprintf(stderr,"Warning: H found (normalized to B)\n"); // TODO/FIXME ...
+#else
 if (iA==20) fprintf(stderr,"Warning: B found (normalized to H)\n"); // TODO/FIXME ...
+#endif
       return note_names+iA;
     }
   }
@@ -46,10 +51,15 @@ static const bool stdflat[]={0,0,0,1,0,0,0,0,0,0,1,0}; // Eb and Bb
 
 static const char *transpose_one(const note_info &note,char orig_case,int transpose,char force=0) // {{{
 {
+#ifdef USE_B
+  static const char *upper[]={"C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B",
+                              "C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
+#else
   static const char *lower[]={"c","db","d","eb","e","f","gb","g","ab","a","bb","h",
                               "c","c#","d","d#","e","f","f#","g","g#","a","a#","h"};
   static const char *upper[]={"C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","H",
                               "C","C#","D","D#","E","F","F#","G","G#","A","A#","H"};
+#endif
 
   // assert(transpose>=-12);
   int tune=(note.tune+transpose+12)%12;
@@ -71,7 +81,12 @@ if (note.tune<0) {
   }
 
   if (orig_case!=note.name[0]) {
+#ifndef USE_B
     return lower[tune];
+#else
+    assert(((void)"USE_B with lower case is not allowed" , 0));
+    return upper[tune];
+#endif
   } else {
     return upper[tune];
   }
@@ -148,7 +163,7 @@ std::string transpose_chord(const char *str, int transpose) // {{{
 
 //printf("%s %s\n",str,ret.c_str());
 #ifndef NORMALIZE_MINOR
-assert( (transpose!=0)||(strcmp(ret.c_str(),str)==0)||(ret=="H") );
+assert( (transpose!=0)||(strcmp(ret.c_str(),str)==0)||(ret=="H")||(ret=="Hm") );
 #endif
   return ret;
 }

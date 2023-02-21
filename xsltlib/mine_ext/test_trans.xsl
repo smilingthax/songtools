@@ -19,6 +19,11 @@
   </xsl:template>
 
   <xsl:template match="text()">
+<!--
+    <xsl:value-of select="mine:noteAkks($transpose)"/>
+    <xsl:value-of select="mine:grabAkk(0,0,.)"/>
+    <xsl:value-of select="."/> . <xsl:value-of select="mine:getAkk(0,0)"/><xsl:value-of select="$nl"/>
+-->
     <xsl:value-of select="."/> . <xsl:value-of select="mine:transpose(.,$transpose)"/><xsl:value-of select="$nl"/>
   </xsl:template>
 

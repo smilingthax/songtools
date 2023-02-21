@@ -30,7 +30,11 @@ public:
   void add(int level,int no,const char *str) {
     std::pair<std::map<std::string,int>::iterator,bool> it_b=lookup.insert(std::make_pair(str,chords.size()));
     if (it_b.second) { // not yet known
-      chords.push_back(str);
+      try {
+        chords.push_back(transpose_chord(str,transpose));
+      } catch (std::exception &ex) {
+        fprintf(stderr,"%s - in \"%s\"\n",ex.what(),str);
+      }
     }
 
     std::map<std::pair<int,int>,std::pair<int,std::vector<int> > >::iterator it=data.lower_bound(std::make_pair(level,no));
