@@ -532,23 +532,28 @@
                              count($tr1[@text:style-name='P3'])-
                              count($tr1[child::text:span[@text:style-name='Txlang']])*0.5"/>
      </xsl:attribute>
-     <xsl:attribute name="self"><!-- number of lines contained in <page-cand>..</page-cand> -->
+     <xsl:attribute name="self"><!-- number of lines contained inside this <page-cand>..</page-cand> -->
        <xsl:value-of select="func:if(node(),count(text:p[@text:style-name!='P3'])*2+
                                             count(text:p[@text:style-name='P3'])
                                            ,0)"/>
      </xsl:attribute>
-     <xsl:if test="not(@endpage) and following-sibling::*[1][self::page-cand]/@block">
+     <xsl:if test="@endpage and following-sibling::*">
+       <xsl:message terminate="yes">unexpected nodes after /page-cand/@endpage</xsl:message>
+     </xsl:if>
+     <xsl:if test="following-sibling::*[1][self::page-cand]/@block">
        <xsl:attribute name="block">1</xsl:attribute>
      </xsl:if>
      <xsl:if test="following-sibling::*[1][self::page-cand]/@endpage">
        <xsl:attribute name="endpage">1</xsl:attribute>
      </xsl:if>
-     <xsl:copy-of select="@*[name()!='no']|node()"/>
+     <xsl:copy-of select="@*[name()!='no']|node()"/> <!-- may contain @block,@endpage -->
    </xsl:copy>
    <xsl:value-of select="$nl"/>
  </xsl:template>
 
+ <!-- very first page-cand is not a viable break (except for @endpage!): remove -->
  <xsl:template match="/page-cand[@block][not(preceding-sibling::*)]" mode="_break_calc"/>
+ <!-- this exactly matches the second page-cand from the @block,@endpage pull-up-logic in match="/page-cand" -->
  <xsl:template match="/page-cand[@block or @endpage][preceding-sibling::*[1][self::page-cand]]" mode="_break_calc"/>
 
  <xsl:template match="@*|node()" mode="_break_calc">
