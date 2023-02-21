@@ -8,6 +8,7 @@ typedef struct {
   int out_list : 1;
   int out_impress : 1;
   int out_snippet : 1;
+  int out_jsontext : 1;
 
   int inter_noakk : 1;
   int inter_noshow : 1;

@@ -18,7 +18,7 @@ void usage(char *pn, int default_tex)
 
   printf("Songprocessor (c) 2004-2013 by Tobias Hoffmann\n\n"
          "Usage: %s [-txphr] [input file]\n"
-         "   -t,-x,-p,-l,-i,-S: output tex, html, plain, list, impress, snippet\n"
+         "   -t,-x,-p,-l,-i,-S,-j: output tex, html, plain, list, impress, snippet, jsontext\n"
          "   -r: output raw (is always generated, use this switch to suppress fallback to default)\n"
          " If none of the above is given, as default %s will be generated\n\n"
          "Options:\n"
@@ -46,7 +46,7 @@ int main(int argc,char **argv)
     as_pasr = 0;
   }
 
-  while ((o=getopt(argc,argv,"tlipxhrnNSsI:P:A:"))!=-1) {
+  while ((o=getopt(argc,argv,"tlipjxhrnNSsI:P:A:"))!=-1) {
     switch (o) {
     case 't':
       opts.out_tex = 1;
@@ -65,6 +65,9 @@ int main(int argc,char **argv)
       break;
     case 'S':
       opts.out_snippet = 1;
+      break;
+    case 'j':
+      opts.out_jsontext = 1;
       break;
     case 'h':
       usage(argv[0], as_pasr);
@@ -98,7 +101,8 @@ int main(int argc,char **argv)
        (!opts.out_plain)&&
        (!opts.out_list)&&
        (!opts.out_impress)&&
-       (!opts.out_snippet) ) {
+       (!opts.out_snippet)&&
+       (!opts.out_jsontext) ) {
     // default:
     if (as_pasr) {
       opts.out_tex=1;

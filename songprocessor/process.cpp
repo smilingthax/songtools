@@ -39,6 +39,7 @@ void init_transformer()
   load_path();
 //  load_regexp();
   load_akker();
+  load_json();
 #ifndef WIN32
   setenv("LIBXSLT_PLUGINS_PATH","",0); // avoid external plugins
 #endif
@@ -159,7 +160,7 @@ std::string param_quote(const char *str)
 
 int do_process_hlp(char *inputFile,process_data_t &opts,const char *imgpath,const char *preset,const char *special)
 {
-  const char *interSheets[3],*secSheets[7],*secOutput[7];
+  const char *interSheets[3],*secSheets[8],*secOutput[8];
   const char *params[16+1];
 
   init_transformer();
@@ -208,6 +209,11 @@ int do_process_hlp(char *inputFile,process_data_t &opts,const char *imgpath,cons
   if (opts.out_snippet) {
     secSheets[iS]="snippet.xsl";
     secOutput[iS]="snip.txt";
+    iS++;
+  }
+  if (opts.out_jsontext) {
+    secSheets[iS]="jsontext.xsl";
+    secOutput[iS]="plain.json";
     iS++;
   }
   secSheets[iS]=NULL;
