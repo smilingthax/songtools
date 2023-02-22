@@ -1,6 +1,6 @@
 /* Copyright by Tobias Hoffmann, Licence: LGPL/MIT, see COPYING
  * This file may, by your choice, be licensed under LGPL or by the MIT license */
-#include <libxslt/extensions.h>
+//#include <libxslt/extensions.h>
 #include <libxml/xmlIO.h>
 #include <string.h>
 #include "path.h"

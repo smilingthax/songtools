@@ -2,7 +2,12 @@ SOURCES=parset.cpp processor.cpp ptools.cpp
 MODULE=thax_home_parset.so
 
 CPPFLAGS=-O3 -Wall $(FLAGS) -g -DSTANDALONE
-CPPFLAGS+=`pkg-config --cflags libxml-2.0`
+
+PACKAGES=libxslt
+
+PKG_CONFIG=pkg-config
+CPPFLAGS+=$(and $(PACKAGES),$(shell $(PKG_CONFIG) --cflags $(PACKAGES)))
+LDFLAGS+=$(and $(PACKAGES),$(shell $(PKG_CONFIG) --libs $(PACKAGES)))
 
 OBJECTS=$(patsubst %.c,$(PREFIX)%$(SUFFIX).o,\
         $(patsubst %.cpp,$(PREFIX)%$(SUFFIX).o,\
@@ -27,7 +32,7 @@ clean:
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MM -MT"$@" -MT"$*.o" -o $@ $<  2> /dev/null
 
 $(MODULE): $(OBJECTS)
-	$(CXX) -o $@ $^ -shared -rdynamic
+	$(CXX) -o $@ $^ -shared -rdynamic $(LDFLAGS)
 
 test: force
 	xsltproc --extension ../xsltext1/ext1.so --extension thobi2 --extension ./parset.so shet.xsl in.xml

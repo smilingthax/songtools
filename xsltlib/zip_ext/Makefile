@@ -2,8 +2,12 @@ SOURCES=zipext.c
 MODULE=thax_home_zip_ext.so
 
 CPPFLAGS=-O3 -Wall $(FLAGS) -g -DSTANDALONE
-CPPFLAGS+=`pkg-config --cflags libxml-2.0 minizip`
-LDFLAGS+=`pkg-config --libs minizip`
+
+PACKAGES=libxslt minizip
+
+PKG_CONFIG=pkg-config
+CPPFLAGS+=$(and $(PACKAGES),$(shell $(PKG_CONFIG) --cflags $(PACKAGES)))
+LDFLAGS+=$(and $(PACKAGES),$(shell $(PKG_CONFIG) --libs $(PACKAGES)))
 
 OBJECTS=$(patsubst %.c,$(PREFIX)%$(SUFFIX).o,\
         $(patsubst %.cpp,$(PREFIX)%$(SUFFIX).o,\

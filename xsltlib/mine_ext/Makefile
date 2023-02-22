@@ -2,7 +2,12 @@ SOURCES=extension.cpp speed.cpp chord.cpp
 MODULE=thax_home_mine_ext.so
 
 CPPFLAGS=-O3 -Wall -DSTANDALONE
-CPPFLAGS+=`pkg-config --cflags libxml-2.0`
+
+PACKAGES=libxslt
+
+PKG_CONFIG=pkg-config
+CPPFLAGS+=$(and $(PACKAGES),$(shell $(PKG_CONFIG) --cflags $(PACKAGES)))
+LDFLAGS+=$(and $(PACKAGES),$(shell $(PKG_CONFIG) --libs $(PACKAGES)))
 
 OBJECTS=$(patsubst %.c,$(PREFIX)%$(SUFFIX).o,\
         $(patsubst %.cpp,$(PREFIX)%$(SUFFIX).o,\
@@ -27,4 +32,5 @@ clean:
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MM -MT"$@" -MT"$*.o" -o $@ $<  2> /dev/null
 
 $(MODULE): $(OBJECTS)
-	$(CXX) -o $@ $^ -shared -rdynamic
+	$(CXX) -o $@ $^ -shared -rdynamic $(LDFLAGS)
+
