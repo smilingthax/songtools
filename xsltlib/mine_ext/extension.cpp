@@ -46,8 +46,9 @@ public:
 
   const std::string *get(int level,int no) {
     // for the given level, use the biggest matching entry <= no  - e.g. verse chords are given once, we want to use them for all verses
-    std::map<std::pair<int,int>,std::pair<int,std::vector<int> > >::iterator it=--data.upper_bound(std::make_pair(level,no));
-    if ( (it==data.end())||(it->first.first!=level) ) {
+    std::map<std::pair<int,int>,std::pair<int,std::vector<int> > >::iterator it=data.upper_bound(std::make_pair(level,no));
+    if ( (it==data.begin())||
+         ((--it)->first.first!=level) ) {
       return NULL; // nullptr;
     }
     const int pos=it->second.first;
