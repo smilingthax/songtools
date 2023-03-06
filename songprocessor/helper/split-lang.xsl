@@ -10,8 +10,9 @@
          <xsl:variable name="lng" select="@lang"/>
          <xsl:for-each select="parent::node()">
            <xsl:copy>
+             <xsl:apply-templates select="@*"/>
              <xsl:apply-templates select="title[@lang=$lng]"/>
-             <xsl:apply-templates select="@*|comment()|node()[not(self::title or self::content)]"/>
+             <xsl:apply-templates select="node()[not(self::title or self::content)]"/>
              <xsl:apply-templates select="content[@lang=$lng]"/>
            </xsl:copy>
          </xsl:for-each>
@@ -19,15 +20,15 @@
      </xsl:when>
      <xsl:otherwise>
        <xsl:copy>
-         <xsl:apply-templates select="@*|node()|comment()"/>
+         <xsl:apply-templates select="@*|node()"/>
        </xsl:copy>
      </xsl:otherwise>
    </xsl:choose>
  </xsl:template>
 
- <xsl:template match="@*|node()|comment()">
+ <xsl:template match="@*|node()">
    <xsl:copy>
-     <xsl:apply-templates select="@*|node()|comment()"/>
+     <xsl:apply-templates select="@*|node()"/>
    </xsl:copy>
  </xsl:template>
 

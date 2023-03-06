@@ -21,13 +21,13 @@
          <xsl:with-param name="withCcli" select="true()"/>
        </xsl:call-template>
      </copyright>
-     <xsl:apply-templates select="node()|comment()"/>
+     <xsl:apply-templates select="node()"/>
    </xsl:copy>
  </xsl:template>
 
- <xsl:template match="@*|node()|comment()">
+ <xsl:template match="@*|node()">
    <xsl:copy>
-     <xsl:apply-templates select="@*|node()|comment()"/>
+     <xsl:apply-templates select="@*|node()"/>
    </xsl:copy>
  </xsl:template>
 

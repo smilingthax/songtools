@@ -21,14 +21,14 @@
  <xsl:template mode="_sep_tree" match="*">
    <xsl:param name="seps"/>
    <xsl:copy>
-     <xsl:apply-templates mode="_sep_tree" select="@*|node()|comment()">
+     <xsl:apply-templates mode="_sep_tree" select="@*|node()">
        <xsl:with-param name="seps" select="$seps"/>
      </xsl:apply-templates>
    </xsl:copy>
  </xsl:template>
 
  <xsl:template mode="_sep_tree" match="@*|comment()">
-   <xsl:copy-of select="."/>
+   <xsl:copy/>
  </xsl:template>
 
  <xsl:template mode="_sep_tree" match="text()" name="_sep_tree">

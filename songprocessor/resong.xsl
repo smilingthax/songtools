@@ -28,19 +28,19 @@
    <xsl:value-of select="$nl"/>
  </xsl:template>
 
- <xsl:template match="node()|comment()">
+ <xsl:template match="node()">
    <xsl:copy><xsl:copy-of select="@*"/>
-     <xsl:apply-templates select="node()|comment()"/>
+     <xsl:apply-templates select="node()"/>
    </xsl:copy>
  </xsl:template>
 
- <xsl:template match="node()|comment()" mode="_songcontent">
+ <xsl:template match="node()" mode="_songcontent">
    <xsl:message terminate="yes">Unknown node <xsl:value-of select="text()"/><xsl:text>#</xsl:text><xsl:value-of select="name()"/></xsl:message>
  </xsl:template>
 
  <xsl:template match="song">
    <xsl:copy><xsl:copy-of select="@*"/>
-     <xsl:apply-templates select="node()|comment()"/>
+     <xsl:apply-templates select="node()"/>
      <!-- strip all '\n' -->
    </xsl:copy><xsl:value-of select="$nl"/>
  </xsl:template>
@@ -48,7 +48,7 @@
  <xsl:template match="song/content">
    <xsl:copy><xsl:copy-of select="@*"/><xsl:value-of select="$nl"/>
      <xsl:text>    </xsl:text>
-     <xsl:apply-templates select="node()|comment()" mode="_songcontent"/>
+     <xsl:apply-templates select="node()" mode="_songcontent"/>
      <xsl:text>  </xsl:text>
    </xsl:copy>
  </xsl:template>
@@ -73,14 +73,14 @@
  </xsl:template>
 
  <xsl:template match="base" mode="_songcontent">
-   <xsl:apply-templates select="node()|comment()" mode="_songcontent"/>
+   <xsl:apply-templates select="node()" mode="_songcontent"/>
    <xsl:call-template name="pullout_br"/>
  </xsl:template>
 
  <xsl:template match="refr|vers|bridge|ending" mode="_songcontent">
    <xsl:copy><xsl:copy-of select="@*"/><xsl:value-of select="$nl"/>
      <xsl:text>    </xsl:text>
-     <xsl:apply-templates select="node()|comment()" mode="_songcontent"/>
+     <xsl:apply-templates select="node()" mode="_songcontent"/>
    </xsl:copy>
    <xsl:call-template name="pullout_br"/>
  </xsl:template>
@@ -93,8 +93,24 @@
    <xsl:text>'</xsl:text>
  </xsl:template>
 
+ <xsl:template match="rep" mode="_songcontent">
+   <xsl:copy><xsl:copy-of select="@*"/>
+     <xsl:apply-templates select="node()" mode="_songcontent"/>
+   </xsl:copy>
+ </xsl:template>
+
+ <xsl:template match="xlang" mode="_songcontent">
+   <xsl:value-of select="$nl"/>
+   <xsl:text>    ^</xsl:text>
+   <xsl:call-template name="nl_hlp"/>
+ </xsl:template>
+
  <xsl:template match="text()" mode="_songcontent">
    <xsl:call-template name="nl_hlp"/>
+ </xsl:template>
+
+ <xsl:template match="comment()" mode="_songcontent"> <!-- TODO? -->
+   <xsl:copy/>
  </xsl:template>
 
  <xsl:template match="text()" mode="_check_next">

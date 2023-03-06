@@ -400,10 +400,10 @@
    </xsl:attribute>
  </xsl:template>
 
- <xsl:template match="@*|node()|comment()" mode="_do_number">
+ <xsl:template match="@*|node()" mode="_do_number">
    <xsl:param name="num"/>
    <xsl:copy>
-     <xsl:apply-templates select="@*|node()|comment()" mode="_do_number">
+     <xsl:apply-templates select="@*|node()" mode="_do_number">
        <xsl:with-param name="num" select="$num"/>
      </xsl:apply-templates>
    </xsl:copy>

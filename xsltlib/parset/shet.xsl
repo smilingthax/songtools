@@ -36,15 +36,15 @@
    </xsl:choose>
  </xsl:template>
 
- <xsl:template match="@*|node()|comment()">
+ <xsl:template match="@*|node()">
    <xsl:copy>
-     <xsl:apply-templates select="@*|node()|comment()"/>
+     <xsl:apply-templates select="@*|node()"/>
    </xsl:copy>
  </xsl:template>
 
  <xsl:template match="song">
    <xsl:copy>
-     <xsl:apply-templates select="@*[not(name()='special') or $allowSpecial=.]|node()|comment()"/>
+     <xsl:apply-templates select="@*[not(name()='special') or $allowSpecial=.]|node()"/>
    </xsl:copy>
    <xsl:if test="not(mine:checkAkks())">
      <xsl:message terminate="yes">Fehler[normal,vers,refr,ending,bridge,instrum] in den Akkorden, Lied: <xsl:value-of select="title[1]/text()"/></xsl:message>
@@ -66,7 +66,7 @@
      <xsl:attribute name="lang">
        <xsl:value-of select="../content/@lang"/>
      </xsl:attribute>
-     <xsl:copy-of select="@*|node()|comment()"/>
+     <xsl:copy-of select="@*|node()"/>
    </xsl:copy>
  </xsl:template>
 
@@ -263,7 +263,7 @@
 
  <xsl:template match="@*|comment()" mode="_split_token">
    <!-- copy @* for now. maybe we can just discard it. but we can't let the default rule convert it to text ... -->
-   <xsl:copy-of select="."/>
+   <xsl:copy/>
  </xsl:template>
 
  <xsl:template match="akk" mode="_add_akks">
@@ -398,7 +398,7 @@
  </xsl:template>
 
  <xsl:template match="@*|comment()" mode="_add_akks">
-   <xsl:copy-of select="."/>
+   <xsl:copy/>
  </xsl:template>
 
  <xsl:template name="check-quotes">

@@ -285,12 +285,12 @@
    </xsl:copy>
  </xsl:template>
 
- <xsl:template match="@*|node()|comment()" mode="_output_odp_content">
-   <xsl:param name="content_nodes" select="."/>
-   <xsl:param name="style_nodes" select="."/>
+ <xsl:template match="node()" mode="_output_odp_content">
+   <xsl:param name="content_nodes"/>
+   <xsl:param name="style_nodes"/>
    <xsl:copy>
      <xsl:copy-of select="@*"/>
-     <xsl:apply-templates select="node()|comment()" mode="_output_odp_content">
+     <xsl:apply-templates select="node()" mode="_output_odp_content">
        <xsl:with-param name="content_nodes" select="$content_nodes"/>
        <xsl:with-param name="style_nodes" select="$style_nodes"/>
      </xsl:apply-templates>
@@ -334,10 +334,10 @@
    </xsl:copy>
  </xsl:template>
 
- <xsl:template match="@*|node()|comment()" mode="_output_odp_style">
+ <xsl:template match="@*|node()" mode="_output_odp_style">
    <xsl:param name="black_back"/>
    <xsl:copy>
-     <xsl:apply-templates select="@*|node()|comment()" mode="_output_odp_style">
+     <xsl:apply-templates select="@*|node()" mode="_output_odp_style">
        <xsl:with-param name="black_back" select="$black_back"/>
      </xsl:apply-templates>
    </xsl:copy>
@@ -515,7 +515,7 @@
    <xsl:copy-of select="*"/>
  </xsl:template>
 
- <xsl:template match="@*|node()" mode="_page_fix">
+ <xsl:template match="node()" mode="_page_fix">
    <xsl:copy>
      <xsl:copy-of select="@*" mode="_page_fix"/>
      <xsl:apply-templates select="node()" mode="_page_fix"/>
@@ -556,7 +556,7 @@
  <!-- this exactly matches the second page-cand from the @block,@endpage pull-up-logic in match="/page-cand" -->
  <xsl:template match="/page-cand[@block or @endpage][preceding-sibling::*[1][self::page-cand]]" mode="_break_calc"/>
 
- <xsl:template match="@*|node()" mode="_break_calc">
+ <xsl:template match="node()" mode="_break_calc">
    <xsl:copy-of select="."/>
  </xsl:template>
  <!-- }}} -->
@@ -892,9 +892,9 @@
 
  <!-- {{{ FUNCTION func:get_attr(nodeset,name) -->
  <func:function name="func:get_attr">
-   <xsl:param name="nodes"/>
+   <xsl:param name="nodeset"/>
    <xsl:param name="name"/>
-   <func:result select="$nodes[not(self::*) and name()=$name]"/>
+   <func:result select="$nodeset[not(self::*) and name()=$name]"/>
  </func:function>
  <!-- }}} -->
 

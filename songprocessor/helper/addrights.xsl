@@ -18,9 +18,9 @@
    </xsl:call-template>
  </xsl:template>
 
- <xsl:template match="@*|node()|comment()">
+ <xsl:template match="@*|node()">
    <xsl:copy>
-     <xsl:apply-templates select="@*|node()|comment()"/>
+     <xsl:apply-templates select="@*|node()"/>
    </xsl:copy>
  </xsl:template>
 
