@@ -280,8 +280,46 @@
  <xsl:template match="office:automatic-styles" mode="_output_odp_content">
    <xsl:param name="style_nodes" select="."/>
    <xsl:copy>
-     <xsl:copy-of select="@*|node()"/>
+     <xsl:copy-of select="@*"/>
+     <xsl:apply-templates select="node()" mode="_output_odp_content"/>
      <xsl:copy-of select="$style_nodes"/>
+   </xsl:copy>
+ </xsl:template>
+
+ <!-- {{{ FUNCTION func:_ooc_collect_parents_self(node) -->
+ <func:function name="func:_ooc_collect_parents_self"> <!-- function, to be able to return a nodeset of input nodes w/o id(...) tricks -->
+   <xsl:param name="node"/>
+   <xsl:choose>
+     <xsl:when test="$node/@copy-parent">
+       <xsl:variable name="parent" select="$node/preceding-sibling::style:style[@style:name=$node/@copy-parent]"/> <!-- parent must be defined earlier, because nodeset will be enumerated in document order! -->
+       <xsl:if test="count($parent|$node) != 2 or $parent/@style:family != $node/@style:family">
+         <xsl:message terminate="yes">Bad copy-parent</xsl:message>
+       </xsl:if>
+       <func:result select="func:_ooc_collect_parents_self($parent)|$node"/>
+     </xsl:when>
+     <xsl:otherwise>
+       <func:result select="$node"/>
+     </xsl:otherwise>
+   </xsl:choose>
+ </func:function>
+ <!-- }}} -->
+
+ <xsl:template match="office:automatic-styles/style:style" mode="_output_odp_content">
+   <xsl:copy>
+     <xsl:choose>
+       <xsl:when test="@copy-parent">
+         <xsl:copy-of select="@*[not(name()='copy-parent')]"/>
+         <xsl:for-each select="exsl:group-by-name(func:_ooc_collect_parents_self(.)/*)">
+           <xsl:copy>
+             <xsl:copy-of select="*/@*"/>
+             <xsl:copy-of select="exsl:group-by-name(*/*)/*[last()]"/>
+           </xsl:copy>
+         </xsl:for-each>
+       </xsl:when>
+       <xsl:otherwise>
+         <xsl:copy-of select="@*|node()"/>
+       </xsl:otherwise>
+     </xsl:choose>
    </xsl:copy>
  </xsl:template>
 
@@ -668,25 +706,15 @@
      </xsl:call-template>
    </xsl:variable>
 
-   <text:p>
-     <xsl:copy-of select="$blockfmt/@*"/>
-     <xsl:choose>
-       <xsl:when test="@xlang">
-         <text:span text:style-name="Txlang">
-           <xsl:copy-of select="$indent"/>
-           <text:s text:c="4"/>
-           <xsl:apply-templates select="node()" mode="_sc_post">
-             <xsl:with-param name="ctxt" select="$ctxt"/>
-           </xsl:apply-templates>
-         </text:span>
-       </xsl:when>
-       <xsl:otherwise>
-         <xsl:copy-of select="$indent"/>
-         <xsl:apply-templates select="node()" mode="_sc_post">
-           <xsl:with-param name="ctxt" select="$ctxt"/>
-         </xsl:apply-templates>
-       </xsl:otherwise>
-     </xsl:choose>
+   <xsl:if test="not($blockfmt/@text:style-name)">
+     <xsl:message terminate="yes">text:style-name is required</xsl:message>
+   </xsl:if>
+
+   <text:p text:style-name="{concat($blockfmt/@text:style-name,func:if(@xlang,'-xlang'))}">
+     <xsl:copy-of select="$indent"/>
+     <xsl:apply-templates select="node()" mode="_sc_post">
+       <xsl:with-param name="ctxt" select="$ctxt"/>
+     </xsl:apply-templates>
    </text:p><xsl:value-of select="$nl"/>
 
    <xsl:choose>
@@ -855,6 +883,25 @@
      </xsl:when>
    </xsl:choose>
  </xsl:template>
+ <!-- }}} -->
+
+ <!-- {{{ FUNCTION exsl:group-by-name(nodeset) -->
+ <func:function name="exsl:group-by-name">
+   <xsl:param name="nodeset"/>
+   <xsl:variable name="hlp">
+     <xsl:for-each select="$nodeset">
+       <xsl:copy><xsl:value-of select="name()"/></xsl:copy>
+     </xsl:for-each>
+   </xsl:variable>
+   <xsl:variable name="ret">
+     <xsl:for-each select="set:distinct(exsl:node-set($hlp)/*)">
+       <xsl:copy>
+         <xsl:copy-of select="$nodeset[name()=current()]"/>
+       </xsl:copy>
+     </xsl:for-each>
+   </xsl:variable>
+   <func:result select="exsl:node-set($ret)/*"/>
+ </func:function>
  <!-- }}} -->
 
  <!-- {{{ FUNCTION func:default (value, default)  -  return $value, if it is not empty (node-set), otherwise $default -->

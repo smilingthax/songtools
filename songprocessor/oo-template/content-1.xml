@@ -65,7 +65,7 @@
         <style:text-properties fo:font-family="StarSymbol" style:use-window-font-color="true" fo:font-size="45%"/>
       </text:list-level-style-bullet>
     </text:list-style>
-<!-- Our Styles -->   
+<!-- Our Styles -->
 <style:style style:name="dp3" style:family="drawing-page"><!-- our black slide -->
   <style:drawing-page-properties presentation:background-visible="true" presentation:background-objects-visible="false" draw:fill="solid" draw:fill-color="#000000" presentation:display-footer="false" presentation:display-page-number="false" presentation:display-date-time="false"/>
 </style:style>
@@ -80,12 +80,13 @@
   <style:paragraph-properties fo:line-height="95%"/>
   <style:paragraph-properties fo:margin-left="0cm" fo:margin-right="0cm" fo:text-indent="0cm">
     <style:tab-stops>
+      <style:tab-stop style:position="0.0cm"/>
       <style:tab-stop style:position="0.95cm"/>
       <style:tab-stop style:position="1.90cm"/>
       <style:tab-stop style:position="2.85cm"/>
     </style:tab-stops>
   </style:paragraph-properties>
-  <style:text-properties fo:font-size="32pt" fo:font-weight="bold"/>
+  <style:text-properties fo:font-size="32pt" fo:font-weight="bold" style:font-size-asian="32pt" style:font-weight-asian="bold"/>
 </style:style>
 <style:style style:name="P3" style:family="paragraph"> <!-- half height line for spacing -->
   <style:paragraph-properties fo:margin-left="0.6cm" fo:margin-right="0cm" fo:line-height="50%" fo:text-indent="0cm"/>
@@ -111,56 +112,37 @@
   <style:paragraph-properties fo:margin-left="0cm" fo:margin-right="0cm" fo:text-align="end" fo:text-indent="0cm"/>
   <style:text-properties fo:color="#00ae00" fo:font-size="40pt" fo:font-weight="bold" style:font-size-asian="18pt" style:font-size-complex="18pt"/>
 </style:style>
-<style:style style:name="Pvers" style:family="paragraph">
-  <style:paragraph-properties fo:line-height="95%"/>
-  <style:paragraph-properties fo:margin-left="1.2cm" fo:margin-right="0cm" fo:text-indent="-1.2cm">
-    <style:tab-stops>
-      <style:tab-stop style:position="0.0cm"/>
-      <style:tab-stop style:position="0.95cm"/>
-      <style:tab-stop style:position="1.90cm"/>
-      <style:tab-stop style:position="2.85cm"/>
-    </style:tab-stops>
-  </style:paragraph-properties>
-  <style:text-properties fo:font-size="32pt" fo:font-weight="bold"/>
+<style:style style:name="Pvers" style:family="paragraph" copy-parent="P2">
+  <style:paragraph-properties fo:margin-left="1.2cm" fo:text-indent="-1.2cm"/>
 </style:style>
-<style:style style:name="Prefr" style:family="paragraph">
-  <style:paragraph-properties fo:line-height="95%"/>
-  <style:paragraph-properties fo:margin-left="3.10cm" fo:margin-right="0cm" fo:text-indent="-3.10cm">
-    <style:tab-stops>
-      <style:tab-stop style:position="0.0cm"/>
-      <style:tab-stop style:position="0.95cm"/>
-      <style:tab-stop style:position="1.90cm"/>
-      <style:tab-stop style:position="2.85cm"/>
-    </style:tab-stops>
-  </style:paragraph-properties>
-  <style:text-properties fo:font-size="32pt" fo:font-weight="bold"/>
+<style:style style:name="Prefr" style:family="paragraph" copy-parent="P2">
+  <style:paragraph-properties fo:margin-left="3.10cm" fo:text-indent="-3.10cm"/>
 </style:style>
-<style:style style:name="Pbridge" style:family="paragraph">
-  <style:paragraph-properties fo:line-height="95%"/>
-  <style:paragraph-properties fo:margin-left="4.30cm" fo:margin-right="0cm" fo:text-indent="-4.30cm">
-    <style:tab-stops>
-      <style:tab-stop style:position="0.0cm"/>
-      <style:tab-stop style:position="0.95cm"/>
-      <style:tab-stop style:position="1.90cm"/>
-      <style:tab-stop style:position="2.85cm"/>
-    </style:tab-stops>
-  </style:paragraph-properties>
-  <style:text-properties fo:font-size="32pt" fo:font-weight="bold"/>
+<style:style style:name="Pbridge" style:family="paragraph" copy-parent="P2">
+  <style:paragraph-properties fo:margin-left="4.30cm" fo:text-indent="-4.30cm"/>
 </style:style>
-<style:style style:name="Pending" style:family="paragraph">
-  <style:paragraph-properties fo:line-height="95%"/>
-  <style:paragraph-properties fo:margin-left="5.00cm" fo:margin-right="0cm" fo:text-indent="-5.00cm">
-    <style:tab-stops>
-      <style:tab-stop style:position="0.0cm"/>
-      <style:tab-stop style:position="0.95cm"/>
-      <style:tab-stop style:position="1.90cm"/>
-      <style:tab-stop style:position="2.85cm"/>
-    </style:tab-stops>
-  </style:paragraph-properties>
-  <style:text-properties fo:font-size="32pt" fo:font-weight="bold"/>
+<style:style style:name="Pending" style:family="paragraph" copy-parent="P2">
+  <style:paragraph-properties fo:margin-left="5.00cm" fo:text-indent="-5.00cm"/>
 </style:style>
-<style:style style:name="Txlang" style:family="text">
-  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#808000"/>
+<style:style style:name="P2-xlang" style:family="paragraph" copy-parent="P2">
+  <style:paragraph-properties fo:margin-left="0.9cm"/>
+  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#808000" style:font-size-asian="24pt" style:font-style-asian="italic"/>
+</style:style>
+<style:style style:name="Pvers-xlang" style:family="paragraph" copy-parent="Pvers">
+  <style:paragraph-properties fo:margin-left="2.1cm" fo:text-indent="-2.1cm"/>
+  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#808000" style:font-size-asian="24pt" style:font-style-asian="italic"/>
+</style:style>
+<style:style style:name="Prefr-xlang" style:family="paragraph" copy-parent="Prefr">
+  <style:paragraph-properties fo:margin-left="4.00cm" fo:text-indent="-4.00cm"/>
+  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#808000" style:font-size-asian="24pt" style:font-style-asian="italic"/>
+</style:style>
+<style:style style:name="Pbridge-xlang" style:family="paragraph" copy-parent="Pbridge">
+  <style:paragraph-properties fo:margin-left="5.20cm" fo:text-indent="-5.20cm"/>
+  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#808000" style:font-size-asian="24pt" style:font-style-asian="italic"/>
+</style:style>
+<style:style style:name="Pending-xlang" style:family="paragraph" copy-parent="Pending">
+  <style:paragraph-properties fo:margin-left="5.90cm" fo:text-indent="-5.90cm"/>
+  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#808000" style:font-size-asian="24pt" style:font-style-asian="italic"/>
 </style:style>
   </office:automatic-styles>
   <office:body>
