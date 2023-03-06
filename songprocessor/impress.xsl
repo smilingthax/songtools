@@ -55,9 +55,9 @@
  <xsl:variable name="ps_doc" select="document('oopreset.xml')"/>
  <xsl:variable name="preset_hlp" select="func:default($ps_doc/presets/preset[@name=$presetname],
                                                       $ps_doc/presets/preset[not(@name)])"/>
- <xsl:variable name="preset" select="exsl:node-set(func:if($preset_hlp/@fwd,
-                                                           $ps_doc/presets/preset[@name=$preset_hlp/@fwd],
-                                                           $preset_hlp))/node()"/>  <!-- @fwd not found: empty preset. -->
+ <xsl:variable name="preset" select="func:if($preset_hlp/@fwd,
+                                             $ps_doc/presets/preset[@name=$preset_hlp/@fwd],
+                                             $preset_hlp)"/>  <!-- @fwd not found: empty preset. -->
 
  <xsl:include href="rights-full.xsl"/>
  <xsl:include href="lang-db.xsl"/>
@@ -865,21 +865,19 @@
  </func:function>
  <!-- }}} -->
 
- <!-- {{{ FUNCTION func:if (do_first,first [,second])  -  return (copy-of) $first or $second -->
+ <!-- {{{ FUNCTION func:if (do_first,first [,second])  -  return $first or $second -->
  <func:function name="func:if">
    <xsl:param name="do_first"/>
    <xsl:param name="first"/>
    <xsl:param name="second"/>
-   <func:result>
-     <xsl:choose>
-       <xsl:when test="$do_first">
-         <xsl:copy-of select="$first"/>
-       </xsl:when>
-       <xsl:otherwise>
-         <xsl:copy-of select="$second"/>
-       </xsl:otherwise>
-     </xsl:choose>
-   </func:result>
+   <xsl:choose>
+     <xsl:when test="$do_first">
+       <func:result select="$first"/>
+     </xsl:when>
+     <xsl:otherwise>
+       <func:result select="$second"/>
+     </xsl:otherwise>
+   </xsl:choose>
  </func:function>
  <!-- }}} -->
 

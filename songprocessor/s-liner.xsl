@@ -352,9 +352,9 @@
  <!-- specific templates -->
  <xsl:template match="sq|eq" mode="_songcontent_inline">
    <xsl:param name="ctxt"/>
-   <xsl:variable name="lang" select="mine:main_lang($ctxt/@lang,number(func:if(ancestor::xlang,3,1)))"/>   <!-- lang via context/param? -->
+   <xsl:variable name="lang" select="mine:main_lang($ctxt/@lang,func:if(ancestor::xlang,3,1))"/>   <!-- lang via context/param? -->
    <xsl:variable name="gotlang" select="$ctxt/quotes[@lang=$lang]"/>
-   <xsl:variable name="quotes" select="exsl:node-set(func:if(count($gotlang),$gotlang,$ctxt/quotes[not(@lang)]))/quotes"/>
+   <xsl:variable name="quotes" select="func:if(count($gotlang),$gotlang,$ctxt/quotes[not(@lang)])"/>
    <xsl:choose>
      <xsl:when test="not($quotes)">
        <xsl:text>&quot;</xsl:text>
@@ -461,21 +461,19 @@
  </xsl:template>
  <!-- }}} -->
 
- <!-- {{{ FUNCTION func:if (do_first,first [,second])  -  return (copy-of) $first or $second -->
+ <!-- {{{ FUNCTION func:if (do_first,first [,second])  -  return $first or $second -->
  <func:function name="func:if">
    <xsl:param name="do_first"/>
    <xsl:param name="first"/>
    <xsl:param name="second"/>
-   <func:result>
-     <xsl:choose>
-       <xsl:when test="$do_first">
-         <xsl:copy-of select="$first"/>
-       </xsl:when>
-       <xsl:otherwise>
-         <xsl:copy-of select="$second"/>
-       </xsl:otherwise>
-     </xsl:choose>
-   </func:result>
+   <xsl:choose>
+     <xsl:when test="$do_first">
+       <func:result select="$first"/>
+     </xsl:when>
+     <xsl:otherwise>
+       <func:result select="$second"/>
+     </xsl:otherwise>
+   </xsl:choose>
  </func:function>
  <!-- }}} -->
 
