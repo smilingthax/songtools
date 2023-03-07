@@ -128,21 +128,17 @@
   <style:paragraph-properties fo:margin-left="0.9cm"/>
   <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#ff6600" style:font-size-asian="24pt" style:font-style-asian="italic"/>
 </style:style>
-<style:style style:name="Pvers-xlang" style:family="paragraph" copy-parent="Pvers">
+<style:style style:name="Pvers-xlang" style:family="paragraph" copy-parent="P2-xlang">
   <style:paragraph-properties fo:margin-left="2.1cm" fo:text-indent="-2.1cm"/>
-  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#ff6600" style:font-size-asian="24pt" style:font-style-asian="italic"/>
 </style:style>
-<style:style style:name="Prefr-xlang" style:family="paragraph" copy-parent="Prefr">
+<style:style style:name="Prefr-xlang" style:family="paragraph" copy-parent="P2-xlang">
   <style:paragraph-properties fo:margin-left="4.00cm" fo:text-indent="-4.00cm"/>
-  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#ff6600" style:font-size-asian="24pt" style:font-style-asian="italic"/>
 </style:style>
-<style:style style:name="Pbridge-xlang" style:family="paragraph" copy-parent="Pbridge">
+<style:style style:name="Pbridge-xlang" style:family="paragraph" copy-parent="P2-xlang">
   <style:paragraph-properties fo:margin-left="5.20cm" fo:text-indent="-5.20cm"/>
-  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#ff6600" style:font-size-asian="24pt" style:font-style-asian="italic"/>
 </style:style>
-<style:style style:name="Pending-xlang" style:family="paragraph" copy-parent="Pending">
+<style:style style:name="Pending-xlang" style:family="paragraph" copy-parent="P2-xlang">
   <style:paragraph-properties fo:margin-left="5.90cm" fo:text-indent="-5.90cm"/>
-  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#ff6600" style:font-size-asian="24pt" style:font-style-asian="italic"/>
 </style:style>
   </office:automatic-styles>
   <office:body>
