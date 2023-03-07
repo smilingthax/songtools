@@ -237,7 +237,7 @@ static void functionTranspose(xmlXPathParserContextPtr ctxt, int nargs)
   }
 }
 
-void *initMineExt(xsltTransformContextPtr ctxt, const xmlChar *URI)
+void *initMineAkk(xsltTransformContextPtr ctxt, const xmlChar *URI)
 {
   xsltRegisterExtFunction(ctxt,(xmlChar *)"getAkk",URI,functionAkkify);
   xsltRegisterExtFunction(ctxt,(xmlChar *)"grabAkk",URI,functionGrabAkk);
@@ -248,24 +248,3 @@ void *initMineExt(xsltTransformContextPtr ctxt, const xmlChar *URI)
   return NULL;
 }
 
-int load_mine_ext()
-{
-  xsltRegisterExtModule((xmlChar *)"thax.home/mine-ext",initMineExt,NULL);
-  xsltRegisterExtModule((xmlChar *)"thax.home/mine-ext-speed",initSpeedExt,NULL);
-  return 1;
-}
-
-#ifdef STANDALONE
-extern "C" {
-int thax_home_mine_ext_init();
-int thax_home_mine_ext_speed_init();
-};
-int thax_home_mine_ext_init()
-{
-  return load_mine_ext();
-}
-int thax_home_mine_ext_speed_init()
-{
-  return load_mine_ext();
-}
-#endif

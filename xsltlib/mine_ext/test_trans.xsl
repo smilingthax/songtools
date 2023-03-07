@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
-                xmlns:mine="thax.home/mine-ext"
-                extension-element-prefixes="mine">
+                xmlns:makk="thax.home/mine-akk"
+                extension-element-prefixes="makk">
 
   <xsl:output method="text" encoding="iso-8859-1"/>
   <xsl:variable name="nl"><xsl:text>
@@ -20,11 +20,11 @@
 
   <xsl:template match="text()">
 <!--
-    <xsl:value-of select="mine:noteAkks($transpose)"/>
-    <xsl:value-of select="mine:grabAkk(0,0,.)"/>
-    <xsl:value-of select="."/> . <xsl:value-of select="mine:getAkk(0,0)"/><xsl:value-of select="$nl"/>
+    <xsl:value-of select="makk:noteAkks($transpose)"/>
+    <xsl:value-of select="makk:grabAkk(0,0,.)"/>
+    <xsl:value-of select="."/> . <xsl:value-of select="makk:getAkk(0,0)"/><xsl:value-of select="$nl"/>
 -->
-    <xsl:value-of select="."/> . <xsl:value-of select="mine:transpose(.,$transpose)"/><xsl:value-of select="$nl"/>
+    <xsl:value-of select="."/> . <xsl:value-of select="makk:transpose(.,$transpose)"/><xsl:value-of select="$nl"/>
   </xsl:template>
 
 </xsl:stylesheet>

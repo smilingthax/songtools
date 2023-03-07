@@ -1,7 +1,7 @@
 SOURCES=parset.cpp processor.cpp ptools.cpp
 MODULE=thax_home_parset.so
 
-CPPFLAGS=-O3 -Wall $(FLAGS) -g -DSTANDALONE
+CPPFLAGS=-O3 -Wall $(FLAGS) -g -DSTANDALONE -fPIC
 
 PACKAGES=libxslt
 

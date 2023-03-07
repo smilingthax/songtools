@@ -6,9 +6,10 @@
                 xmlns:func="http://exslt.org/functions"
                 xmlns:exsl="http://exslt.org/common"
                 xmlns:thobi="thax.home/split"
-                xmlns:mine="thax.home/mine-ext"
-                xmlns:minex="thax.home/parset"
-                extension-element-prefixes="str thobi func exsl mine minex set">
+                xmlns:mine="thax.home/mine-ext-speed"
+                xmlns:makk="thax.home/mine-akk"
+                xmlns:parset="thax.home/parset"
+                extension-element-prefixes="str thobi func exsl makk parset set">
 
  <xsl:output method="xml" encoding="iso-8859-1" indent="no"/>
  <xsl:variable name="nl"><xsl:text>
@@ -46,7 +47,7 @@
    <xsl:copy>
      <xsl:apply-templates select="@*[not(name()='special') or $allowSpecial=.]|node()"/>
    </xsl:copy>
-   <xsl:if test="not(mine:checkAkks())">
+   <xsl:if test="not(makk:checkAkks())">
      <xsl:message terminate="yes">Fehler[normal,vers,refr,ending,bridge,instrum] in den Akkorden, Lied: <xsl:value-of select="title[1]/text()"/></xsl:message>
    </xsl:if>
  </xsl:template>
@@ -88,10 +89,10 @@
    <exsl:document href="/dev/stdout"><xsl:copy-of select="$sn1"/></exsl:document>
 -->
    <xsl:copy>
-<!--     <xsl:copy-of select="minex:parset(node(),../title[1]/text())|@*"/>-->
-<!--     <xsl:copy-of select="minex:parset($sn1,../title[1]/text())|@*"/>-->
+<!--     <xsl:copy-of select="parset:parset(node(),../title[1]/text())|@*"/>-->
+<!--     <xsl:copy-of select="parset:parset($sn1,../title[1]/text())|@*"/>-->
      <xsl:copy-of select="@*"/>
-     <xsl:apply-templates select="minex:parset($sn1,../title[1]/text())" mode="_add_akks">
+     <xsl:apply-templates select="parset:parset($sn1,../title[1]/text())" mode="_add_akks">
        <xsl:with-param name="level" select="-1"/>
        <xsl:with-param name="no" select="-1"/>
        <xsl:with-param name="debug" select="concat(../title[1]/text(),' (-> ',@lang,')')"/>
@@ -273,7 +274,7 @@
    <xsl:copy>
      <xsl:if test="not(text()='-')">
        <xsl:attribute name="note">
-         <xsl:variable name="note" select="mine:getAkk($level,$no)"/>
+         <xsl:variable name="note" select="makk:getAkk($level,$no)"/>
          <xsl:if test="not($note)">
            <xsl:message terminate="yes">Fehler[normal,vers,refr,ending,bridge,instrum] in den Akkorden, Lied: <xsl:value-of select="$debug"/></xsl:message>
          </xsl:if>
@@ -416,9 +417,9 @@
 
  <xsl:template match="akks"> <!-- {{{ grab chords -->
    <xsl:choose>
-     <xsl:when test="contains(@transpose,',')"><xsl:value-of select="mine:noteAkks(substring-before(@transpose,','))"/></xsl:when>
-     <xsl:when test="@transpose"><xsl:value-of select="mine:noteAkks(@transpose)"/></xsl:when>
-     <xsl:otherwise><xsl:value-of select="mine:noteAkks()"/></xsl:otherwise>
+     <xsl:when test="contains(@transpose,',')"><xsl:value-of select="makk:noteAkks(substring-before(@transpose,','))"/></xsl:when>
+     <xsl:when test="@transpose"><xsl:value-of select="makk:noteAkks(@transpose)"/></xsl:when>
+     <xsl:otherwise><xsl:value-of select="makk:noteAkks()"/></xsl:otherwise>
    </xsl:choose>
    <xsl:apply-templates select="*|text()"/>
  </xsl:template>
@@ -488,7 +489,7 @@
  <xsl:template match="token/text()" mode="_grabakk">
    <xsl:param name="level"/>
    <xsl:param name="no"/>
-   <xsl:value-of select="mine:grabAkk($level,$no,.)"/>
+   <xsl:value-of select="makk:grabAkk($level,$no,.)"/>
  </xsl:template>
  <!-- }}} -->
 

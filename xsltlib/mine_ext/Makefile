@@ -1,7 +1,7 @@
-SOURCES=extension.cpp speed.cpp chord.cpp
+SOURCES=extension.c akk.cpp speed.c chord.cpp
 MODULE=thax_home_mine_ext.so
 
-CPPFLAGS=-O3 -Wall -DSTANDALONE
+CPPFLAGS=-O3 -Wall -DSTANDALONE -fPIC
 
 PACKAGES=libxslt
 

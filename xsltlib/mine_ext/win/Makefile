@@ -1,4 +1,4 @@
-SOURCES=extension.cpp speed.cpp chord.cpp
+SOURCES=extension.c akk.cpp speed.c chord.cpp
 MODULE=thax_home_mine_ext.dll
 
 MINGW=/export/wingcc/suse/usr/bin/i686-w64-mingw32-

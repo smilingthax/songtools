@@ -5,7 +5,7 @@
                 xmlns:func="http://exslt.org/functions"
                 xmlns:exsl="http://exslt.org/common"
                 xmlns:str="http://exslt.org/strings"
-                xmlns:mine="thax.home/mine-ext"
+                xmlns:mine="thax.home/mine-ext-speed"
                 extension-element-prefixes="exsl set func str mine">
 
  <xsl:output method="text" encoding="iso-8859-1"/>

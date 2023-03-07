@@ -9,12 +9,6 @@
 #include <libxslt/extensions.h>
 
 // Speed up functions
-extern "C" {
-  static void functionSubstKill(xmlXPathParserContextPtr ctxt, int nargs);
-  static void functionSubstAkkTex(xmlXPathParserContextPtr ctxt, int nargs);
-  static void functionHlpNLtxt(xmlXPathParserContextPtr ctxt, int nargs);
-  static void functionRepIt(xmlXPathParserContextPtr ctxt, int nargs);
-}
 
 static void functionSubstKill(xmlXPathParserContextPtr ctxt, int nargs)
 {
@@ -177,7 +171,7 @@ static void functionRepIt(xmlXPathParserContextPtr ctxt, int nargs)
   xmlXPathObjectPtr obj2 = valuePop(ctxt);
   xmlXPathObjectPtr obj1 = valuePop(ctxt);
   xmlNodeSetPtr nodelist=obj1->nodesetval;
-  int no = int(floor(xmlXPathCastToNumber(obj2) + .5));
+  int no = (int)floor(xmlXPathCastToNumber(obj2) + .5);
   if (no<0) {
     xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,"number must be positive\n");
     ctxt->error = XPATH_INVALID_OPERAND;
