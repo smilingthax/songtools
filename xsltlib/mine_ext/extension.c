@@ -1,17 +1,9 @@
 /* Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING */
 #include "extension.h"
-#include <math.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/xmlIO.h>
-#include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
-#include <libxslt/xslt.h>
-#include <libxslt/xsltInternals.h>
-#include <libxslt/transform.h>
 #include <libxslt/xsltutils.h>
 #include <libxslt/extensions.h>
-#include <libexslt/exslt.h>
 
 void *initMineExt(xsltTransformContextPtr ctxt, const xmlChar *URI)
 {

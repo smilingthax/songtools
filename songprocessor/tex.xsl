@@ -303,6 +303,9 @@
          <xsl:value-of select="substring-before($inText,'&#010;')"/>
          <xsl:variable name="part2" select="substring-after($inText,'&#010;')"/>
          <xsl:value-of select="substring($part2,str:string-anz-of($part2,' ')+1)"/>
+<!-- NOTE: mine-ext c impl continues at second nl:
+         <xsl:value-of select="str:killnl(substring($part2,str:string-anz-of($part2,' ')+1))"/>
+-->
        </xsl:when>
        <xsl:otherwise>
          <xsl:value-of select="$inText"/>

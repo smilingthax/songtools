@@ -17,9 +17,12 @@ static void functionSubstKill(xmlXPathParserContextPtr ctxt, int nargs)
     ctxt->error = XPATH_INVALID_ARITY;
     return;
   }
+
   // Argumente holen
-  xmlXPathObjectPtr obj1 = valuePop(ctxt);
-  xmlChar *str=xmlXPathCastToString(obj1);
+  xmlChar *str = xmlXPathPopString(ctxt);
+  if (!str) {
+    return;
+  }
 
   // transform
   int iA,iB=0;
@@ -30,7 +33,6 @@ static void functionSubstKill(xmlXPathParserContextPtr ctxt, int nargs)
     out=(char *)malloc(mlen);
     if (!out) {
       mlen=0;
-      xmlXPathFreeObject(obj1);
       xmlFree(str);
       return;
     }
@@ -53,7 +55,6 @@ static void functionSubstKill(xmlXPathParserContextPtr ctxt, int nargs)
       out=(char *)realloc(out,mlen);
       if (!out) {
         mlen=0;
-        xmlXPathFreeObject(obj1);
         xmlFree(str);
         return;
       }
@@ -61,9 +62,8 @@ static void functionSubstKill(xmlXPathParserContextPtr ctxt, int nargs)
   }
   out[iB]=0;
 
-  xmlXPathFreeObject(obj1);
   xmlFree(str);
-  valuePush(ctxt, xmlXPathNewString((xmlChar *)out));
+  valuePush(ctxt, xmlXPathNewCString(out));
 //  free(out);
 }
 
@@ -74,27 +74,31 @@ static void functionSubstAkkTex(xmlXPathParserContextPtr ctxt, int nargs)
     ctxt->error = XPATH_INVALID_ARITY;
     return;
   }
+
   // Argumente holen
-  xmlXPathObjectPtr obj2 = valuePop(ctxt);
-  xmlXPathObjectPtr obj1 = valuePop(ctxt);
-  xmlChar *note=xmlXPathCastToString(obj1);
-  xmlChar *txt=xmlXPathCastToString(obj2);
+  xmlChar *txt = xmlXPathPopString(ctxt);
+  if (!txt) {
+    return;
+  }
+  xmlChar *note = xmlXPathPopString(ctxt);
+  if (!note) {
+    xmlFree(txt);
+    return;
+  }
 
   int iA,iB=0;
-  char *out=(char *)malloc(xmlStrlen(note)+xmlStrlen(txt)+15);
+  xmlChar *out=xmlMalloc(xmlStrlen(note)+xmlStrlen(txt)+15);
   if (!out) {
-    xmlXPathFreeObject(obj1);
-    xmlXPathFreeObject(obj2);
     xmlFree(txt);
     xmlFree(note);
     return;
   }
   if (!*txt) {
-    strcpy(out,"\\akks{");iB=6;
+    strcpy((char *)out,"\\akks{");iB=6;
   } else if ( (*txt=='_')&&(txt[1]==0) ) {
-    strcpy(out,"\\akkt{");iB=6;
+    strcpy((char *)out,"\\akkt{");iB=6;
   } else {
-    strcpy(out,"\\akk{");iB=5;
+    strcpy((char *)out,"\\akk{");iB=5;
   }
   for (iA=0;note[iA];iA++) {
     if (note[iA]=='#') {
@@ -105,7 +109,7 @@ static void functionSubstAkkTex(xmlXPathParserContextPtr ctxt, int nargs)
     }
   }
   if (!*txt) {
-    strcpy(out+iB,"}{ }");iB+=4;
+    strcpy((char *)out+iB,"}{ }");iB+=4;
   } else if ( (*txt=='_')&&(txt[1]==0) ) {
     out[iB++]='}';
   } else {
@@ -121,12 +125,9 @@ static void functionSubstAkkTex(xmlXPathParserContextPtr ctxt, int nargs)
   }
   out[iB]=0;
 
-  xmlXPathFreeObject(obj1);
-  xmlXPathFreeObject(obj2);
   xmlFree(txt);
   xmlFree(note);
-  valuePush(ctxt, xmlXPathNewString((xmlChar *)out));
-  free(out);
+  xmlXPathReturnString(ctxt, out);
 }
 
 static void functionHlpNLtxt(xmlXPathParserContextPtr ctxt, int nargs)
@@ -136,9 +137,12 @@ static void functionHlpNLtxt(xmlXPathParserContextPtr ctxt, int nargs)
     ctxt->error = XPATH_INVALID_ARITY;
     return;
   }
+
   // Argumente holen
-  xmlXPathObjectPtr obj1 = valuePop(ctxt);
-  xmlChar *str=xmlXPathCastToString(obj1);
+  xmlChar *str = xmlXPathPopString(ctxt);
+  if (!str) {
+    return;
+  }
 
   // transform (in-place)
   int iA,iB=0;
@@ -155,9 +159,7 @@ static void functionHlpNLtxt(xmlXPathParserContextPtr ctxt, int nargs)
   }
   str[iB]=0;
 
-  xmlXPathFreeObject(obj1);
-  valuePush(ctxt, xmlXPathNewString(str));
-  xmlFree(str);
+  xmlXPathReturnString(ctxt, str);
 }
 
 static void functionRepIt(xmlXPathParserContextPtr ctxt, int nargs)
@@ -167,36 +169,37 @@ static void functionRepIt(xmlXPathParserContextPtr ctxt, int nargs)
     ctxt->error = XPATH_INVALID_ARITY;
     return;
   }
+
   // Argumente holen
-  xmlXPathObjectPtr obj2 = valuePop(ctxt);
-  xmlXPathObjectPtr obj1 = valuePop(ctxt);
-  xmlNodeSetPtr nodelist=obj1->nodesetval;
-  int no = (int)floor(xmlXPathCastToNumber(obj2) + .5);
+  float fno = xmlXPathPopNumber(ctxt);
+  if (xmlXPathCheckError(ctxt) || isnan(fno)) {
+    xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,"bad number\n");
+    ctxt->error = XPATH_INVALID_OPERAND;
+    return;
+  }
+  int no = (int)floor(fno + .5);
   if (no<0) {
     xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,"number must be positive\n");
     ctxt->error = XPATH_INVALID_OPERAND;
     return;
-  } else if (no==0) {
-    xmlXPathFreeObject(obj1);
-    xmlXPathFreeObject(obj2);
-    valuePush(ctxt, xmlXPathNewNodeSet(NULL));
-    return;
   }
+  xmlXPathObjectPtr obj1 = valuePop(ctxt);
 
-  if (xmlXPathNodeSetIsEmpty(nodelist)) {
-    xmlXPathFreeObject(obj2);
-    if ( (obj1->type==XPATH_STRING)&&(obj1->stringval)&&(*obj1->stringval) ) {
-      int len=strlen((char *)obj1->stringval);
-      char *ret=(char *)malloc(len*no+2),*tmp;
-      for (tmp=ret;no>0;no--) {
-        strcpy(tmp,(char *)obj1->stringval);
-        tmp+=len;
-      }
-      xmlXPathFreeObject(obj1);
-      valuePush(ctxt, xmlXPathNewString((xmlChar *)ret));
-      free(ret);
-      return;
+  if (no==0) {
+    xmlXPathFreeObject(obj1);
+    xmlXPathReturnEmptyNodeSet(ctxt);
+    return;
+  } else if ( (obj1->type==XPATH_STRING)&&(obj1->stringval)&&(*obj1->stringval) ) {
+    int len=xmlStrlen(obj1->stringval);
+    xmlChar *ret=xmlMalloc(len*no+2),*tmp;
+    for (tmp=ret;no>0;no--) {
+      strcpy((char *)tmp,(char *)obj1->stringval);
+      tmp+=len;
     }
+    xmlXPathFreeObject(obj1);
+    xmlXPathReturnString(ctxt, ret);
+    return;
+  } else if (xmlXPathNodeSetIsEmpty(obj1->nodesetval)) {
     valuePush(ctxt, obj1);
     return;
   }
@@ -206,6 +209,7 @@ static void functionRepIt(xmlXPathParserContextPtr ctxt, int nargs)
   if (tctxt == NULL) {
     xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,
         "RepIt : internal error tctxt == NULL\n");
+    xmlXPathFreeObject(obj1);
     return;
   }
 
@@ -218,22 +222,20 @@ static void functionRepIt(xmlXPathParserContextPtr ctxt, int nargs)
     xsltRegisterLocalRVT(tctxt, container);
     ret = xmlXPathNewNodeSet(NULL);
     if (ret != NULL) {
+      xmlNodeSetPtr nodelist=obj1->nodesetval;
       for (;no>0;no--) {
         for (iA=0;iA<nodelist->nodeNr;iA++) {
           node=xmlCopyNode(nodelist->nodeTab[iA],1);
-          if (xmlAddChild((xmlNodePtr) container, node)==node) { // not merged
+          if (xmlAddChild((xmlNodePtr)container, node)==node) { // not merged
             xmlXPathNodeSetAdd(ret->nodesetval, node);
           }
         }
       }
     }
   }
-
   xmlXPathFreeObject(obj1);
-  xmlXPathFreeObject(obj2);
-  if (ret) {
-    valuePush(ctxt, ret);
-  }
+
+  valuePush(ctxt, ret);
 }
 
 void *initSpeedExt(xsltTransformContextPtr ctxt, const xmlChar *URI)
