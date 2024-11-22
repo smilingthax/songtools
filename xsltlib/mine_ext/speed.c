@@ -2,6 +2,7 @@
 #include "extension.h"
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
 #include <libxml/xpathInternals.h>
 #include <libxslt/xslt.h>
 //#include <libxslt/xsltInternals.h>

@@ -71,7 +71,7 @@ static int get_png_size(const char *URI,xmlChar *retwidth,xmlChar *retheight,int
 }
 
 #define jpeg_SOF0  0xffc0
-#define jpeg_SOF3  0xffc0
+#define jpeg_SOF3  0xffc3
 #define jpeg_SOI   0xffd8
 #define jpeg_EOI   0xffd9
 #define jpeg_SOS   0xffda
