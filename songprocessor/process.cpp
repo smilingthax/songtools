@@ -22,12 +22,8 @@
 
 using namespace std;
 
-extern int xmlLoadExtDtdDefaultValue;
 void init_transformer()
 {
-  xmlSubstituteEntitiesDefault(0);
-  xmlLoadExtDtdDefaultValue = 1;
-
 //  xsltSetGenericDebugFunc(stderr, NULL);
   exsltRegisterAll();
   load_mine_ext();
@@ -55,10 +51,15 @@ bool do_transform(const char *inputFile,const char *outputFile,const char **inte
   // Load input
   unique_xmlDoc doc, res;
   if (inputFile) {
-//    doc.reset(xmlReadFile(inputFile,"iso-8859-1",0));
-    doc.reset(xmlParseFile(inputFile));
+#if LIBXML_VERSION >= 21300
+    doc.reset(xmlReadFile(inputFile,NULL,XML_PARSE_NO_XXE | XML_PARSE_NONET));
   } else {
-    doc.reset(xmlParseFile("songs.xml"));
+    doc.reset(xmlReadFile("songs.xml",NULL,XML_PARSE_NO_XXE | XML_PARSE_NONET));
+#else
+    doc.reset(xmlReadFile(inputFile,NULL,XML_PARSE_NONET)); // esp. ~(XML_PARSE_NOENT | XML_PARSE_DTDLOAD  | XML_PARSE_DTDVALID | XML_PARSE_DTDATTR)
+  } else {
+    doc.reset(xmlReadFile("songs.xml",NULL,XML_PARSE_NONET));
+#endif
   }
   if (!doc) {
     return false;
