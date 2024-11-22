@@ -28,6 +28,8 @@
    <lang short="sw">Suaheli</lang><!-- od: Swahili -->
    <lang short="gsw">Schweizerdeutsch</lang>
    <lang short="zh">Chinesisch</lang>
+   <lang short="nl">Niederländisch</lang>
+   <lang short="cy">Walisisch</lang>
  </xsl:variable>
 
  <xsl:template name="full-lang">

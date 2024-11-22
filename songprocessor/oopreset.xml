@@ -59,7 +59,7 @@
     <set-fullimg x="0" y="0" width="28" height="21"/> <!-- no units, no svg: namespace! -->
     <set-partimg x="0" y="0.1" width="28" height="19.23"/> <!-- y: trial and error; height: only top part used -->
     <poststatic>
-      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="10.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
         <draw:text-box>
           <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p>
         </draw:text-box>
@@ -77,13 +77,13 @@
     <set-pgof svg:x="30.77cm" svg:y="21.1cm" svg:width="1.5cm" svg:height="0cm"/>
     <set-fullimg x="0" y="0" width="37.33" height="21"/>
     <set-partimg x="4.5" y="0.6" width="28" height="19.23" ypos="0"/> <!-- xpos/ypos: 0 left, 0.5 center(default), 1 right -->
-    <premaster style:page-layout-name="PM3">
+    <premaster style:page-layout-name="PM3"> <!-- 16:9 with 37.33cm x 21cm -->
       <draw:frame draw:style-name="gr2" draw:text-style-name="P2" draw:layer="layout" svg:width="21.0cm" svg:height="4.5cm" draw:transform="rotate (1.5707963267946) translate (0cm 21.0cm)">
         <draw:image xlink:href="Pictures/nok-bg.jpg" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/>
       </draw:frame>
     </premaster>
     <poststatic>
-      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="5.0cm" svg:y="21.1cm">
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="10.5cm" svg:height="0cm" svg:x="5.0cm" svg:y="21.1cm">
         <draw:text-box>
           <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p>
         </draw:text-box>
@@ -107,7 +107,7 @@
       </draw:frame>
     </prestatic>
     <poststatic>
-      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="5.0cm" svg:y="21.1cm">
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="10.5cm" svg:height="0cm" svg:x="5.0cm" svg:y="21.1cm">
         <draw:text-box>
           <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p>
         </draw:text-box>
@@ -133,7 +133,27 @@
       </draw:frame>
     </prestatic>
   </preset>
-  <preset name="kleinfeg" fwd="kleinfeg.4_3"/>
+  <preset name="kleinfeg" fwd="kleinfeg.16_10"/>
+  <preset name="kleinfeg.16_10">
+    <black/>
+    <ccli/>
+    <content>oo-template/content-1.xml</content>
+    <linesPerPage>13</linesPerPage>
+    <set-text draw:style-name="gr2" svg:x="0.6cm" svg:y="-0.15cm" svg:width="30.8cm" svg:height="19.05cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
+    <set-rights svg:x="0.6cm" svg:y="19.66cm" svg:width="18.5cm" svg:height="0cm"/>
+    <set-from svg:x="21.7cm" svg:y="20.1cm" svg:width="8cm" svg:height="0cm"/>
+    <set-lb svg:x="28cm" svg:y="1.2cm" svg:width="3.0cm" svg:height="2.0cm"/>
+    <set-pgof svg:x="30.4cm" svg:y="20.1cm" svg:width="1.6cm" svg:height="0cm"/>
+    <set-fullimg x="0" y="0" width="32" height="20"/>
+    <set-partimg x="0.85" y="0.1" width="31.3" height="18.7" xpos="0" aspectHack="0.25"/>
+    <poststatic>
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="10.5cm" svg:height="0cm" svg:x="0.6cm" svg:y="20.1cm">
+        <draw:text-box>
+          <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p>
+        </draw:text-box>
+      </draw:frame>
+    </poststatic>
+  </preset>
   <preset name="kleinfeg.4_3">
     <black/>
     <ccli/>
@@ -147,7 +167,7 @@
     <set-fullimg x="0" y="0" width="28" height="21"/>
     <set-partimg x="0" y="0.6" width="28" height="19.23" ypos="0"/>
     <poststatic>
-      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="10.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
         <draw:text-box>
           <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der FeG</text:p>
         </draw:text-box>
@@ -213,12 +233,12 @@
     <set-fullimg x="0" y="0" width="28" height="21"/>
     <set-partimg x="0" y="0.6" width="28" height="19.23" ypos="0"/>
     <poststatic>
-      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="8.6cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
+      <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="10.5cm" svg:height="0cm" svg:x="0.5cm" svg:y="21.1cm">
         <draw:text-box>
           <text:p text:style-name="P1">Nur für den gottesdienstlichen Gebrauch in der CGA</text:p>
         </draw:text-box>
       </draw:frame>
     </poststatic>
   </preset>
-  <preset name="cli" fwd="feg.4_3"/>
+  <preset name="cli" fwd="feg.16_10"/>
 </presets>

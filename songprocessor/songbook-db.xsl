@@ -14,6 +14,7 @@
    <book short="FJ3">Feiert Jesus! 3</book>
    <book short="FJ4">Feiert Jesus! 4</book>
    <book short="FJ5">Feiert Jesus! 5</book>
+   <book short="FJ6">Feiert Jesus! 6</book>
    <book short="FJTOGO">Feiert Jesus! to go</book>
    <book short="FJCon">Feiert Jesus! Connect</book>
    <book short="FJKids">Feiert Jesus! Kids</book>
