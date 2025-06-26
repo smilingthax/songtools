@@ -482,17 +482,30 @@ void ProcTraverse::flush() // {{{
   // state machine to encapsulate everything not in a block tag into <base></base>
   enum { Yes, Doing, No } base=Yes;
   bool hasBr=true; // (value only used when base==Doing)
+  int insideInline=0; // (only relevant when base==Doing)
   while (queue) {
-    if ( (queue->is_element_open())&&(is_blocktag(queue->name)) ) {
-      if (base==Doing) {
-        if (!hasBr) {
-          extra_br(tb);
+    if (queue->is_element_open()) {
+      if (is_blocktag(queue->name)) {
+        if (base==Doing) {
+          if (!hasBr) {
+            extra_br(tb);
+          }
+          tb.closeNode((const xmlChar*)"base");
         }
-        tb.closeNode((const xmlChar*)"base");
+        base=No;
+      } else { // inline tag...
+        if (base==Yes) {
+          tb.openNode((const xmlChar*)"base");
+          base=Doing;
+        } // else if (base==Doing)
+        insideInline++;  // "good enough", correct pairing is checked elsewhere.
       }
-      base=No;
-    } else if ( (queue->is_element_close())&&(is_blocktag(queue->name)) ) {
-      base=Yes;
+    } else if (queue->is_element_close()) {
+      if (is_blocktag(queue->name)) {
+        base=Yes;
+      } else {  // if (base==Doing)
+        insideInline--;
+      }
     } else if ( (base==Yes)&&(!queue->is_whitespace(true)) ) {
       tb.openNode((const xmlChar*)"base");
       base=Doing;
@@ -500,7 +513,7 @@ void ProcTraverse::flush() // {{{
     queue->build(tb);
     if (base==Doing) {
       if (queue->is_br()) {
-        if (queue->no>1) {
+        if ( (queue->no>1)&&(insideInline==0) ) {
           tb.closeNode((const xmlChar*)"base");
           base=Yes;
         } else {
