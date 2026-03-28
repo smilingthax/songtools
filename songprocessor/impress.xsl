@@ -568,7 +568,7 @@
      <xsl:attribute name="no"><!-- sum of lines up to here -->
        <xsl:value-of select="count($tr1[@text:style-name!='P3'])*2+
                              count($tr1[@text:style-name='P3'])-
-                             count($tr1[child::text:span[@text:style-name='Txlang']])*0.5"/>
+                             count($tr1[contains(@text:style-name,'-xlang')])*0.5"/>  <!-- (2-0.5)/2 = 0.75  (= 24pt/32pt) -->
      </xsl:attribute>
      <xsl:attribute name="self"><!-- number of lines contained inside this <page-cand>..</page-cand> -->
        <xsl:value-of select="func:if(node(),count(text:p[@text:style-name!='P3'])*2+
