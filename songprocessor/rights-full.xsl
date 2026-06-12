@@ -14,7 +14,7 @@
  <!-- TODO? output only those subverlage where @for contains 'D' (Problem e.g. 'Europe') [to do in output plugin?] -->
 
  <!-- rights-template {{{ -->
- <!-- converts all <rights|rights-full @no @for>-tags from >inNodes into appropriate <rights @no><*-full @for></rights>-trees.
+ <!-- converts all <rights|rights-full @no @for>-tags from >inNodes into appropriate <rights @no><*-full @for @lang></rights>-trees.
       >verbose controls debug output -->
  <xsl:template name="rights">
    <xsl:param name="inNodes" select="."/>
@@ -24,11 +24,11 @@
    </xsl:apply-templates>
  </xsl:template>
 
- <!-- the '<rights><text year="1992,1993">adsf</text><melody>bla</melody></rights>' case -->
+ <!-- the '<rights><text year="1992,1993" [lang="de"]>adsf</text><melody>bla</melody></rights>' case -->
  <xsl:template match="rights[*]" mode="_do_rights">
    <xsl:param name="verbose"/>
    <xsl:copy>
-     <xsl:if test="@no"><xsl:attribute name="no"><xsl:value-of select="@no"/></xsl:attribute></xsl:if>
+     <xsl:copy-of select="@no"/>
      <xsl:apply-templates match="*" mode="_do_one_rights">
        <xsl:with-param name="title" select="../title[1]/text()"/>
        <xsl:with-param name="for" select="@for"/>
@@ -88,6 +88,7 @@
    <xsl:param name="for"/>
    <xsl:param name="verbose"/>
    <xsl:copy>
+     <xsl:copy-of select="@lang"/>
      <xsl:choose>
        <xsl:when test="@for"><xsl:attribute name="for"><xsl:value-of select="@for"/></xsl:attribute></xsl:when>
        <xsl:when test="$for"><xsl:attribute name="for"><xsl:value-of select="$for"/></xsl:attribute></xsl:when>
@@ -127,6 +128,7 @@
      <xsl:message terminate="yes">Song "<xsl:value-of select="$title"/>" has subverlag entry which also has a subverlag</xsl:message>
    </xsl:if>
    <xsl:element name="{$full-name}"><!-- base entry -->
+     <xsl:copy-of select="@lang"/>
      <xsl:choose>
        <xsl:when test="@for"><xsl:attribute name="for"><xsl:value-of select="@for"/></xsl:attribute></xsl:when>
        <xsl:when test="$for"><xsl:attribute name="for"><xsl:value-of select="$for"/></xsl:attribute></xsl:when>
@@ -138,6 +140,7 @@
    </xsl:element>
    <xsl:for-each select="$outNodes/has-verlag/subverlag"><!-- subverlag entrys -->
      <xsl:element name="{$full-name}">
+       <xsl:copy-of select="@lang"/>
        <xsl:attribute name="for"><xsl:value-of select="@for"/></xsl:attribute>
        <xsl:value-of select="text()"/>
      </xsl:element>
@@ -226,15 +229,18 @@
        </xsl:call-template>
      </xsl:variable>
      <xsl:variable name="right" select="exsl:node-set($right-hlp)"/>
-     <!-- TODO? check format of $right: <rights @no><*-full @for>text</*-full>*</rights> -->
+     <!-- TODO? check format of $right: <rights @no><*-full @for @lang>text</*-full>*</rights> -->
      <xsl:variable name="right-subset"><!-- sort by @no; use last, if multiple tags -->
        <xsl:call-template name="collapse_rights">
          <xsl:with-param name="inRights" select="$right/rights[not(@no)][last()]"/>
+         <xsl:with-param name="lang" select="$lang"/>
          <xsl:with-param name="withArrangement" select="$withArrangement"/>
        </xsl:call-template>
        <xsl:for-each select="$right/rights/@no">
+         <xsl:sort data-type="number"/>
          <xsl:call-template name="collapse_rights">
            <xsl:with-param name="inRights" select="$right/rights[@no=current()][last()]"/>
+           <xsl:with-param name="lang" select="$lang"/>
            <xsl:with-param name="withArrangement" select="$withArrangement"/>
          </xsl:call-template>
        </xsl:for-each>
@@ -421,62 +427,64 @@
 
  <xsl:template name="collapse_rights">
    <xsl:param name="inRights"/>
+   <xsl:param name="lang"/>
    <xsl:param name="withArrangement"/>
    <xsl:variable name="tokens">
      <xsl:for-each select="$inRights"><!-- ensure context -->
-       <xsl:if test="common-full[not(@for)]">
+       <xsl:variable name="subset" select="*[not($lang) or not(@lang) or @lang=$lang]"/>
+       <xsl:if test="$subset[self::common-full][not(@for)]">
          <token>
-           <xsl:value-of select="common-full[not(@for)][last()]"/>
+           <xsl:value-of select="$subset[self::common-full][not(@for)][last()]"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
-       <xsl:if test="text-full[not(@for)]">
+       <xsl:if test="$subset[self::text-full][not(@for)]">
          <token>
            <xsl:text>(Text:) </xsl:text>
-           <xsl:value-of select="text-full[not(@for)][last()]"/>
+           <xsl:value-of select="$subset[self::text-full][not(@for)][last()]"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
-       <xsl:if test="melody-full[not(@for)]">
+       <xsl:if test="$subset[self::melody-full][not(@for)]">
          <token>
            <xsl:text>(Melodie:) </xsl:text>
-           <xsl:value-of select="melody-full[not(@for)][last()]"/>
+           <xsl:value-of select="$subset[self::melody-full][not(@for)][last()]"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
-       <xsl:if test="arrangement-full[not(@for)] and $withArrangement">
+       <xsl:if test="$subset[self::arrangement-full][not(@for)] and $withArrangement">
          <token>
            <xsl:text>(Satz:) </xsl:text>
-           <xsl:value-of select="arrangement-full[not(@for)][last()]"/>
+           <xsl:value-of select="$subset[self::arrangement-full][not(@for)][last()]"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
 
-       <xsl:if test="common-full[@for]">
+       <xsl:if test="$subset[self::common-full][@for]">
          <token>
-           <xsl:text>Für </xsl:text><xsl:value-of select="common-full[@for][last()]/@for"/><xsl:text>: </xsl:text>
-           <xsl:value-of select="common-full[@for][last()]"/>
+           <xsl:text>Für </xsl:text><xsl:value-of select="$subset[self::common-full][@for][last()]/@for"/><xsl:text>: </xsl:text>
+           <xsl:value-of select="$subset[self::common-full][@for][last()]"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
-       <xsl:if test="text-full[@for]">
+       <xsl:if test="$subset[self::text-full][@for]">
          <token>
-           <xsl:text>Für </xsl:text><xsl:value-of select="text-full[@for][last()]/@for"/><xsl:text> (Text): </xsl:text>
-           <xsl:value-of select="text-full[@for][last()]"/>
+           <xsl:text>Für </xsl:text><xsl:value-of select="$subset[self::text-full][@for][last()]/@for"/><xsl:text> (Text): </xsl:text>
+           <xsl:value-of select="$subset[self::text-full][@for][last()]"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
-       <xsl:if test="melody-full[@for]">
+       <xsl:if test="$subset[self::melody-full][@for]">
          <token>
-           <xsl:text>Für </xsl:text><xsl:value-of select="melody-full[@for][last()]/@for"/><xsl:text> (Melodie): </xsl:text>
-           <xsl:value-of select="melody-full[@for][last()]"/>
+           <xsl:text>Für </xsl:text><xsl:value-of select="$subset[self::melody-full][@for][last()]/@for"/><xsl:text> (Melodie): </xsl:text>
+           <xsl:value-of select="$subset[self::melody-full][@for][last()]"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
-       <xsl:if test="arrangement-full[@for] and $withArrangement">
+       <xsl:if test="$subset[self::arrangement-full][@for] and $withArrangement">
          <token>
-           <xsl:text>Für </xsl:text><xsl:value-of select="arrangement-full[@for][last()]/@for"/><xsl:text> (Satz): </xsl:text>
-           <xsl:value-of select="arrangement-full[@for][last()]"/>
+           <xsl:text>Für </xsl:text><xsl:value-of select="$subset[self::arrangement-full][@for][last()]/@for"/><xsl:text> (Satz): </xsl:text>
+           <xsl:value-of select="$subset[self::arrangement-full][@for][last()]"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
