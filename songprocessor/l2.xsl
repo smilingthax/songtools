@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                 xmlns:set="http://exslt.org/sets"
@@ -8,7 +8,7 @@
                 xmlns:mine="thax.home/mine-ext-speed"
                 extension-element-prefixes="exsl set func str mine">
 
- <xsl:output method="text" encoding="iso-8859-1"/>
+ <xsl:output method="text" encoding="utf-8"/>
  <xsl:variable name="nl"><xsl:text>
 </xsl:text></xsl:variable>
  <xsl:variable name="tab"><xsl:text>	</xsl:text></xsl:variable>

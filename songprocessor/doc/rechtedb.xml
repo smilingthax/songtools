@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING -->
 <docu title="Dateiformat der verlage.xml">
 
@@ -7,7 +7,7 @@
   <verlag name="[Kurzname]">Volle Verlagsangabe (Adresse?)</verlag>
 
   <subverlag verlag="[Kurzname des Hauptverlags]" 
-             for="[Kommagetrennte Liste von Ländern]">(Kurz-)name des zuständigen Subverlags</subverlag>
+             for="[Kommagetrennte Liste von LÃ¤ndern]">(Kurz-)name des zustÃ¤ndigen Subverlags</subverlag>
 </verlage>
   </code>
 

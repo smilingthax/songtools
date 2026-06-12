@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                 xmlns:func="http://exslt.org/functions"
@@ -6,7 +6,7 @@
                 xmlns:str="http://exslt.org/strings"
                 extension-element-prefixes="func exsl str">
 
- <xsl:output method="html" encoding="iso-8859-1" indent="no"/>
+ <xsl:output method="html" encoding="utf-8" indent="no"/>
  <xsl:variable name="nl"><xsl:text>
 </xsl:text></xsl:variable>
  <xsl:variable name="root" select="/"/>
@@ -19,14 +19,14 @@
    <html>
      <head>
        <title><xsl:value-of select="@title"/></title>
-       <style title="normal">
+       <style media="screen">
          a:link      { color:#f00000; text-decoration: none; }
          a:visited   { color:#f00000; text-decoration: none; }
          a:hover     { color:#f00000; text-decoration: underline; }
          div.code    { background-color: #e0e0e0; width: 50%; }
          div.badcode { background-color: #ffe0e0; width: 50%; }
        </style>
-       <style title="print">
+       <style media="print">
          body        { background-color: #ffffff; }
          a:link      { color:#000000; text-decoration: none; font-weight: bold; }
          a:visited   { color:#000000; text-decoration: none; font-weight: bold; }
@@ -239,9 +239,9 @@
          </xsl:otherwise>
        </xsl:choose>
      </xsl:when>
-     <xsl:when test="contains($inText,'§')">
-       <xsl:value-of select="substring-before($inText,'§')"/>
-       <xsl:variable name="part2" select="substring-after($inText,'§')"/>
+     <xsl:when test="contains($inText,'Â§')">
+       <xsl:value-of select="substring-before($inText,'Â§')"/>
+       <xsl:variable name="part2" select="substring-after($inText,'Â§')"/>
        <xsl:choose>
          <xsl:when test="contains($part2,'>')">
            <xsl:call-template name="link-tag">

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING -->
 <docu title="Dateiformat der songs.xml">
 <!--  <a href="/~teestube/admin.php?id=2&amp;iid=songs">Lieder-status</a> (Vorher als Admin einloggen)<br/>-->
@@ -6,9 +6,9 @@
   <section id="general">Generelles</section>
   Das Dateiformat basiert auf <a href="http://www.w3.org/TR/REC-xml/">XML</a> und wird mittels
   <a href="http://www.w3.org/TR/xslt/">XSLT</a>-Stylesheets und einiger Extension-Funktionen verarbeitet.<br/>
-  Wichtig ist daher, dass die Tags immer klein geschrieben werden, und Attributwerte immer in Anführungszeichen
+  Wichtig ist daher, dass die Tags immer klein geschrieben werden, und Attributwerte immer in AnfÃ¼hrungszeichen
   stehen.<br/>
-  Falsch wäre:
+  Falsch wÃ¤re:
   <code bad="1">
 <SONGS>
   <song>
@@ -17,7 +17,7 @@
 </SONGS>
   </code>
   etc.<br/>
-  Korrekt wäre gewesen:
+  Korrekt wÃ¤re gewesen:
   <code>
 <songs>
   <song>
@@ -27,9 +27,9 @@
   </code>
 
   <section id="struct">Dateistruktur</section>
-  Hier ist eine grobe Skizze der Dateistruktur. Die Tags werden weiter unten genauer erläutert.
+  Hier ist eine grobe Skizze der Dateistruktur. Die Tags werden weiter unten genauer erlÃ¤utert.
   <code>
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <songs>
 <blkp/>
 <song>
@@ -52,11 +52,11 @@
   <title lang="de">Liedtitel in Deutsch</title>
   <title lang="en">Liedtitel in Englisch</title>
   <text-by>Textautor(Originalsprache)</text-by>
-  <text-by lang="de">Textautor der deutschen Übersetzung</text-by>
+  <text-by lang="de">Textautor der deutschen Ãœbersetzung</text-by>
   <melody-by>Melodieautor</melody-by>
 
   <akks transpose="+4">
-    Akkorde, in der Ausgabe 4 Halbtöne höher
+    Akkorde, in der Ausgabe 4 HalbtÃ¶ne hÃ¶her
   </akks>
   <content lang="de">
     Liedtext in Deutsch
@@ -86,18 +86,18 @@
   </code>
 
   <tag>songs</tag>
-  Diese Tag umschließt das gesamte Dokument. Siehe <ref to="general"/>.
+  Diese Tag umschlieÃŸt das gesamte Dokument. Siehe <ref to="general"/>.
 
   <tag>blkp</tag>
-  Diese Tag erzeugt eine schwarze Folie (abhängig vom Ausgabeformat). Siehe <ref to="struct"/>.
+  Diese Tag erzeugt eine schwarze Folie (abhÃ¤ngig vom Ausgabeformat). Siehe <ref to="struct"/>.
 
   <tag>img</tag>
   <attr name="href">Pfad der Bilddatei.</attr>
-  <attr opt="1" name="whitebg">Weißer Hintergrund.</attr>
+  <attr opt="1" name="whitebg">WeiÃŸer Hintergrund.</attr>
   <attr opt="1" name="blackbg">Schwarzer Hintergrund.</attr>
   <attr opt="1" name="border">Abstand zum Rand in Zentimetern.</attr>
-  <attr opt="1" name="force-lb">Liederbuchnummer nicht unterdrücken (impress).</attr>
-  Diese Tag erzeugt eine Folie, die das Bild <attref name="href"/> enthält (abhängig vom Ausgabeformat). Siehe <ref to="struct"/>.<br/>
+  <attr opt="1" name="force-lb">Liederbuchnummer nicht unterdrÃ¼cken (impress).</attr>
+  Diese Tag erzeugt eine Folie, die das Bild <attref name="href"/> enthÃ¤lt (abhÃ¤ngig vom Ausgabeformat). Siehe <ref to="struct"/>.<br/>
   Das Bild wird zentriert und proportional maximal skaliert, wobei mit <attref name="border"/> ein Rand erzwungen werden kann.
   Bei dieses Attribut wird in Zentimetern (nur der Zahlenwert!) angegeben; bei Verwendung der impress-Ausgabe hat eine Folie
   derzeit 28 x 21 cm.<br/>
@@ -106,14 +106,14 @@
 <img href="halleluja.png" whitebg="1" border="1"/>
 <img href="kreuz.jpg" blackbg="1"/>
   </code>
-  Derzeit wird PNG und JPEG als Bildformat unterstützt. Die gleichzeitige Verwendung von <attref name="blackbg"/> und
-  <attref name="whitebg"/> ist nicht sinnvoll (Diese beiden Attribute werden möglicherweise bald ersetzt werden).
+  Derzeit wird PNG und JPEG als Bildformat unterstÃ¼tzt. Die gleichzeitige Verwendung von <attref name="blackbg"/> und
+  <attref name="whitebg"/> ist nicht sinnvoll (Diese beiden Attribute werden mÃ¶glicherweise bald ersetzt werden).
 
   <tag>song</tag>
   Jedes Lied wird von diesem Tag begrenzt. Siehe <ref to="struct"/>.
 
   <tag>title</tag>
-  <attr opt="1" name="lang">(Lied-)Sprache für die der Titel gilt (siehe §content>).</attr>
+  <attr opt="1" name="lang">(Lied-)Sprache fÃ¼r die der Titel gilt (siehe Â§content>).</attr>
   Um den(einen) Titel des Liedes anzugeben. Mehrere Titel werden mit mehreren tags angegeben:
   <code>
 <title>Titel 1</title>
@@ -126,10 +126,10 @@
 <title lang="en">Title (englisch)</title>
   </code>
   Ein Lied das nicht in Originalsprache eingegeben ist sollte trotzdem den titel in
-  Orginalsprache enthalten. In der Ausgabe werden solche Titel normalerweise unterdrückt.
+  Orginalsprache enthalten. In der Ausgabe werden solche Titel normalerweise unterdrÃ¼ckt.
 
-  <tag>author</tag>(veraltet, stattdessen: §text-by>,§melody-by>,§rights>)<br/>
-  <attr opt="1" name="lang">(Lied-)Sprache für die der Autor gilt (siehe §content>).</attr>
+  <tag>author</tag>(veraltet, stattdessen: Â§text-by>,Â§melody-by>,Â§rights>)<br/>
+  <attr opt="1" name="lang">(Lied-)Sprache fÃ¼r die der Autor gilt (siehe Â§content>).</attr>
   Hier gibt man an, wer Rechteinhaber und wer Autor des Liedes ist.
   <code>
 <author>XY Publishing/Autor Orignalsprache</author>
@@ -141,10 +141,10 @@
   </code>
 
   <tag>text-by</tag>
-  <attr opt="1" name="lang">(Lied-)Sprache für die jeweilige Übersetzung (siehe §content>).</attr>
+  <attr opt="1" name="lang">(Lied-)Sprache fÃ¼r die jeweilige Ãœbersetzung (siehe Â§content>).</attr>
   Hier gibt man den Autor des Liedtextes an. <attref name="lang"/> muss bei allen
-  Übersetzungen angegeben werden, jedoch nie beim Autor des Originaltextes.
-  Mehrere Autoren werden mit Komma getrennt; Der Schrägstrich wird verwendet, um
+  Ãœbersetzungen angegeben werden, jedoch nie beim Autor des Originaltextes.
+  Mehrere Autoren werden mit Komma getrennt; Der SchrÃ¤gstrich wird verwendet, um
   verschiedene, gleichbedeutende Aussagen zu trennen.
   <code>
 <text-by>David Ruis, Matt Redman</text-by>
@@ -155,7 +155,7 @@
   Angabe des Autors der Melodie.
 
   <tag>rights</tag>
-  <attr opt="1" name="no">Liedteil, für den die Rechteangabe gilt.
+  <attr opt="1" name="no">Liedteil, fÃ¼r den die Rechteangabe gilt.
                           <ref to="attr_no_info">Mehr Infos...</ref></attr>
   Um die Rechte anzugeben verwendet man dieses Tag.<br/>
   Es gibt zum einen die Kurzform des Tags:
@@ -163,7 +163,7 @@
 <rights>1998,1999 Mercy/Vineyard</rights>
   </code>
   Hier zum Beispiel mehrere Jahre mit Komma, aber ohne Leerzeichen getrennt.
-  Jahresangaben müssen nicht vorkommen, falls aber, so müssen sie am Anfang stehen
+  Jahresangaben mÃ¼ssen nicht vorkommen, falls aber, so mÃ¼ssen sie am Anfang stehen
   <br/><br/>
   <code>
 <rights>Glorie Music / Universal Songs</rights>
@@ -171,49 +171,49 @@
   Rechte bei erstgenannten Verlag, verwaltet werden die aber (auch?) vom zweit-(dritt-...)genannten.
   Der Zeichenkette " / " kommt hierbei besondere Bedeutung zu. Innerhalb eines Verlagsnames ist daher stets "/" ohne Leerzeichen zu verwenden.
 
-  Bei all den gennanten Beispielen werden die Verlage mit Hilfe einer Rechte-abkürzungs-datenbank(verlage.xml) ermittelt. Insbesondere wird
-  auch der für (z.B.) Deutschland zuständigen Rechteverwalter(Subverlag) dabei ergänzt.
+  Bei all den gennanten Beispielen werden die Verlage mit Hilfe einer Rechte-abkÃ¼rzungs-datenbank(verlage.xml) ermittelt. Insbesondere wird
+  auch der fÃ¼r (z.B.) Deutschland zustÃ¤ndigen Rechteverwalter(Subverlag) dabei ergÃ¤nzt.
   <br/><br/>
 
   <tag linkonly="1">common</tag><tag linkonly="1">text</tag><tag linkonly="1">melody</tag><tag linkonly="1">arrangement</tag>
   <tag linkonly="1">common-full</tag><tag linkonly="1">text-full</tag><tag linkonly="1">melody-full</tag><tag linkonly="1">arrangement-full</tag>
-  Zum Anderen gibt es folgende wesentlich mächtigere Form des Tags:<br/>
+  Zum Anderen gibt es folgende wesentlich mÃ¤chtigere Form des Tags:<br/>
   Die obigen beiden Beispiel sehen dann wie folgt aus:
   <code>
 <rights><common year="1998,1999">Mercy/Vineyard</common></rights>
 <rights><common>Glorie Music / Universal Songs</common></rights>
   </code>
-  Es gibt aber weit mehr Möglichkeiten:
+  Es gibt aber weit mehr MÃ¶glichkeiten:
   <code>
-<rights><common>Hänssler</common><arrangement>Gerth Medien</arrangement></rights>
+<rights><common>HÃ¤nssler</common><arrangement>Gerth Medien</arrangement></rights>
 <rights><text year="1992">Gerth Medien</text><melody>Vineyard</melody></rights>
 <rights><text-full>1983 Beliebiger Text /asdf elk</text-full>
-        <text for="D,A,CH">Hänssler</text>
+        <text for="D,A,CH">HÃ¤nssler</text>
   </code>
   Es gibt hier also Subtags (&lt;common>,&lt;text>,&lt;melody>,&lt;arrangement>), die die Rechtedatenbank verwenden, als
-  auch jeweils eine Variante, die das nicht tut (&lt;common-full>,&lt;text-full>,...) -- deren Inhalt wird wortwörtlich übernommen.
-  Daher dürfen auch nur die erstgenannten Subtags das <attref name="year"/>-Attribut enthalten (dort sind keine Jahreszahlen im Text mit
-  dem Verlag zugelassen -- im Gegensatz zum Kurzform des §rights>-Tag!).
+  auch jeweils eine Variante, die das nicht tut (&lt;common-full>,&lt;text-full>,...) -- deren Inhalt wird wortwÃ¶rtlich Ã¼bernommen.
+  Daher dÃ¼rfen auch nur die erstgenannten Subtags das <attref name="year"/>-Attribut enthalten (dort sind keine Jahreszahlen im Text mit
+  dem Verlag zugelassen -- im Gegensatz zum Kurzform des Â§rights>-Tag!).
   <br/><br/>
 
   <tag linkonly="1">attr_no_info</tag>
-  Wenn für verschiedene Teile eines Liedes verschiedene Verlage zuständig sind:
+  Wenn fÃ¼r verschiedene Teile eines Liedes verschiedene Verlage zustÃ¤ndig sind:
   <code>
 <rights>Thankyou Music</rights>
 <rights no="2"><common>JmeM</common></rights>
   </code>
-  Werden mehrere §rights>-Tags mit gleichem(bzw. keinem) Attribut <attref name="no"/> zu einem Lied angegeben,
-  so wird derzeit die jeweils letztaufgeführte ausgegeben.
+  Werden mehrere Â§rights>-Tags mit gleichem(bzw. keinem) Attribut <attref name="no"/> zu einem Lied angegeben,
+  so wird derzeit die jeweils letztaufgefÃ¼hrte ausgegeben.
   <br/><br/>
 
-  Schließlich können mittels eines kleinen Tools die Informationen der Rechtedatenbank auf alle Lieder angewendet werden, und
-  man erhält eine Datei mit §rights>-Tags, die nur die "-full" -Tags enthalten.
+  SchlieÃŸlich kÃ¶nnen mittels eines kleinen Tools die Informationen der Rechtedatenbank auf alle Lieder angewendet werden, und
+  man erhÃ¤lt eine Datei mit Â§rights>-Tags, die nur die "-full" -Tags enthalten.
 
 
   <tag>from</tag>
-  <attr opt="1" name="lang">(Lied-)Sprache für die die Quelle gilt (siehe §content>).</attr>
+  <attr opt="1" name="lang">(Lied-)Sprache fÃ¼r die die Quelle gilt (siehe Â§content>).</attr>
   Mit diesem Tag kann man angeben, woher das Lieder kommt, bzw. wo man es sonst noch findet.
-  Für mehrere Quellen bitte mehrere Tags verwenden.
+  FÃ¼r mehrere Quellen bitte mehrere Tags verwenden.
   <code>
 <from lang="de">Liederbuch 1/Nummer 5</from>
 <from lang="en">Liederbuch 2/Nummer 3</from>
@@ -221,8 +221,8 @@
   </code>
 
   <tag>ccli</tag>
-  <attr opt="1" name="lang">(Lied-)Sprache für die die Liednummer gilt (vgl. §text-by>).</attr>
-  Die CCLI-Rechteagentur vergibt eine eindeutige Nummer für jedes Lied, wobei unterschiedliche
+  <attr opt="1" name="lang">(Lied-)Sprache fÃ¼r die die Liednummer gilt (vgl. Â§text-by>).</attr>
+  Die CCLI-Rechteagentur vergibt eine eindeutige Nummer fÃ¼r jedes Lied, wobei unterschiedliche
   Sprachen eigene Nummern bekommen.
   Ggf. kann diese auch als Teil der Liedrechte ausgegeben werden
   (die CCLI-Gemeindenummer wird dabei separat konfiguriert).
@@ -232,7 +232,7 @@
   </code>
 
   <tag>meter</tag>
-  Taktart, in der das Lied geschrieben ist. Beispiele wären:
+  Taktart, in der das Lied geschrieben ist. Beispiele wÃ¤ren:
   <code>
 <meter>4/4</meter>
 <meter>6/8</meter>
@@ -241,14 +241,14 @@
   </code>
 
   <tag>chords</tag>
-  (Vorläufige Info; Undokumentiert) Idee:
+  (VorlÃ¤ufige Info; Undokumentiert) Idee:
   <code>
 <chords>E5[022400] E(2)[0 14 14 13 0 0] G[320033] C[x32010]</chords>
 <chords transpose="0c2">E5[022400] E(2)[0 14 14 13 0 0] G[320033] C[x32010]</chords>
   </code>
 
   <tag>tempo</tag>
-  (Vorläufige Info; Undokumentiert) Idee:
+  (VorlÃ¤ufige Info; Undokumentiert) Idee:
   Was sind die Beats? (hier: die Viertel)
   <code>
 <tempo>76</tempo>
@@ -259,12 +259,12 @@
   <attr opt="1" name="transpose">Anzahl der Halbtonschritte, um die in Ergebnis transponiert werden soll.
     <ref to="transinfo">Mehr Infos...</ref></attr>
   In diesem Tag werden die Akkorde durch Leerzeichen getrennt notiert. Zu den Eingabekonventionen siehe
-  <ref to="akkstyle"/>. Innerhalb dieses Tags dürfen(sollten) außerdem <ref to="blocktags">Blocktags</ref>
+  <ref to="akkstyle"/>. Innerhalb dieses Tags dÃ¼rfen(sollten) auÃŸerdem <ref to="blocktags">Blocktags</ref>
   verwendet werden.<br/>
-  Der Akkord kommt dann über den Buchstaben hinter dem entsprechenden '|' im §content>-Bereich.
-  Die Zuordnung geschieht dabei Blockweise; nach dem letzten Akkord eines Blocks im §akks>-Bereich wird wieder
+  Der Akkord kommt dann Ã¼ber den Buchstaben hinter dem entsprechenden '|' im Â§content>-Bereich.
+  Die Zuordnung geschieht dabei Blockweise; nach dem letzten Akkord eines Blocks im Â§akks>-Bereich wird wieder
   beim ersten angefangen.<br/>
-  Zum besseren Verständnis einige Beispiele:
+  Zum besseren VerstÃ¤ndnis einige Beispiele:
   <code>
 <akks transpose="2">
  C D
@@ -335,9 +335,9 @@ Refr: Refrain
     F
 5. Vers 4
   </code>
-  Um eine hilfreiche Platzierung zu gewährleisten, gibt es im §content>-Bereich folgende Regeln:
+  Um eine hilfreiche Platzierung zu gewÃ¤hrleisten, gibt es im Â§content>-Bereich folgende Regeln:
   <ul>
-    <li>'|' und '|_' sollten nur an Silbengrenzen verwendet werden; '|' kann zusätzlich auch alleine (ohne Wort)
+    <li>'|' und '|_' sollten nur an Silbengrenzen verwendet werden; '|' kann zusÃ¤tzlich auch alleine (ohne Wort)
       als '| ' stehen.</li>
     <li>'|' ist zu verwenden, um anzuzeigen, dass der Akkord gleichzeitig mit der Silbe anzuschlagen ist;</li>
     <li>hingegen ist '|_' zu verwenden, wenn der Akkord <em>nach</em> dem Anfang der Silbe anzuschlagen ist.
@@ -346,19 +346,19 @@ Refr: Refrain
       Dennoch ist der Anfang der Silbe wichtig, aber dieser kann im Moment nicht immer automatisch bestimmt werden.
       Daher gibt es '|-' (einem '|-' wird nie ein Akkord zugeordnet).<br/>
 
-      An Wortanfängen ist die Silbengrenze aber klar, auf '|-' sollte also in diesem Fall verzichtet werden.
-      '|_' und '|' markieren ebenfalls bereits die Grenzen, '|-' ist nicht zusätzlich nötig.
+      An WortanfÃ¤ngen ist die Silbengrenze aber klar, auf '|-' sollte also in diesem Fall verzichtet werden.
+      '|_' und '|' markieren ebenfalls bereits die Grenzen, '|-' ist nicht zusÃ¤tzlich nÃ¶tig.
       </li>
   </ul>
-  Um für längere Akkordnamen genügend Platz zu schaffen, wird der Text ggf. "verlängert", indem Leerzeichen,
-  '___' oder ' - ' eingefügt werden:
+  Um fÃ¼r lÃ¤ngere Akkordnamen genÃ¼gend Platz zu schaffen, wird der Text ggf. "verlÃ¤ngert", indem Leerzeichen,
+  '___' oder ' - ' eingefÃ¼gt werden:
   <ul>
-    <li>'...| |text' und 'Sil|be |text' wird mit Leerzeichen aufgefüllt.</li>
-    <li>Bei 'Wort|_ text' wird 'Wort___' verlängert.</li>
-    <li>Innerhalb eines '|Wor|tes' werden ' - ' eingefügt: 'Wor-tes'.</li>
+    <li>'...| |text' und 'Sil|be |text' wird mit Leerzeichen aufgefÃ¼llt.</li>
+    <li>Bei 'Wort|_ text' wird 'Wort___' verlÃ¤ngert.</li>
+    <li>Innerhalb eines '|Wor|tes' werden ' - ' eingefÃ¼gt: 'Wor-tes'.</li>
     <li>'Ganz|lan|-ges|_wort|_' wird ggf. zu 'Ganzlan - ges - wort___'</li>
   </ul>
-  Erwähnenswert ist noch der Fall '||' (oder entsprechend mehr '|||...'). Hier ist stets dafür gesorgt,
+  ErwÃ¤hnenswert ist noch der Fall '||' (oder entsprechend mehr '|||...'). Hier ist stets dafÃ¼r gesorgt,
   dass die Akkorde genug Platz haben, ebenso bei '|_||...' oder '|_|_', etc.
   <code>
 <akks>
@@ -375,7 +375,7 @@ Text Data_________  Langeswort__ ende
   <br/>
   <tag linkonly="1">transinfo</tag>
   Das <attref name="transpose"/>-Attribut kann mehrere durch Komma getrennte Varianten enthalten.
-  Außerdem wird die Angabe von Capopositionen unterstützt:
+  AuÃŸerdem wird die Angabe von Capopositionen unterstÃ¼tzt:
   <code>
 <akks transpose="0c2,2c1,-1">
   C
@@ -392,13 +392,13 @@ Text Data_________  Langeswort__ ende
 
   <tag>content</tag>
   <attr name="lang">(Lied-)Sprache</attr>
-  Das Content-Tag enthält den eigenlichen Liedtext. Das <attref name="lang"/>-Attribut muss immer die Sprache des Inhalts
-  in Form eines <a href="http://www.loc.gov/standards/iso639-2/php/code_list.php">ISO 639-1/2</a> Zwei- bzw. Drei-Buchstabenkürzels angeben
+  Das Content-Tag enthÃ¤lt den eigenlichen Liedtext. Das <attref name="lang"/>-Attribut muss immer die Sprache des Inhalts
+  in Form eines <a href="http://www.loc.gov/standards/iso639-2/php/code_list.php">ISO 639-1/2</a> Zwei- bzw. Drei-BuchstabenkÃ¼rzels angeben
   (siehe auch <a href="http://www.ietf.org/rfc/rfc3066.txt">RFC 3066</a>).
-  Wenn das Lied in mehreren Sprachen eingegeben wir, sollten für alle Sprachen §title>-Tags mit <attref name="lang"/>-Attribut
+  Wenn das Lied in mehreren Sprachen eingegeben wir, sollten fÃ¼r alle Sprachen Â§title>-Tags mit <attref name="lang"/>-Attribut
   angegeben werden.<br/>
-  Innerhalb des Liedtextes werden folgende Zeichen besonders gehandhabt: '|' für Akkord-positionen (vgl. §akks>),
-  sowie '*', um Einrückungen zu kennzeichnen:
+  Innerhalb des Liedtextes werden folgende Zeichen besonders gehandhabt: '|' fÃ¼r Akkord-positionen (vgl. Â§akks>),
+  sowie '*', um EinrÃ¼ckungen zu kennzeichnen:
   <code>
 Zeile 1
   Zeile 2
@@ -414,13 +414,13 @@ Zeile 3
  Zeile 4
    Zeile 5
   </code>
-  Der Vollständigkeit halber sei erwähnt, dass /zur Zeit/ beim §content>-Tag (und nur dort!) auch mehrere Sprachen, mit Komma getrennt,
-  angegeben werden können.
+  Der VollstÃ¤ndigkeit halber sei erwÃ¤hnt, dass /zur Zeit/ beim Â§content>-Tag (und nur dort!) auch mehrere Sprachen, mit Komma getrennt,
+  angegeben werden kÃ¶nnen.
 
 
   <section id="blocktags">Die Gruppe der Blocktags</section>
-  Blocktags sind Tags, die nur direkt in einem §content> oder §akks>-Bereich vorkommen dürfen. Folgendes ist
-  also z.B. unzulässig:
+  Blocktags sind Tags, die nur direkt in einem Â§content> oder Â§akks>-Bereich vorkommen dÃ¼rfen. Folgendes ist
+  also z.B. unzulÃ¤ssig:
   <code bad="1">
 <vers>
   bla
@@ -428,11 +428,11 @@ Zeile 3
     bla</refr>
   fasel</vers>
   </code>
-  Die Blocktags sind: §refr>, §vers>, §bridge>, §ending>.
-  Zusätzlich gibt es §showrefr/>, §showvers/> und §showbridge/> um Blöcke wiederholt ausgeben zu können.
+  Die Blocktags sind: Â§refr>, Â§vers>, Â§bridge>, Â§ending>.
+  ZusÃ¤tzlich gibt es Â§showrefr/>, Â§showvers/> und Â§showbridge/> um BlÃ¶cke wiederholt ausgeben zu kÃ¶nnen.
 
   <tag>refr</tag>
-  Gehört zur <ref to="blocktags">Gruppe der Blocktags</ref> und erzeugt einen Refrain-Block.
+  GehÃ¶rt zur <ref to="blocktags">Gruppe der Blocktags</ref> und erzeugt einen Refrain-Block.
   <code>
   <refr>
   Refrain Zeile 1
@@ -446,9 +446,9 @@ Refr: Refrain Zeile 1
 
   <tag>vers</tag>
   <attr opt="1" name="no">Versnummer</attr>
-  Gehört zur <ref to="blocktags">Gruppe der Blocktags</ref> und erzeugt einen neuen Vers-Block.
+  GehÃ¶rt zur <ref to="blocktags">Gruppe der Blocktags</ref> und erzeugt einen neuen Vers-Block.
   Wird keine Versnummer angegeben, so wird automatisch die Nummer des vorigen Verses + 1 verwendet; der erste
-  Vers eines Lieder erhält natürlich die Nummer 1.
+  Vers eines Lieder erhÃ¤lt natÃ¼rlich die Nummer 1.
   <code>
   <vers>
   Vers Zeile 1
@@ -471,7 +471,7 @@ Refr: Refrain Zeile 1
   </code>
 
   <tag>bridge</tag>
-  Gehört zur <ref to="blocktags">Gruppe der Blocktags</ref> und erzeugt einen Bridge-Block.
+  GehÃ¶rt zur <ref to="blocktags">Gruppe der Blocktags</ref> und erzeugt einen Bridge-Block.
   <code>
   <bridge>
   Bridge Zeile 1
@@ -484,7 +484,7 @@ Bridge: Bridge Zeile 1
   </code>
 
   <tag>ending</tag>
-  Gehört zur <ref to="blocktags">Gruppe der Blocktags</ref> und erzeugt einen Ending-Block.
+  GehÃ¶rt zur <ref to="blocktags">Gruppe der Blocktags</ref> und erzeugt einen Ending-Block.
   <code>
   <ending>
   Ending Zeile 1
@@ -501,18 +501,18 @@ Schluss: Ending Zeile 1
   <tag>showbridge</tag>
   <attr opt="1" name="no">Der zu wiederholende Block</attr>
   <attr opt="1" name="as">(nur showvers, nur zusammen mit <attref name="no"/>) Neue Versnummer</attr>
-  Mit diesen Tags lassen sich wiederkehrende Refrains, etc., sehr einfach einfügen.
+  Mit diesen Tags lassen sich wiederkehrende Refrains, etc., sehr einfach einfÃ¼gen.
   Wenn <attref name="no"/> angegeben ist, dann muss der referenzierte Block ebenfalls mit explizitem <attref name="no"/>-Attribut
   versehen sein.
 
   <section id="inline">Die Gruppe der Inlinetags</section>
-  Inlinetags sind Tags, sowohl innerhalb als auch außerhalb von <ref to="blocktags">Blocktags</ref>
-  vorkommen dürfen. Allerdings sind sie nur im §content>-Bereich erlaubt.
-  Zu den Inlinetags gehören: §rep> und §cnr>.
+  Inlinetags sind Tags, sowohl innerhalb als auch auÃŸerhalb von <ref to="blocktags">Blocktags</ref>
+  vorkommen dÃ¼rfen. Allerdings sind sie nur im Â§content>-Bereich erlaubt.
+  Zu den Inlinetags gehÃ¶ren: Â§rep> und Â§cnr>.
 
   <tag>rep</tag>
   <attr opt="1" name="no">Wiederholungsanzahl</attr>
-  Gehört zur <ref to="inline">Gruppe der Inlinetags</ref> und erzeugt eine Wiederholung. Dieses Tag darf auch
+  GehÃ¶rt zur <ref to="inline">Gruppe der Inlinetags</ref> und erzeugt eine Wiederholung. Dieses Tag darf auch
   innerhalb von Inlinetags vorkommen.
   <code>
   <rep>Text1</rep>
@@ -526,21 +526,21 @@ Schluss: Ending Zeile 1
 
   <tag>cnr</tag>
   <tag linkonly="1">next</tag>
-  Dieses sogenannte Call-and-Response-Tag gehört zur <ref to="inline">Gruppe der Inlinetags</ref> und
-  kann z.B. verwendet werden, um den Teil, den die Männer singen und den der Frauen optisch zu trennen.
-  Innerhalb wird dabei zur Trennung §next/> verwendet, das in jeder Zeile genau einmal vorkommen muss.
+  Dieses sogenannte Call-and-Response-Tag gehÃ¶rt zur <ref to="inline">Gruppe der Inlinetags</ref> und
+  kann z.B. verwendet werden, um den Teil, den die MÃ¤nner singen und den der Frauen optisch zu trennen.
+  Innerhalb wird dabei zur Trennung Â§next/> verwendet, das in jeder Zeile genau einmal vorkommen muss.
   <code>
-Text1 <cnr>Männer1<next/>Frauen1
-           Männer2<next/>Frauen2</cnr>
+Text1 <cnr>MÃ¤nner1<next/>Frauen1
+           MÃ¤nner2<next/>Frauen2</cnr>
   </code>
   Wird zu:
   <code>
-Text1 Männer1  |  Frauen1
-      Männer2  |  Frauen2
+Text1 MÃ¤nner1  |  Frauen1
+      MÃ¤nner2  |  Frauen2
   </code>
 
   <tag>pagebreak</tag>
-  Mit Hilfe dieses Tags kann eine neue Folie erzwungen werden (abhängig vom Ausgabeformat).
+  Mit Hilfe dieses Tags kann eine neue Folie erzwungen werden (abhÃ¤ngig vom Ausgabeformat).
   <code>
 Zeile 1
 
@@ -550,21 +550,21 @@ Zeile 1 auf dritter Folie
   </code>
 
   <section id="special">Besondere Tags</section>
-  Es gibt noch ein Tag, dass nicht zu den obigen Gruppen gezählt wird. Insbesondere kann sich der genaue
-  Syntax noch ändern.
+  Es gibt noch ein Tag, dass nicht zu den obigen Gruppen gezÃ¤hlt wird. Insbesondere kann sich der genaue
+  Syntax noch Ã¤ndern.
 
   <tag>xlate</tag>
-  <attr opt="1" name="inner">Wenn kurze Fassung erwünscht ist.</attr>
-  <attr opt="1" name="for">Einzelnes Wort das übersetzt wird.</attr>
+  <attr opt="1" name="inner">Wenn kurze Fassung erwÃ¼nscht ist.</attr>
+  <attr opt="1" name="for">Einzelnes Wort das Ã¼bersetzt wird.</attr>
   <attr opt="1" name="lang">Originalsprache.</attr>
-  Wird verwendet um eine Übersetzung des Textes anzugeben.
+  Wird verwendet um eine Ãœbersetzung des Textes anzugeben.
   <code>
 Hi <xlate inner="1">Hallo</xlate>
 Jo Jo Jo
 XYZZY
 
 <xlate for="Jo" lang="en">Jo</xlate>
-<xlate>Ausländisch für iXYpsilonZetZetYpsilon</xlate>
+<xlate>AuslÃ¤ndisch fÃ¼r iXYpsilonZetZetYpsilon</xlate>
   </code>
   Wird in etwa zu:
   <code>
@@ -573,20 +573,20 @@ Jo Jo Jo
 XYZZY
 
 (Jo(en.): Jo)
-(Übersetzung: Ausländisch für iXYpsilonZetZetYpsilon)
+(Ãœbersetzung: AuslÃ¤ndisch fÃ¼r iXYpsilonZetZetYpsilon)
   </code>
 
   <tag>xlang</tag>
   Diese Tag tritt nicht explizit auf, liegt aber dem folgenden Syntax zugrunde:
   <code>
 Englischer Text 1
-^Deutsche Übersetzung
+^Deutsche Ãœbersetzung
 Englisch 2
 ^Mehr Deutsch
   </code>
-  Erzeugt werden kann also eine zeilenweise Übersetzung des Liedtextes.
+  Erzeugt werden kann also eine zeilenweise Ãœbersetzung des Liedtextes.
 
-  <section id="akkstyle">Richtlinien für die Akkordeingabe</section>
+  <section id="akkstyle">Richtlinien fÃ¼r die Akkordeingabe</section>
   <code>
    C    D    C(A)
 |: Text Text Text :|
@@ -598,8 +598,8 @@ C    [A/D] C
 Text Text  Text
   </code>
   Die Notation '[A/D]' wird verwendet, um deutlich zu machen, dass 'A/D' insb. auf der Gitarre normalerweise
-  nicht gespielt wird, sondern z.B. eher für Klavier interessant ist.<br/>
-  (Idee: Verwendung von Notenlängen, insbesondere, wo nicht klar:
+  nicht gespielt wird, sondern z.B. eher fÃ¼r Klavier interessant ist.<br/>
+  (Idee: Verwendung von NotenlÃ¤ngen, insbesondere, wo nicht klar:
   <code>
 1H  2.E  8E  8A
   </code>
@@ -607,6 +607,6 @@ Text Text  Text
   Vielleicht auch mit | als Taktstrich)<br/>
 
   <br/>
-  Anregungen, Verbesserungsvorschläge, Rechtschreibfehler, etc. bitte an <a href="mailto:th55@gmx.de">th55@gmx.de</a>.
+  Anregungen, VerbesserungsvorschlÃ¤ge, Rechtschreibfehler, etc. bitte an <a href="mailto:th55@gmx.de">th55@gmx.de</a>.
 </docu>
 <!-- Alt: <rights/> <text/> <melody/> <addinfo/> -->

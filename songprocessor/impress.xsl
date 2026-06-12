@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                 xmlns:set="http://exslt.org/sets"
@@ -46,7 +46,7 @@
 
  <xsl:import href="s-liner.xsl"/>
 
- <xsl:output method="text" encoding="iso-8859-1"/>
+ <xsl:output method="text" encoding="utf-8"/>
  <xsl:variable name="nl"><xsl:text>
 </xsl:text></xsl:variable>
 
@@ -245,18 +245,18 @@
      <exsl:document href="zip:store/mimetype" method="text"><!-- has to be first, and uncompressed! -->
        <xsl:text>application/vnd.oasis.opendocument.presentation</xsl:text>
      </exsl:document>
-     <exsl:document href="content.xml" encoding="UTF-8" method="xml" indent="yes">
+     <exsl:document href="content.xml" encoding="utf-8" method="xml" indent="yes">
        <xsl:apply-templates select="document(func:default($preset/content,'oo-template/content.xml'))" mode="_output_odp_content">
          <xsl:with-param name="content_nodes" select="$content_nodes"/>
          <xsl:with-param name="style_nodes" select="$add_styles"/>
        </xsl:apply-templates>
      </exsl:document>
-     <exsl:document href="styles.xml" encoding="UTF-8" method="xml" indent="yes">
+     <exsl:document href="styles.xml" encoding="utf-8" method="xml" indent="yes">
        <xsl:apply-templates select="document('oo-template/styles.xml')" mode="_output_odp_style">
          <xsl:with-param name="black_back" select="$black_back"/>
        </xsl:apply-templates>
      </exsl:document>
-     <exsl:document href="META-INF/manifest.xml" encoding="UTF-8" method="xml" indent="yes"
+     <exsl:document href="META-INF/manifest.xml" encoding="utf-8" method="xml" indent="yes"
                     doctype-public="-//OpenOffice.org//DTD Manifest 1.0//EN"
                     doctype-system="Manifest.dtd">
        <manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0">
@@ -424,7 +424,7 @@
          <xsl:apply-templates select="exsl:node-set($inPages)/node()" mode="_output_page">
            <xsl:with-param name="inCopyright">
              <xsl:if test="$copy!=''">
-               <xsl:text>© </xsl:text>
+               <xsl:text>Â© </xsl:text>
 <!--               <xsl:text>Copyright: </xsl:text>-->
                <xsl:value-of select="$copy"/>
              </xsl:if>
@@ -442,8 +442,8 @@
  <xsl:template match="/page" mode="_output_page">
    <xsl:param name="inCopyright"/><!-- Copyright: -->
    <xsl:param name="inSource"/><!-- Aus: -->
-   <xsl:param name="inLBfrom"/><!-- Liednummer /Grün,Rot -->
-   <xsl:param name="position"/><!-- Liedposition (für einzigartigen seitennamen) -->
+   <xsl:param name="inLBfrom"/><!-- Liednummer /GrÃ¼n,Rot -->
+   <xsl:param name="position"/><!-- Liedposition (fÃ¼r einzigartigen seitennamen) -->
    <xsl:variable name="tr1" select="set:leading(../page,.)"/>
    <xsl:variable name="tr2" select=".|set:trailing(../page,.)"/>
    <xsl:variable name="tr3" select="set:trailing($tr1,$tr1[@endpage][1])"/>
@@ -495,7 +495,7 @@
          <text:p text:style-name="P5"><xsl:value-of select="$inPgOf"/></text:p>
        </draw:text-box><xsl:value-of select="$nl"/>
      </draw:frame><xsl:value-of select="$nl"/>
-     <!-- Rotes/Grünes Lb -->
+     <!-- Rotes/GrÃ¼nes Lb -->
      <xsl:if test="string-length($lb)">
        <draw:frame draw:style-name="gr2" draw:text-style-name="{$lb}" draw:layer="layout">
 <!--
@@ -788,7 +788,7 @@
  <!-- {{{ inline tags -->
  <xsl:template match="xlate" mode="_songcontent_inline">
    <xsl:param name="ctxt"/>
-   <xsl:text>(Übersetzung:&#160;</xsl:text>
+   <xsl:text>(Ãœbersetzung:&#160;</xsl:text>
    <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
      <xsl:with-param name="ctxt" select="$ctxt"/>
    </xsl:apply-templates>
@@ -961,22 +961,22 @@
  </func:function>
  <!-- }}} -->
 
- <!-- {{{ FUNCTION func:escape_file (inText)  - convert äöü... -->
+ <!-- {{{ FUNCTION func:escape_file (inText)  - convert Ã¤Ã¶Ã¼... -->
  <func:function name="func:escape_file">
    <xsl:param name="inText"/>
-   <xsl:variable name="xfrom"> äöüÄÖÜßé,?'/</xsl:variable>
+   <xsl:variable name="xfrom"> Ã¤Ã¶Ã¼Ã„Ã–ÃœÃŸÃ©,?'/</xsl:variable>
    <func:result>
      <xsl:apply-templates mode="_esc_file" select="thobi:separate($inText,$xfrom)"/>
    </func:result>
  </func:function>
- <xsl:template mode="_esc_file" match="split[@char='ä']">ae</xsl:template>
- <xsl:template mode="_esc_file" match="split[@char='ö']">oe</xsl:template>
- <xsl:template mode="_esc_file" match="split[@char='ü']">ue</xsl:template>
- <xsl:template mode="_esc_file" match="split[@char='Ä']">Ae</xsl:template>
- <xsl:template mode="_esc_file" match="split[@char='Ö']">Oe</xsl:template>
- <xsl:template mode="_esc_file" match="split[@char='Ü']">Ue</xsl:template>
- <xsl:template mode="_esc_file" match="split[@char='ß']">ss</xsl:template>
- <xsl:template mode="_esc_file" match="split[@char='é']">e</xsl:template>
+ <xsl:template mode="_esc_file" match="split[@char='Ã¤']">ae</xsl:template>
+ <xsl:template mode="_esc_file" match="split[@char='Ã¶']">oe</xsl:template>
+ <xsl:template mode="_esc_file" match="split[@char='Ã¼']">ue</xsl:template>
+ <xsl:template mode="_esc_file" match="split[@char='Ã„']">Ae</xsl:template>
+ <xsl:template mode="_esc_file" match="split[@char='Ã–']">Oe</xsl:template>
+ <xsl:template mode="_esc_file" match="split[@char='Ãœ']">Ue</xsl:template>
+ <xsl:template mode="_esc_file" match="split[@char='ÃŸ']">ss</xsl:template>
+ <xsl:template mode="_esc_file" match="split[@char='Ã©']">e</xsl:template>
  <xsl:template mode="_esc_file" match="split[@char=' ']">_</xsl:template>
  <xsl:template mode="_esc_file" match="split"/>
  <!-- }}} -->

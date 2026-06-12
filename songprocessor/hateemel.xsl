@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                 xmlns:set="http://exslt.org/sets"
                 xmlns:exsl="http://exslt.org/common"
                 extension-element-prefixes="exsl set">
 
- <xsl:output method="html" encoding="iso-8859-1" indent="no"/>
+ <xsl:output method="html" encoding="utf-8" indent="no"/>
  <xsl:variable name="nl"><xsl:text>
 </xsl:text></xsl:variable>
 
@@ -23,8 +23,8 @@
  </xsl:template>
 
  <xsl:template match="song">
-   <xsl:variable name="file">html/<xsl:value-of select="translate(title[1]/text(),' äöüÄÖÜß,?','_aouAOUs')"/>.htm</xsl:variable>
-   <exsl:document href="{$file}" encoding="iso-8859-1" method="html" indent="no">
+   <xsl:variable name="file">html/<xsl:value-of select="translate(title[1]/text(),' Ã¤Ã¶Ã¼Ã„Ã–ÃœÃŸ,?','_aouAOUs')"/>.htm</xsl:variable>
+   <exsl:document href="{$file}" encoding="utf-8" method="html" indent="no">
      <html>
       <head>
         <title><xsl:value-of select="title[1]/text()"/></title>

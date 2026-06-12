@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                 xmlns:exsl="http://exslt.org/common"
@@ -154,7 +154,7 @@
    <xsl:value-of select="text()"/>
  </xsl:template>
 
- <!-- used to substitute rights: "<token>xy Publishing</token><token>Hänssler</token>": substitute verlage, add subverlage -->
+ <!-- used to substitute rights: "<token>xy Publishing</token><token>HÃ¤nssler</token>": substitute verlage, add subverlage -->
  <xsl:template match="token" mode="_rights">
    <xsl:param name="title"/>
    <xsl:variable name="inString" select="."/>
@@ -462,28 +462,28 @@
 
        <xsl:if test="$subset[self::common-full][@for]">
          <token>
-           <xsl:text>Für </xsl:text><xsl:value-of select="$subset[self::common-full][@for][last()]/@for"/><xsl:text>: </xsl:text>
+           <xsl:text>FÃ¼r </xsl:text><xsl:value-of select="$subset[self::common-full][@for][last()]/@for"/><xsl:text>: </xsl:text>
            <xsl:value-of select="$subset[self::common-full][@for][last()]"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
        <xsl:if test="$subset[self::text-full][@for]">
          <token>
-           <xsl:text>Für </xsl:text><xsl:value-of select="$subset[self::text-full][@for][last()]/@for"/><xsl:text> (Text): </xsl:text>
+           <xsl:text>FÃ¼r </xsl:text><xsl:value-of select="$subset[self::text-full][@for][last()]/@for"/><xsl:text> (Text): </xsl:text>
            <xsl:value-of select="$subset[self::text-full][@for][last()]"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
        <xsl:if test="$subset[self::melody-full][@for]">
          <token>
-           <xsl:text>Für </xsl:text><xsl:value-of select="$subset[self::melody-full][@for][last()]/@for"/><xsl:text> (Melodie): </xsl:text>
+           <xsl:text>FÃ¼r </xsl:text><xsl:value-of select="$subset[self::melody-full][@for][last()]/@for"/><xsl:text> (Melodie): </xsl:text>
            <xsl:value-of select="$subset[self::melody-full][@for][last()]"/>
          </token>
          <tokensep>, </tokensep>
        </xsl:if>
        <xsl:if test="$subset[self::arrangement-full][@for] and $withArrangement">
          <token>
-           <xsl:text>Für </xsl:text><xsl:value-of select="$subset[self::arrangement-full][@for][last()]/@for"/><xsl:text> (Satz): </xsl:text>
+           <xsl:text>FÃ¼r </xsl:text><xsl:value-of select="$subset[self::arrangement-full][@for][last()]/@for"/><xsl:text> (Satz): </xsl:text>
            <xsl:value-of select="$subset[self::arrangement-full][@for][last()]"/>
          </token>
          <tokensep>, </tokensep>

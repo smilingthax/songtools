@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                 xmlns:func="http://exslt.org/functions"
@@ -379,7 +379,7 @@
 
  <xsl:template match="xlate" mode="_songcontent_inline">
    <xsl:param name="ctxt"/>
-   <xsl:text>(Übersetzung: </xsl:text>
+   <xsl:text>(Ãœbersetzung: </xsl:text>
    <xsl:apply-templates select="*|text()" mode="_songcontent_inline">
      <xsl:with-param name="ctxt" select="$ctxt"/>
    </xsl:apply-templates>
