@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                 xmlns:exsl="http://exslt.org/common"
                 xmlns:mine="thax.home/zip-ext"
                 extension-element-prefixes="mine exsl">
 
- <xsl:output method="xml" encoding="iso-8859-1" indent="no"/>
+ <xsl:output method="xml" encoding="utf-8" indent="no"/>
  <xsl:variable name="nl"><xsl:text>
 </xsl:text></xsl:variable>
 

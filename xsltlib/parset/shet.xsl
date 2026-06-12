@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright by Tobias Hoffmann, Licence: LGPL, see COPYING -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                 xmlns:str="http://exslt.org/strings"
@@ -11,7 +11,7 @@
                 xmlns:parset="thax.home/parset"
                 extension-element-prefixes="str thobi func exsl makk parset set">
 
- <xsl:output method="xml" encoding="iso-8859-1" indent="no"/>
+ <xsl:output method="xml" encoding="utf-8" indent="no"/>
  <xsl:variable name="nl"><xsl:text>
 </xsl:text></xsl:variable>
 
