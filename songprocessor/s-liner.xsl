@@ -204,7 +204,7 @@
                    <xsl:copy-of select="$nbr"/> <!-- use outer -->
                  </xsl:when>
                  <xsl:otherwise>
-                   <xsl:copy-of select="@no"/> <!-- @break's are ignored here! -->
+                   <xsl:copy-of select="@no|@break"/>
                  </xsl:otherwise>
                </xsl:choose>
                <xsl:attribute name="solrep">
@@ -336,7 +336,7 @@
  </xsl:template>
 
  <xsl:template match="br" mode="_songcontent_inline">
-   <br no="{@no}"/><!-- @break ignored, see songcontent_block -->
+   <br no="{@no}"><xsl:copy-of select="@break"/></br>
  </xsl:template>
 
  <xsl:template match="xlang" mode="_songcontent_inline">
