@@ -7,6 +7,7 @@
                 xmlns:func="http://exslt.org/functions"
                 xmlns:exsl="http://exslt.org/common"
                 xmlns:dyn="http://exslt.org/dynamic"
+                xmlns:mext="thax.home/mine-ext"
                 xmlns:mine="thax.home/mine-ext-speed"
                 xmlns:zip="thax.home/zip-ext"
                 xmlns:ec="thax.home/enclose"
@@ -37,7 +38,7 @@
             xmlns:smil="urn:oasis:names:tc:opendocument:xmlns:smil-compatible:1.0"
             xmlns:anim="urn:oasis:names:tc:opendocument:xmlns:animation:1.0"
             exclude-result-prefixes="office style text table draw fo xlink dc meta number presentation svg chart dr3d math form script ooo ooow oooc dom xforms xsd xsi smil anim"
-                extension-element-prefixes="exsl func dyn set thobi mine ec zip tools">
+                extension-element-prefixes="exsl func dyn set thobi mext mine ec zip tools">
 <!-- TODO? Language for spellchecker -->
 <!-- TODO? want/need function to add something to an array :-)
   array=array.add bla fasel...
@@ -710,7 +711,7 @@
      <xsl:message terminate="yes">text:style-name is required</xsl:message>
    </xsl:if>
 
-   <text:p text:style-name="{concat($blockfmt/@text:style-name,func:if(@xlang,'-xlang'))}">
+   <text:p text:style-name="{concat($blockfmt/@text:style-name, func:if(mext:has-double-width(text()) > 1,'-asian'), func:if(@xlang,'-xlang'))}">
      <xsl:copy-of select="$indent"/>
      <xsl:apply-templates select="node()" mode="_sc_post">
        <xsl:with-param name="ctxt" select="$ctxt"/>

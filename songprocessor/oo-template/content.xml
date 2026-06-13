@@ -140,6 +140,37 @@
 <style:style style:name="Pending-xlang" style:family="paragraph" copy-parent="P2-xlang">
   <style:paragraph-properties fo:margin-left="5.90cm" fo:text-indent="-5.90cm"/>
 </style:style>
+
+<style:style style:name="P2-asian" style:family="paragraph" copy-parent="P2">
+  <style:paragraph-properties fo:margin-top="0.15cm"/>
+</style:style>
+<style:style style:name="Pvers-asian" style:family="paragraph" copy-parent="Pvers">
+  <style:paragraph-properties fo:margin-top="0.15cm"/>
+</style:style>
+<style:style style:name="Prefr-asian" style:family="paragraph" copy-parent="Prefr">
+  <style:paragraph-properties fo:margin-top="0.15cm"/>
+</style:style>
+<style:style style:name="Pbridge-asian" style:family="paragraph" copy-parent="Pbridge">
+  <style:paragraph-properties fo:margin-top="0.15cm"/>
+</style:style>
+<style:style style:name="Pending-asian" style:family="paragraph" copy-parent="Pending">
+  <style:paragraph-properties fo:margin-top="0.15cm"/>
+</style:style>
+<style:style style:name="P2-asian-xlang" style:family="paragraph" copy-parent="P2-xlang">
+  <style:paragraph-properties fo:margin-top="0.15cm"/>
+</style:style>
+<style:style style:name="Pvers-asian-xlang" style:family="paragraph" copy-parent="Pvers-xlang">
+  <style:paragraph-properties fo:margin-top="0.15cm"/>
+</style:style>
+<style:style style:name="Prefr-asian-xlang" style:family="paragraph" copy-parent="Prefr-xlang">
+  <style:paragraph-properties fo:margin-top="0.15cm"/>
+</style:style>
+<style:style style:name="Pbridge-asian-xlang" style:family="paragraph" copy-parent="Pbridge-xlang">
+  <style:paragraph-properties fo:margin-top="0.15cm"/>
+</style:style>
+<style:style style:name="Pending-asian-xlang" style:family="paragraph" copy-parent="Pending-xlang">
+  <style:paragraph-properties fo:margin-top="0.15cm"/>
+</style:style>
   </office:automatic-styles>
   <office:body>
     <office:presentation><INSERT/>
