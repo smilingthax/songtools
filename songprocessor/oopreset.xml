@@ -11,8 +11,8 @@
     <ccli/>
     <linesPerPage>13</linesPerPage>
     <set-text draw:style-name="gr1" svg:x="0.6cm" svg:y="-0.15cm" svg:width="30.8cm" svg:height="19.05cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
-    <set-rights svg:x="0.6cm" svg:y="19.66cm" svg:width="18.5cm" svg:height="0cm"/>
-    <set-from svg:x="21.7cm" svg:y="20.1cm" svg:width="8cm" svg:height="0cm"/>
+    <set-rights svg:x="0.6cm" svg:y="19.66cm" svg:width="20.0cm" svg:height="0cm"/>
+    <set-from svg:x="22.0cm" svg:y="20.1cm" svg:width="7.5cm" svg:height="0cm"/>
     <set-lb svg:x="28cm" svg:y="1.2cm" svg:width="3.0cm" svg:height="2.0cm"/>
 <!-- <set-lb-img svg:x="24.6cm" svg:y="0cm" svg:width="3.0cm" svg:height="2.0cm"/> -->
     <set-pgof svg:x="30.4cm" svg:y="20.1cm" svg:width="1.6cm" svg:height="0cm"/>
@@ -32,8 +32,8 @@
     <ccli/>
     <linesPerPage>13</linesPerPage>
     <set-text draw:style-name="gr1" svg:x="0.7cm" svg:y="-0.15cm" svg:width="34.15cm" svg:height="19.05cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
-    <set-rights svg:x="0.7cm" svg:y="19.66cm" svg:width="19.0cm" svg:height="0cm"/>
-    <set-from svg:x="23cm" svg:y="20.1cm" svg:width="8cm" svg:height="0cm"/>
+    <set-rights svg:x="0.7cm" svg:y="19.66cm" svg:width="21.0cm" svg:height="0cm"/>
+    <set-from svg:x="23cm" svg:y="20.1cm" svg:width="7.5cm" svg:height="0cm"/>
     <set-lb svg:x="31.4cm" svg:y="1.2cm" svg:width="3.0cm" svg:height="2.0cm"/>
     <set-pgof svg:x="33.85cm" svg:y="20.1cm" svg:width="1.7cm" svg:height="0cm"/>
     <set-fullimg x="0" y="0" width="35.556" height="20"/> <!-- no units, no svg: namespace! -->
@@ -140,12 +140,13 @@
     <content>oo-template/content-1.xml</content>
     <linesPerPage>13</linesPerPage>
     <set-text draw:style-name="gr2" svg:x="0.6cm" svg:y="-0.15cm" svg:width="30.8cm" svg:height="19.05cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
-    <set-rights svg:x="0.6cm" svg:y="19.66cm" svg:width="18.5cm" svg:height="0cm"/>
-    <set-from svg:x="21.7cm" svg:y="20.1cm" svg:width="8cm" svg:height="0cm"/>
+    <set-rights svg:x="0.6cm" svg:y="19.66cm" svg:width="20.0cm" svg:height="0cm"/>
+    <set-from svg:x="22.0cm" svg:y="20.1cm" svg:width="7.5cm" svg:height="0cm"/>
     <set-lb svg:x="28cm" svg:y="1.2cm" svg:width="3.0cm" svg:height="2.0cm"/>
     <set-pgof svg:x="30.4cm" svg:y="20.1cm" svg:width="1.6cm" svg:height="0cm"/>
     <set-fullimg x="0" y="0" width="32" height="20"/>
     <set-partimg x="0.85" y="0.1" width="31.3" height="18.7" xpos="0" aspectHack="0.25"/>
+    <premaster style:page-layout-name="PM4"/> <!-- 16:10 with 32cm x 20cm -->
     <poststatic>
       <draw:frame draw:style-name="gr3" draw:text-style-name="P1" draw:layer="layout" svg:width="10.5cm" svg:height="0cm" svg:x="0.6cm" svg:y="20.1cm">
         <draw:text-box>
@@ -180,8 +181,8 @@
     <ccli/>
     <linesPerPage>13</linesPerPage>
     <set-text draw:style-name="gr2" svg:x="0.6cm" svg:y="-0.05cm" svg:width="30.8cm" svg:height="19.05cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
-    <set-rights svg:x="0.6cm" svg:y="19.66cm" svg:width="18.5cm" svg:height="0cm"/>
-    <set-from svg:x="21.7cm" svg:y="20.1cm" svg:width="8cm" svg:height="0cm"/>
+    <set-rights svg:x="0.6cm" svg:y="19.66cm" svg:width="20.0cm" svg:height="0cm"/>
+    <set-from svg:x="22.0cm" svg:y="20.1cm" svg:width="7.5cm" svg:height="0cm"/>
     <!--
     <set-lb svg:x="28cm" svg:y="1.2cm" svg:width="3.0cm" svg:height="2.0cm"/>
     -->
@@ -202,8 +203,8 @@
     <ccli/>
     <linesPerPage>13</linesPerPage>
     <set-text draw:style-name="gr2" svg:x="0.7cm" svg:y="-0.05cm" svg:width="34.15cm" svg:height="19.05cm"/> <!-- gr1 / gr2 / gr3 to choose center/top/bottom -->
-    <set-rights svg:x="0.7cm" svg:y="19.66cm" svg:width="19.0cm" svg:height="0cm"/>
-    <set-from svg:x="23cm" svg:y="20.1cm" svg:width="8cm" svg:height="0cm"/>
+    <set-rights svg:x="0.7cm" svg:y="19.66cm" svg:width="21.0cm" svg:height="0cm"/>
+    <set-from svg:x="23cm" svg:y="20.1cm" svg:width="7.5cm" svg:height="0cm"/>
     <!--
     <set-lb svg:x="...30cm" svg:y="1.2cm" svg:width="3.0cm" svg:height="2.0cm"/>
     -->

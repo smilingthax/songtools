@@ -126,7 +126,7 @@
 </style:style>
 <style:style style:name="P2-xlang" style:family="paragraph" copy-parent="P2">
   <style:paragraph-properties fo:margin-left="0.9cm"/>
-  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#ff6600" style:font-size-asian="24pt" style:font-style-asian="italic"/>
+  <style:text-properties fo:font-size="24pt" fo:font-style="italic" fo:color="#ff8833" style:font-size-asian="24pt" style:font-style-asian="italic"/>
 </style:style>
 <style:style style:name="Pvers-xlang" style:family="paragraph" copy-parent="P2-xlang">
   <style:paragraph-properties fo:margin-left="2.1cm" fo:text-indent="-2.1cm"/>
