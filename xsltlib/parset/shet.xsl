@@ -9,7 +9,7 @@
                 xmlns:mine="thax.home/mine-ext-speed"
                 xmlns:makk="thax.home/mine-akk"
                 xmlns:parset="thax.home/parset"
-                extension-element-prefixes="str thobi func exsl makk parset set">
+                extension-element-prefixes="str thobi func exsl mine makk parset set">
 
  <xsl:output method="xml" encoding="utf-8" indent="no"/>
  <xsl:variable name="nl"><xsl:text>
@@ -205,12 +205,12 @@
      <xsl:when test="@no">
        <xsl:apply-templates select="../vers[@no=current()/@no]" mode="_split_token">
          <xsl:with-param name="as" select="@as"/>
-         <xsl:with-param name="repeated" select="true()"/>
+         <xsl:with-param name="repeated" select="1"/>
        </xsl:apply-templates>
      </xsl:when>
      <xsl:otherwise>
        <xsl:apply-templates select="preceding-sibling::vers[1]" mode="_split_token">
-         <xsl:with-param name="repeated" select="true()"/>
+         <xsl:with-param name="repeated" select="1"/>
        </xsl:apply-templates>
      </xsl:otherwise>
    </xsl:choose>
@@ -221,12 +221,12 @@
    <xsl:choose>
      <xsl:when test="@no">
        <xsl:apply-templates select="../refr[@no=current()/@no]" mode="_split_token">
-         <xsl:with-param name="repeated" select="true()"/>
+         <xsl:with-param name="repeated" select="1"/>
        </xsl:apply-templates>
      </xsl:when>
      <xsl:otherwise>
        <xsl:apply-templates select="preceding-sibling::refr[1]" mode="_split_token">
-         <xsl:with-param name="repeated" select="true()"/>
+         <xsl:with-param name="repeated" select="1"/>
        </xsl:apply-templates>
      </xsl:otherwise>
    </xsl:choose>
@@ -237,12 +237,12 @@
    <xsl:choose>
      <xsl:when test="@no">
        <xsl:apply-templates select="../bridge[@no=current()/@no]" mode="_split_token">
-         <xsl:with-param name="repeated" select="true()"/>
+         <xsl:with-param name="repeated" select="1"/>
        </xsl:apply-templates>
      </xsl:when>
      <xsl:otherwise>
        <xsl:apply-templates select="preceding-sibling::bridge[1]" mode="_split_token">
-         <xsl:with-param name="repeated" select="true()"/>
+         <xsl:with-param name="repeated" select="1"/>
        </xsl:apply-templates>
      </xsl:otherwise>
    </xsl:choose>
