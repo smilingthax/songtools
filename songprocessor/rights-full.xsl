@@ -338,8 +338,8 @@
    <text-music>
      <xsl:if test="$lang"><xsl:attribute name="lang"><xsl:value-of select="$lang"/></xsl:attribute></xsl:if>
      <xsl:for-each select="$inSong"><!-- ensure context -->
-       <xsl:variable name="text_is_melody" select="text-by/text() = melody-by/text()"/>
-       <xsl:variable name="melody_is_arrangement" select="melody-by/text() = arrangement-by/text() and $withArrangement"/>
+       <xsl:variable name="text_is_melody" select="text-by[not(@lang)][1]/text() = melody-by[1]/text()"/>
+       <xsl:variable name="melody_is_arrangement" select="melody-by[1]/text() = arrangement-by[1]/text() and $withArrangement"/>
        <xsl:variable name="is_all_three" select="$text_is_melody and $melody_is_arrangement"/>
        <xsl:if test="text-by[not(@lang)]/text()">
          <token>
